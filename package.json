@@ -1,0 +1,14 @@
+{
+  "name": "genshin-calc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+
+  },
+  "keywords": [
+    "\\"
+  ],
+  "author": "TheEZIC",
+  "license": "ISC"
+}
