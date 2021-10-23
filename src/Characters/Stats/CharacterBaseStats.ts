@@ -42,8 +42,6 @@ export default abstract class CharacterAscendableBaseStats {
   public readonly energyRecharge: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);*/
 
   public applyLvl(lvl: number): this {
-    if (lvl < 1) return;
-
     Object.entries(this).map(([key, value]) => {
       const isStat = CharacterBaseStat.isInstanceOf(value);
 

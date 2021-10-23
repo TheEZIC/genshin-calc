@@ -37,7 +37,9 @@ export default class Composite<T> {
   }
 
   public at(index: number) {
-    if (index >= 0 && index <= this.data.length - 1)
+    console.log(index >= 0, index <= this.data.length - 1, this.data.length)
+    if (index >= 0 && index <= this.data.length - 1) {
       return this.data[index];
+    }
   }
 }

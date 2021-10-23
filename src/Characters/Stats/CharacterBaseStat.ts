@@ -8,7 +8,7 @@ export default class CharacterBaseStat {
   }
 
   protected readonly maxLvl: number = 90;
-  protected currentValue = this.ascensions.at(0).min;
+  protected currentValue = this.ascensions.at(0)?.min ?? 0;
 
   public get value(): number {
     return this.currentValue;
@@ -38,6 +38,8 @@ export default class CharacterBaseStat {
     for (let i = 1; i <= this.maxLvl; i++) {
       const index = this.getCurrentAscensionIndex(i);
       const ascension = this.ascensions.at(index);
+
+      if (!ascension) continue;
 
       this.currentValue += ascension.gain;
 
