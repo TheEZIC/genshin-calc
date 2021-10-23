@@ -3,10 +3,10 @@ import AscensionsComposite from "./AscensionsComposite";
 
 export default class CharacterAscendableBaseStat extends CharacterBaseStat {
   constructor(
-    protected firstLvlValue: number,
+    private firstLvlValue: number,
     private ascendGain?: number,
   ) {
-    super(firstLvlValue, new AscensionsComposite([]));
+    super(new AscensionsComposite([]));
   }
 
   private shouldAdd(lvl: number) {
@@ -16,7 +16,7 @@ export default class CharacterAscendableBaseStat extends CharacterBaseStat {
   public applyLvl(lvl: number) {
     if (lvl < 1) return;
 
-    for (let i = 1; i <=this.maxLvl; i++) {
+    for (let i = 1; i <= this.maxLvl; i++) {
       const multiplier = this.shouldAdd(i);
       console.log(i, multiplier, this.ascendGain)
 

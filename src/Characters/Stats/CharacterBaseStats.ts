@@ -8,14 +8,14 @@ export default abstract class CharacterAscendableBaseStats {
   ) {
   }
 
-  /*public abstract readonly baseHP: CharacterBaseStat;
-  public readonly percentHP: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);*/
+  public abstract readonly baseHP: CharacterBaseStat;
+  public readonly percentHP: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
   public abstract readonly baseATK: CharacterBaseStat;
   public readonly percentATK: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
-  /*public abstract baseDEF: CharacterBaseStat;
-  public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);*/
+  public abstract baseDEF: CharacterBaseStat;
+  public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
   /*public readonly critChance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(5);
   public readonly critDamage: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(50);

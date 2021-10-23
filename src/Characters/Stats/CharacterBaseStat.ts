@@ -3,13 +3,12 @@ import AscensionsComposite from "./AscensionsComposite";
 
 export default class CharacterBaseStat {
   constructor(
-    protected firstLvlValue: number,
     protected ascensions: AscensionsComposite,
   ) {
   }
 
   protected readonly maxLvl: number = 90;
-  protected currentValue = this.firstLvlValue;
+  protected currentValue = this.ascensions.at(0).min;
 
   public get value(): number {
     return this.currentValue;

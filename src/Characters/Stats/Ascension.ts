@@ -2,8 +2,8 @@ import AscensionsComposite from "./AscensionsComposite";
 
 export default class Ascension {
   constructor(
-    private min: number,
-    private max: number,
+    public min: number,
+    public max: number,
     private index: number,
     private composite: AscensionsComposite,
   ) {
