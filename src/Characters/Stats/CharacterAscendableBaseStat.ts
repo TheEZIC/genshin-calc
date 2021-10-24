@@ -1,26 +1,25 @@
 import CharacterBaseStat from "./CharacterBaseStat";
-import AscensionsComposite from "./AscensionsComposite";
+import AscensionsIterator from "./AscensionsIterator";
 
 export default class CharacterAscendableBaseStat extends CharacterBaseStat {
   constructor(
     private firstLvlValue: number,
     private ascendGain?: number,
   ) {
-    super(new AscensionsComposite([]));
+    super(new AscensionsIterator([]));
   }
 
   private shouldAdd(lvl: number) {
     return (lvl === 40 || lvl === 50 || lvl === 70 || lvl === 80);
   }
 
-  public applyLvl(lvl: number) {
-    if (lvl < 1) return;
+  public override applyLvl(lvl: number) {
+    if (lvl < 1 || !this.ascendGain) return;
 
     for (let i = 1; i <= this.maxLvl; i++) {
-      const multiplier = this.shouldAdd(i);
-      console.log(i, multiplier, this.ascendGain)
+      const shouldAdd = this.shouldAdd(i);
 
-      if (multiplier && this.ascendGain) {
+      if (shouldAdd) {
         this.currentValue += this.ascendGain;
       }
 

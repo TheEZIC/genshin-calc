@@ -1,9 +1,9 @@
 import Ascension from "./Ascension";
-import AscensionsComposite from "./AscensionsComposite";
+import AscensionsIterator from "./AscensionsIterator";
 
 export default class CharacterBaseStat {
   constructor(
-    protected ascensions: AscensionsComposite,
+    protected ascensions: AscensionsIterator,
   ) {
   }
 

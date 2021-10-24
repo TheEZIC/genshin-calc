@@ -1,9 +1,9 @@
-import Composite from "../../Helpers/Composite";
+import Iterator from "../../Helpers/Iterator";
 import Ascension from "./Ascension";
 
 type AscensionRange = [min: number, max: number];
 
-export default class AscensionsComposite extends Composite<Ascension> {
+export default class AscensionsIterator extends Iterator<Ascension> {
   constructor(ranges: AscensionRange[]) {
     super([]);
 

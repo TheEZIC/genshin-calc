@@ -2,10 +2,10 @@ import CharacterBaseStats from "../../Stats/CharacterBaseStats";
 import CharacterBaseStat from "../../Stats/CharacterBaseStat";
 import CharacterAscendableBaseStat from "../../Stats/CharacterAscendableBaseStat";
 import Ascension from "../../Stats/Ascension";
-import AscensionsComposite from "../../Stats/AscensionsComposite";
+import AscensionsIterator from "../../Stats/AscensionsIterator";
 
 export default class NoelleBaseStats extends CharacterBaseStats {
-  public readonly baseATK: CharacterBaseStat = new CharacterBaseStat(new AscensionsComposite([
+  public readonly baseATK: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
     [16, 41],
     [53, 80],
     [88, 101],
@@ -14,7 +14,7 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     [156, 169],
     [178, 191],
   ]));
-  public readonly baseDEF: CharacterBaseStat = new CharacterBaseStat(new AscensionsComposite([
+  public readonly baseDEF: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
     [67, 172],
     [222, 333],
     [368, 423],
@@ -23,7 +23,7 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     [652, 708],
     [743, 799],
   ]));
-  public readonly baseHP: CharacterBaseStat = new CharacterBaseStat(new AscensionsComposite([
+  public readonly baseHP: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
     [1012, 2600],
     [3356, 5027],
     [5564, 6400],
@@ -33,5 +33,5 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     [11235, 12071],
   ]));
 
-  public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0,7.5);
+  public override readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0,7.5);
 }

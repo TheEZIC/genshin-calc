@@ -1,11 +1,11 @@
-import AscensionsComposite from "./AscensionsComposite";
+import AscensionsIterator from "./AscensionsIterator";
 
 export default class Ascension {
   constructor(
     public min: number,
     public max: number,
     private index: number,
-    private composite: AscensionsComposite,
+    private composite: AscensionsIterator,
   ) {
   }
 

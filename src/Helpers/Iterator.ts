@@ -1,4 +1,4 @@
-export default class Composite<T> {
+export default class Iterator<T> {
   constructor(
     public data: T[],
   ) {

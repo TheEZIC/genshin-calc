@@ -4,11 +4,12 @@
         "strict": true,
         "outDir": "dist",
         "resolveJsonModule": true,
-        "target": "ES2019",
+        "target": "ES2021",
         "skipLibCheck": true,
         "sourceMap": true,
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "noImplicitOverride": true
     }
 }
