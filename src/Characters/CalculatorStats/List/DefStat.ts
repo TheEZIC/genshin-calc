@@ -4,8 +4,8 @@ import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
 export default class DefStat extends MainStat {
   calc(): number {
     const {baseDEF, percentDEF} = this.baseStats;
-    const artifactsFlatDEF = this.artifacts.getStatSumByType(ArtifactStatType.FlatATK);
-    const artifactsPercentDEF = this.artifacts.getStatSumByType(ArtifactStatType.PercentATK);
+    const artifactsFlatDEF = this.artifacts.getStatSumByType(ArtifactStatType.FlatDEF);
+    const artifactsPercentDEF = this.artifacts.getStatSumByType(ArtifactStatType.PercentDEF);
 
     return (baseDEF.value)
       * (1 + percentDEF.value + artifactsPercentDEF + this.prefixesSum)
