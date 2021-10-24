@@ -11,7 +11,8 @@ const circlet = new ArtifactCirclet(new ArtifactStat(ArtifactStatType.CritChance
 const flower = new ArtifactCirclet(new ArtifactStat(ArtifactStatType.FlatHP, 3000))
   .addSubStat(new ArtifactStat(ArtifactStatType.CritDamage, 35.6));
 
-char.artifacts.add(circlet)
-char.artifacts.add(flower);
+char.artifacts
+  .add(circlet)
+  .add(flower);
 
 console.log(char.artifacts.getStatSumByType(ArtifactStatType.CritDamage));

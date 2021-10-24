@@ -1,0 +1,15 @@
+import MainStat from "../MainStat";
+import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
+
+export default class DefStat extends MainStat {
+  calc(): number {
+    const {baseDEF, percentDEF} = this.baseStats;
+    const artifactsFlatDEF = this.artifacts.getStatSumByType(ArtifactStatType.FlatATK);
+    const artifactsPercentDEF = this.artifacts.getStatSumByType(ArtifactStatType.PercentATK);
+
+    return (baseDEF.value)
+      * (1 + percentDEF.value + artifactsPercentDEF + this.prefixesSum)
+      * (this.affixesSum)
+      + artifactsFlatDEF;
+  }
+}

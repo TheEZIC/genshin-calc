@@ -3,7 +3,7 @@ import {ArtifactStatType} from "../ArtifactStatType";
 import {ArtifactType} from "../ArtifactType";
 
 export default class ArtifactGoblet extends Artifact {
-  protected readonly type: ArtifactType = ArtifactType.Goblet;
+  public readonly type: ArtifactType = ArtifactType.Goblet;
   protected readonly allowedMainStats: ArtifactStatType[] = [
     ArtifactStatType.PercentATK,
     ArtifactStatType.PercentDEF,

@@ -1,7 +1,7 @@
-import CharacterBaseStats from "../../Stats/CharacterBaseStats";
-import CharacterBaseStat from "../../Stats/CharacterBaseStat";
-import CharacterAscendableBaseStat from "../../Stats/CharacterAscendableBaseStat";
-import AscensionsIterator from "../../Stats/AscensionsIterator";
+import CharacterBaseStats from "../../BaseStats/CharacterBaseStats";
+import CharacterBaseStat from "../../BaseStats/CharacterBaseStat";
+import CharacterAscendableBaseStat from "../../BaseStats/CharacterAscendableBaseStat";
+import AscensionsIterator from "../../BaseStats/AscensionsIterator";
 
 export default class NoelleBaseStats extends CharacterBaseStats {
   public readonly baseATK: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
