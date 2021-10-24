@@ -8,8 +8,8 @@ export default class AtkStat extends MainStat {
     const artifactsPercentATK = this.artifacts.getStatSumByType(ArtifactStatType.PercentATK);
 
     return (baseATK.value)
-      * (1 + percentATK.value + artifactsPercentATK + this.prefixesSum)
-      * (this.affixesSum)
+      * (1 + (percentATK.value + artifactsPercentATK + this.prefixesSum) / 100)
+      * (1 + (this.affixesSum) / 100)
       + artifactsFlatATK;
   }
 }

@@ -8,8 +8,8 @@ export default class HpStat extends MainStat {
     const artifactsPercentHP = this.artifacts.getStatSumByType(ArtifactStatType.PercentHP);
 
     return (baseHP.value)
-      * (1 + percentHP.value + artifactsPercentHP + this.prefixesSum)
-      * (this.affixesSum)
+      * (1 + (percentHP.value + artifactsPercentHP + this.prefixesSum) / 100)
+      * (1 + (this.affixesSum) / 100)
       + artifactsFlatHP;
   }
 }

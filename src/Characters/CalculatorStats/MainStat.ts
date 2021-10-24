@@ -1,15 +1,6 @@
-import CalculatorStats from "./CalculatorStats";
+import Stat from "./Stat";
 
-export default abstract class MainStat {
-  constructor(
-    private calculator: CalculatorStats,
-  ) {
-  }
-
-  protected baseStats = this.calculator.character.baseStats;
-  protected artifacts = this.calculator.character.artifacts;
-  protected weapon = null;
-
+export default abstract class MainStat extends Stat {
   protected prefixes: number[] = [];
 
   public addPrefix(prefix: number): this {
@@ -38,9 +29,7 @@ export default abstract class MainStat {
     return this;
   }
 
-  abstract calc(): number;
-
-  get value() {
+  public override get value() {
     const result = this.calc();
     this.clear();
     return result;

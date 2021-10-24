@@ -8,8 +8,8 @@ export default class DefStat extends MainStat {
     const artifactsPercentDEF = this.artifacts.getStatSumByType(ArtifactStatType.PercentDEF);
 
     return (baseDEF.value)
-      * (1 + percentDEF.value + artifactsPercentDEF + this.prefixesSum)
-      * (this.affixesSum)
+      * (1 + (percentDEF.value + artifactsPercentDEF + this.prefixesSum) / 100)
+      * (1 + (this.affixesSum) / 100)
       + artifactsFlatDEF;
   }
 }
