@@ -23,15 +23,9 @@ export default abstract class MainStat extends Stat {
     return this.affixes.reduce((a, b) => a + b, 0);
   }
 
-  public clear(): this {
+  public override clear(): this {
     this.prefixes = [];
     this.affixes = [];
     return this;
-  }
-
-  public override get value() {
-    const result = this.calc();
-    this.clear();
-    return result;
   }
 }

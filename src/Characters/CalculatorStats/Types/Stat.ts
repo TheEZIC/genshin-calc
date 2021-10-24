@@ -1,4 +1,4 @@
-import CalculatorStats from "./CalculatorStats";
+import CalculatorStats from "../CalculatorStats";
 
 export default abstract class Stat {
   protected baseStats = this.calculator.character.baseStats;
@@ -10,9 +10,14 @@ export default abstract class Stat {
   ) {
   }
 
-  abstract calc(): number;
+  public abstract calc(): number;
+  public clear(): this {
+    return this;
+  };
 
   public get value() {
-    return this.calc();
+    const result =  this.calc();
+    this.clear();
+    return result;
   }
 }

@@ -54,7 +54,7 @@ export default abstract class CharacterAscendableBaseStats {
     return this;
   }
 
-  public app(callback: (stats: this) => void): this {
+  public apply(callback: (stats: this) => void): this {
     callback(this);
     return this;
   }

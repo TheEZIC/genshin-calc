@@ -1,4 +1,4 @@
-import MainStat from "../MainStat";
+import MainStat from "../Types/MainStat";
 import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
 
 export default class DefStat extends MainStat {
