@@ -17,7 +17,10 @@ export default abstract class CharacterAscendableBaseStats {
   public abstract baseDEF: CharacterBaseStat;
   public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
-  /*public readonly critChance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(5);
+  public readonly elementalMastery: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
+  public readonly energyRecharge: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
+
+  public readonly critChance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(5);
   public readonly critDamage: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(50);
 
   public readonly physicalDmgBonus: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
@@ -37,9 +40,6 @@ export default abstract class CharacterAscendableBaseStats {
   public readonly dendroResistance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
   public readonly cryoResistance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
   public readonly geoResistance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
-
-  public readonly elementalMastery: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
-  public readonly energyRecharge: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);*/
 
   public applyLvl(lvl: number): this {
     Object.entries(this).map(([key, value]) => {

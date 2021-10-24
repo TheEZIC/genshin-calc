@@ -37,7 +37,6 @@ export default class Iterator<T> {
   }
 
   public at(index: number) {
-    console.log(index >= 0, index <= this.data.length - 1, this.data.length)
     if (index >= 0 && index <= this.data.length - 1) {
       return this.data[index];
     }

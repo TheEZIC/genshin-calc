@@ -1,7 +1,6 @@
 import CharacterBaseStats from "../../Stats/CharacterBaseStats";
 import CharacterBaseStat from "../../Stats/CharacterBaseStat";
 import CharacterAscendableBaseStat from "../../Stats/CharacterAscendableBaseStat";
-import Ascension from "../../Stats/Ascension";
 import AscensionsIterator from "../../Stats/AscensionsIterator";
 
 export default class NoelleBaseStats extends CharacterBaseStats {
