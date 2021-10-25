@@ -1,6 +1,6 @@
-import Stat from "./Stat";
+import PureStat from "./PureStat";
 
-export default abstract class MainStat extends Stat {
+export default abstract class MainStat extends PureStat {
   protected prefixes: number[] = [];
 
   public addPrefix(prefix: number): this {
@@ -24,6 +24,7 @@ export default abstract class MainStat extends Stat {
   }
 
   public override clear(): this {
+    super.clear();
     this.prefixes = [];
     this.affixes = [];
     return this;
