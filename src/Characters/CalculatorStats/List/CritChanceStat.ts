@@ -1,7 +1,7 @@
-import PureStat from "../Types/PureStat";
+import CritStat from "../Types/CritStat";
 import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
 
-export default class CritChanceStat extends PureStat {
+export default class CritChanceStat extends CritStat {
   calc(): number {
     const {critChance} = this.baseStats;
     const artifactsCritChance = this.artifacts.getStatSumByType(ArtifactStatType.CritChance);
