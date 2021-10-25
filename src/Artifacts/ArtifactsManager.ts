@@ -1,8 +1,14 @@
 import Artifact from "./Artifact";
 import {ArtifactType} from "./ArtifactType";
 import {ArtifactStatType} from "./ArtifactStatType";
+import Character from "../Characters/Character";
 
 export default class ArtifactsManager {
+  constructor(
+    public character: Character,
+  ) {
+  }
+
   private artifacts: Artifact[] = [];
 
   public getArtifact(artifactType: ArtifactType) {
@@ -48,6 +54,11 @@ export default class ArtifactsManager {
     for (let i = 0; i < this.artifactsCount; i++) {
       const artifact = this.artifacts[i];
       const subStat = artifact.getSubStat(statType);
+      const mainStat = artifact.mainStat;
+
+      if (mainStat.type === statType) {
+        values.push(mainStat.value);
+      }
 
       if (subStat) {
         values.push(subStat.value);
@@ -55,5 +66,10 @@ export default class ArtifactsManager {
     }
 
     return values.reduce((a, b) => a + b, 0);
+  }
+
+  public calcSetBonuses(): this {
+    //TODO
+    return this;
   }
 }

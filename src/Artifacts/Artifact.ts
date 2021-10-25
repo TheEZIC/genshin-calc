@@ -2,6 +2,7 @@ import {ArtifactAllStats, ArtifactStatType} from "./ArtifactStatType";
 import {ArtifactRarity} from "./ArtifactRarity";
 import {ArtifactType} from "./ArtifactType";
 import ArtifactStat from "./ArtifactStat";
+import IArtifactSetStrategy from "./ArtifactSetStrategy";
 
 export default abstract class Artifact {
   public readonly abstract type: ArtifactType;
@@ -11,8 +12,12 @@ export default abstract class Artifact {
   private rarity: ArtifactRarity = ArtifactRarity.Legendary;
 
   constructor(
-    public mainStat: ArtifactStat,
+    private _mainStat: ArtifactStat,
   ) {
+  }
+
+  public get mainStat(): ArtifactStat {
+    return this._mainStat;
   }
 
   private subStats: ArtifactStat[] = [];
@@ -67,5 +72,9 @@ export default abstract class Artifact {
     this.removeSubStat(stat.type);
     this.addSubStat(stat);
     return this;
+  }
+
+  set set(set: IArtifactSetStrategy) {
+
   }
 }
