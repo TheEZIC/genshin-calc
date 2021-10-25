@@ -43,7 +43,7 @@ export default abstract class CharacterAscendableBaseStats {
 
   public applyLvl(lvl: number): this {
     Object.entries(this).map(([key, value]) => {
-      const isStat = CharacterBaseStat.isInstanceOf(value);
+      const isStat = value instanceof CharacterBaseStat;
 
       if (isStat) {
         const stat = value as CharacterBaseStat;

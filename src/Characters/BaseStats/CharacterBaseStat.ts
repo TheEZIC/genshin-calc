@@ -50,8 +50,4 @@ export default class CharacterBaseStat {
       if (i === lvl) break;
     }
   }
-
-  public static isInstanceOf(item: any) {
-    return Boolean(item.ascensions)
-  }
 }
