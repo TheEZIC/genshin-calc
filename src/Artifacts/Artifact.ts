@@ -3,6 +3,7 @@ import {ArtifactRarity} from "./ArtifactRarity";
 import {ArtifactType} from "./ArtifactType";
 import ArtifactStat from "./ArtifactStat";
 import IArtifactSetStrategy from "./ArtifactSetStrategy";
+import ArtifactSet from "./ArtifactSet";
 
 export default abstract class Artifact {
   public readonly abstract type: ArtifactType;
@@ -74,7 +75,14 @@ export default abstract class Artifact {
     return this;
   }
 
-  set set(set: IArtifactSetStrategy) {
+  public setBonus: ArtifactSet | null = null;
 
+  addSetBonus(set: ArtifactSet): this {
+    this.setBonus = set;
+    return this;
+  }
+
+  removeSetBonus() {
+    this.setBonus = null;
   }
 }

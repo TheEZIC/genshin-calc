@@ -8,6 +8,10 @@ export default abstract class MainStat extends PureStat {
     return this;
   }
 
+  public removePrefix(prefix: number) {
+    this.prefixes = this.prefixes.filter(p => p !== prefix);
+  }
+
   public get prefixesSum() {
     return this.prefixes.reduce((a, b) => a + b, 0);
   }
@@ -17,6 +21,10 @@ export default abstract class MainStat extends PureStat {
   public addAffix(affix: number) {
     this.affixes.push(affix);
     return this;
+  }
+
+  public removeAffix(affix: number) {
+    this.prefixes = this.prefixes.filter(p => p !== affix);
   }
 
   public get affixesSum() {

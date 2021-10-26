@@ -8,6 +8,10 @@ export default abstract class PureStat extends Stat {
     return this;
   };
 
+  public removeAdditionalValue(additionalValue: number) {
+    this.additionalValues = this.additionalValues.filter(v => v !== additionalValue);
+  }
+
   public override clear(): this {
     this.additionalValues = [];
     return this;

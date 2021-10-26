@@ -2,17 +2,13 @@ import IArtifactSetStrategy from "./ArtifactSetStrategy";
 import ArtifactsManager from "./ArtifactsManager";
 import Character from "../Characters/Character";
 
-export default abstract class ArtifactSet implements IArtifactSetStrategy {
-  protected abstract executeTwoLogic(character: Character): void;
-  protected abstract executeFourLogic(character: Character): void;
+export default abstract class ArtifactSet {
+  //artifact set type is class name
+  public type: string = this.constructor.name;
 
-  computeTwoPieceBonuses(artifactManager: ArtifactsManager): void {
-    this.executeTwoLogic(artifactManager.character);
-    artifactManager.calcSetBonuses();
-  }
+  public abstract computeTwoPieceBonuses(character: Character): void;
+  public abstract computeFourPieceBonuses(character: Character): void;
 
-  computeFourPieceBonuses(artifactManager: ArtifactsManager): void {
-    this.executeFourLogic(artifactManager.character);
-    artifactManager.calcSetBonuses();
-  }
+  public abstract removeTwoSetBonuses(character: Character): void
+  public abstract removeFourSetBonuses(character: Character): void;
 }

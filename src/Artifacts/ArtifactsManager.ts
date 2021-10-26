@@ -2,12 +2,17 @@ import Artifact from "./Artifact";
 import {ArtifactType} from "./ArtifactType";
 import {ArtifactStatType} from "./ArtifactStatType";
 import Character from "../Characters/Character";
+import ArtifactSetBonuses from "./ArtifactSetBonuses";
 
 export default class ArtifactsManager {
   constructor(
     public character: Character,
   ) {
   }
+
+  public artifactSetBonuses = new ArtifactSetBonuses(this);
+
+  public readonly MAXIMUM_ARTIFACTS = 5;
 
   private artifacts: Artifact[] = [];
 
@@ -30,15 +35,28 @@ export default class ArtifactsManager {
       this.remove(artifact.type);
     }
 
-    if (this.artifactsCount < 5) {
+    if (this.artifactsCount < this.MAXIMUM_ARTIFACTS) {
       this.artifacts.push(artifact);
+
+      if (artifact.setBonus) {
+        this.artifactSetBonuses.addSet(artifact.setBonus);
+      }
     }
 
     return this;
   }
 
   public remove(artifactType: ArtifactType): this {
-    this.artifacts.filter(a => a.type !== artifactType);
+    const artifact = this.artifacts.find(a => a.type === artifactType);
+    //nothing to remove
+    if (!artifact) return this;
+
+    if (artifact.setBonus) {
+      this.artifactSetBonuses.removeSet(artifact.setBonus);
+      artifact.removeSetBonus();
+    }
+
+    this.artifacts = this.artifacts.filter(a => a.type !== artifactType);
     return this;
   }
 
@@ -66,10 +84,5 @@ export default class ArtifactsManager {
     }
 
     return values.reduce((a, b) => a + b, 0);
-  }
-
-  public calcSetBonuses(): this {
-    //TODO
-    return this;
   }
 }
