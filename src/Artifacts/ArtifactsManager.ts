@@ -53,7 +53,6 @@ export default class ArtifactsManager {
 
     if (artifact.setBonus) {
       this.artifactSetBonuses.removeSet(artifact.setBonus);
-      artifact.removeSetBonus();
     }
 
     this.artifacts = this.artifacts.filter(a => a.type !== artifactType);

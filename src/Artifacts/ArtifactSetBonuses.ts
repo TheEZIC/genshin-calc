@@ -13,33 +13,34 @@ export default class ArtifactSetBonuses {
   }
 
   private sets: ArtifactSet[] = [];
-
   private currentSetsByType: ICurrentSetsItem[][] = [];
 
   public calcSetBonuses() {
+    this.removeAllSetBonusEffects();
     this.currentSetsByType = [];
 
     for (let set of this.sets) {
-      const currentSetType = set.type;
-      const exists = this.currentSetsByType.find(s => s[0].type === currentSetType);
-      const item = {
-        type: currentSetType,
-        item: set,
-      };
+      const type = set.type;
+      const exists = this.currentSetsByType.find(s => s[0].type === type);
+      const item = {type, item: set};
 
       if (!exists || !exists.length) {
         this.currentSetsByType.push([item]);
       } else {
         exists.push(item);
-
-        if (exists.length === 2) {
-          exists[0].item.computeTwoPieceBonuses(this.manager.character);
-        }
-        if (exists.length === 4) {
-          exists[0].item.computeTwoPieceBonuses(this.manager.character);
-        }
       }
     }
+
+    for (let typeRow of this.currentSetsByType) {
+      if (typeRow.length >= 2) {
+        typeRow[0].item.computeTwoPieceBonuses(this.manager.character);
+      }
+      if (typeRow.length >= 4) {
+        typeRow[0].item.computeFourPieceBonuses(this.manager.character);
+      }
+    }
+
+    console.log(this.currentSetsByType);
   }
 
   private findSet(artifactSetType: string) {
@@ -55,18 +56,27 @@ export default class ArtifactSetBonuses {
     this.calcSetBonuses();
   }
 
-  public removeSet(artifactSet: ArtifactSet) {
+  private removeSetBonusEffect(artifactSet: ArtifactSet) {
     const set = this.findSet(artifactSet.type);
     if (!set) return; //if nothing to remove
-
     const exists = this.currentSetsByType.find(s => s[0].type === set.type);
 
-    if (exists && exists.length === 2) {
+    if (exists && exists.length >= 2) {
       set.removeTwoSetBonuses(this.manager.character);
     }
-    if (exists && exists.length === 4) {
+    if (exists && exists.length >= 4) {
       set.removeFourSetBonuses(this.manager.character);
     }
+  }
+
+  private removeAllSetBonusEffects() {
+    for (let set of this.sets) {
+      this.removeSetBonusEffect(set);
+    }
+  }
+
+  public removeSet(artifactSet: ArtifactSet) {
+    this.removeSetBonusEffect(artifactSet);
 
     let isDeleted = false;
 
