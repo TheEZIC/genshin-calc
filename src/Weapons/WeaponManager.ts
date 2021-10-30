@@ -7,22 +7,22 @@ export default class WeaponManager {
   ) {
   }
 
-  private weapon: Weapon | null = null;
+  private _weapon: Weapon | null = null;
 
   public setWeapon(weapon: Weapon): this {
-    this.weapon = weapon;
-    this.weapon.applyPassives();
+    this._weapon = weapon;
+    this._weapon.applyPassives();
     return this;
   }
 
   public removeWeapon(): this {
-    if (!this.weapon) return this;
-    this.weapon.removePassives();
-    this.weapon = null;
+    if (!this._weapon) return this;
+    this._weapon.removePassives();
+    this._weapon = null;
     return this;
   }
 
-  public getWeapon() {
-    return this.weapon;
+  public get weapon(): Weapon | null {
+    return this._weapon;
   }
 }

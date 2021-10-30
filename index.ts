@@ -13,23 +13,23 @@ import Stat from "./src/BaseStats/Stat";
 const char = new Noelle();
 
 const plume = new ArtifactPlume()
-  .addMainStat(new Stat(StatType.FlatATK, 300))
+  .setMainStat(new Stat(StatType.FlatATK, 300))
   .addSetBonus(new TroupeSet());
 
 const goblet = new ArtifactGoblet()
-  .addMainStat(new Stat(StatType.GeoDmgBonus, 44))
+  .setMainStat(new Stat(StatType.GeoDmgBonus, 44))
   .addSetBonus(new TroupeSet());
 
 const sands = new ArtifactSands()
-  .addMainStat(new Stat(StatType.PercentATK, 40))
+  .setMainStat(new Stat(StatType.PercentATK, 40))
   .addSetBonus(new GladiatorSet());
 
 const circlet = new ArtifactCirclet()
-  .addMainStat(new Stat(StatType.CritChance, 30))
+  .setMainStat(new Stat(StatType.CritChance, 30))
   .addSetBonus(new GladiatorSet());
 
 const flower = new ArtifactFlower()
-  .addMainStat(new Stat(StatType.FlatHP, 3000))
+  .setMainStat(new Stat(StatType.FlatHP, 3000))
   .addSetBonus(new GladiatorSet());
 
 char.artifactsManager

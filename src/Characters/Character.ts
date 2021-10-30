@@ -6,8 +6,8 @@ import WeaponManager from "../Weapons/WeaponManager";
 export default abstract class Character {
   public abstract baseStats: CharacterBaseStats;
 
-  public calculatorStats = new CalculatorStats(this);
   public weaponManager = new WeaponManager(this);
-
   public artifactsManager: ArtifactsManager = new ArtifactsManager(this);
+
+  public calculatorStats = new CalculatorStats(this);
 }
