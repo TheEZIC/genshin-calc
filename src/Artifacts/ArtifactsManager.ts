@@ -1,6 +1,6 @@
 import Artifact from "./Artifact";
 import {ArtifactType} from "./ArtifactType";
-import {ArtifactStatType} from "./ArtifactStatType";
+import {StatType} from "../BaseStats/StatType";
 import Character from "../Characters/Character";
 import ArtifactSetBonuses from "./ArtifactSetBonuses";
 
@@ -38,7 +38,7 @@ export default class ArtifactsManager {
     if (this.artifactsCount < this.MAXIMUM_ARTIFACTS) {
       this.artifacts.push(artifact);
 
-      if (artifact.setBonus) {
+      if (artifact?.setBonus) {
         this.artifactSetBonuses.addSet(artifact.setBonus);
       }
     }
@@ -65,7 +65,7 @@ export default class ArtifactsManager {
     return this;
   }
 
-  public getStatSumByType(statType: ArtifactStatType) {
+  public getStatSumByType(statType: StatType) {
     const values: number[] = [];
 
     for (let i = 0; i < this.artifactsCount; i++) {
@@ -73,7 +73,7 @@ export default class ArtifactsManager {
       const subStat = artifact.getSubStat(statType);
       const mainStat = artifact.mainStat;
 
-      if (mainStat.type === statType) {
+      if (mainStat?.type && mainStat.type === statType) {
         values.push(mainStat.value);
       }
 

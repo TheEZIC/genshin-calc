@@ -1,6 +1,6 @@
 import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
-import Character from "../Character";
-import CharacterBaseStat from "./CharacterBaseStat";
+import Character from "./Character";
+import BaseStat from "../BaseStats/BaseStat";
 
 export default abstract class CharacterAscendableBaseStats {
   constructor(
@@ -8,13 +8,13 @@ export default abstract class CharacterAscendableBaseStats {
   ) {
   }
 
-  public abstract readonly baseHP: CharacterBaseStat;
+  public abstract readonly baseHP: BaseStat;
   public readonly percentHP: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
-  public abstract readonly baseATK: CharacterBaseStat;
+  public abstract readonly baseATK: BaseStat;
   public readonly percentATK: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
-  public abstract baseDEF: CharacterBaseStat;
+  public abstract baseDEF: BaseStat;
   public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
   public readonly elementalMastery: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
@@ -41,12 +41,16 @@ export default abstract class CharacterAscendableBaseStats {
   public readonly cryoResistance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
   public readonly geoResistance: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
+  /**
+   * Apply lvl to all character stats
+   * @param {number} lvl - lvl of character
+   * */
   public applyLvl(lvl: number): this {
     Object.entries(this).map(([key, value]) => {
-      const isStat = value instanceof CharacterBaseStat;
+      const isStat = value instanceof BaseStat;
 
       if (isStat) {
-        const stat = value as CharacterBaseStat;
+        const stat = value as BaseStat;
         stat.applyLvl(lvl);
       }
     });
@@ -54,6 +58,10 @@ export default abstract class CharacterAscendableBaseStats {
     return this;
   }
 
+  /**
+   * Apply lvl to all character stats
+   * @param {function} callback - callback function to modify stats
+   * */
   public apply(callback: (stats: this) => void): this {
     callback(this);
     return this;

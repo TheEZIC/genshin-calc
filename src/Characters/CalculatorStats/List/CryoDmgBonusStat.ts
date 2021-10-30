@@ -1,10 +1,10 @@
 import PureStat from "../Types/PureStat";
-import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
+import {StatType} from "../../../BaseStats/StatType";
 
 export default class CryoDmgBonusStat extends PureStat {
   calc(): number {
     const {cryoDmgBonus} = this.baseStats;
-    const artifactsCryoPercent = this.artifacts.getStatSumByType(ArtifactStatType.CryoDmgBonus);
+    const artifactsCryoPercent = this.artifacts.getStatSumByType(StatType.CryoDmgBonus);
 
     return cryoDmgBonus.value + artifactsCryoPercent + this.additionalValuesSum;
   }

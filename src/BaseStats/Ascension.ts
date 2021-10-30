@@ -9,6 +9,11 @@ export default class Ascension {
   ) {
   }
 
+  /**
+   * Get lvls required to ascension
+   * @param {number} lvl - lvl
+   * @return {boolean} should or not add value
+   * */
   private get ascensionLvls() {
     switch (this.index) {
       case 0: return 20;
@@ -17,6 +22,10 @@ export default class Ascension {
     }
   }
 
+  /**
+   * Get lvl needed for this ascension
+   * @return {boolean} should or not add value
+   * */
   public get atLvl() {
     switch (this.index) {
       case 0: return 0;
@@ -29,11 +38,19 @@ export default class Ascension {
     }
   }
 
-  public get gain() {
+  /**
+   * Get stat gain value per ascension
+   * @return {boolean} should or not add value
+   * */
+  public get gain(): number {
     return (this.max - this.min) / this.ascensionLvls;
   }
 
-  public get ascendBonus() {
+  /**
+   * Get bonus stat value for ascension
+   * @return {number} number
+   * */
+  public get ascendBonus(): number {
     const prev = this.composite.getPrev(this.index);
     if (!prev) return 0;
     return this.min - prev.max;

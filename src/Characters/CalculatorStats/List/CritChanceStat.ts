@@ -1,10 +1,10 @@
 import CritStat from "../Types/CritStat";
-import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
+import {StatType} from "../../../BaseStats/StatType";
 
 export default class CritChanceStat extends CritStat {
   calc(): number {
     const {critChance} = this.baseStats;
-    const artifactsCritChance = this.artifacts.getStatSumByType(ArtifactStatType.CritChance);
+    const artifactsCritChance = this.artifacts.getStatSumByType(StatType.CritChance);
 
     return critChance.value + artifactsCritChance + this.additionalValuesSum;
   }

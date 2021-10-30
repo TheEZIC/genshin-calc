@@ -1,10 +1,10 @@
-import CharacterBaseStats from "../../BaseStats/CharacterBaseStats";
-import CharacterBaseStat from "../../BaseStats/CharacterBaseStat";
-import CharacterAscendableBaseStat from "../../BaseStats/CharacterAscendableBaseStat";
-import AscensionsIterator from "../../BaseStats/AscensionsIterator";
+import CharacterBaseStats from "../../CharacterBaseStats";
+import BaseStat from "../../../BaseStats/BaseStat";
+import CharacterAscendableBaseStat from "../../CharacterAscendableBaseStat";
+import AscensionsIterator from "../../../BaseStats/AscensionsIterator";
 
 export default class NoelleBaseStats extends CharacterBaseStats {
-  public readonly baseATK: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
+  public readonly baseATK: BaseStat = new BaseStat(new AscensionsIterator([
     [16, 41],
     [53, 80],
     [88, 101],
@@ -13,7 +13,7 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     [156, 169],
     [178, 191],
   ]));
-  public readonly baseDEF: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
+  public readonly baseDEF: BaseStat = new BaseStat(new AscensionsIterator([
     [67, 172],
     [222, 333],
     [368, 423],
@@ -22,7 +22,7 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     [652, 708],
     [743, 799],
   ]));
-  public readonly baseHP: CharacterBaseStat = new CharacterBaseStat(new AscensionsIterator([
+  public readonly baseHP: BaseStat = new BaseStat(new AscensionsIterator([
     [1012, 2600],
     [3356, 5027],
     [5564, 6400],

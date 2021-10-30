@@ -1,10 +1,10 @@
 import PureStat from "../Types/PureStat";
-import {ArtifactStatType} from "../../../Artifacts/ArtifactStatType";
+import {StatType} from "../../../BaseStats/StatType";
 
 export default class GeoDmgBonusStat extends PureStat {
   calc(): number {
     const {geoDmgBonus} = this.baseStats;
-    const artifactsGeoPercent = this.artifacts.getStatSumByType(ArtifactStatType.GeoDmgBonus);
+    const artifactsGeoPercent = this.artifacts.getStatSumByType(StatType.GeoDmgBonus);
 
     return geoDmgBonus.value + artifactsGeoPercent + this.additionalValuesSum;
   }
