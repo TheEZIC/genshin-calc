@@ -3,9 +3,10 @@ import {StatType} from "../../../BaseStats/StatType";
 
 export default class CritChanceStat extends CritStat {
   calc(): number {
-    const {critChance} = this.baseStats;
-    const artifactsCritChance = this.artifacts.getStatSumByType(StatType.CritChance);
+    const {critChance} = this.character.baseStats;
+    const artifactsCritChance = this.getArtifactsValue(StatType.CritChance);
+    const weaponCritChange = this.getWeaponValue(StatType.CritChance);
 
-    return critChance.value + artifactsCritChance + this.additionalValuesSum;
+    return critChance.value + artifactsCritChance + weaponCritChange + this.additionalValuesSum;
   }
 }

@@ -30,31 +30,31 @@ export default class CalculatorStats {
   ) {
   }
 
-  public readonly ATK: MainStat = new AtkStat(this);
-  public readonly DEF: MainStat = new DefStat(this);
-  public readonly HP: MainStat = new HpStat(this);
+  public readonly ATK: MainStat = new AtkStat(this.character);
+  public readonly DEF: MainStat = new DefStat(this.character);
+  public readonly HP: MainStat = new HpStat(this.character);
 
-  public readonly elementalMastery = new ElementaryMasteryStat(this);
-  public readonly energyRecharge = new EnergyRechargeStat(this);
+  public readonly elementalMastery = new ElementaryMasteryStat(this.character);
+  public readonly energyRecharge = new EnergyRechargeStat(this.character);
 
-  public readonly critChance = new CritChanceStat(this);
-  public readonly critDamage = new CritDamageStat(this);
+  public readonly critChance = new CritChanceStat(this.character);
+  public readonly critDamage = new CritDamageStat(this.character);
 
-  public readonly physicalDmgBonus = new PhysicalDmgBonusStat(this);
-  public readonly pyroDmgBonus = new PyroDmgBonusStat(this);
-  public readonly hydroDmgBonus = new HydroDmgBonusStat(this);
-  public readonly anemoDmgBonus = new AnemoDmgBonusStat(this);
-  public readonly electroDmgBonus = new ElectroDmgBonusStat(this);
-  public readonly dendroDmgBonus = new DendroDmgBonusStat(this);
-  public readonly cryoDmgBonus = new CryoDmgBonusStat(this);
-  public readonly geoDmgBonus = new GeoDmgBonusStat(this);
+  public readonly physicalDmgBonus = new PhysicalDmgBonusStat(this.character);
+  public readonly pyroDmgBonus = new PyroDmgBonusStat(this.character);
+  public readonly hydroDmgBonus = new HydroDmgBonusStat(this.character);
+  public readonly anemoDmgBonus = new AnemoDmgBonusStat(this.character);
+  public readonly electroDmgBonus = new ElectroDmgBonusStat(this.character);
+  public readonly dendroDmgBonus = new DendroDmgBonusStat(this.character);
+  public readonly cryoDmgBonus = new CryoDmgBonusStat(this.character);
+  public readonly geoDmgBonus = new GeoDmgBonusStat(this.character);
 
-  public readonly physicalResistance = new PhysicalResistanceStat(this);
-  public readonly pyroResistance = new PyroResistanceStat(this);
-  public readonly hydroResistance = new HydroResistanceStat(this);
-  public readonly anemoResistance = new AnemoResistanceStat(this);
-  public readonly electroResistance = new ElectroResistanceStat(this);
-  public readonly dendroResistance = new DendroResistanceStat(this);
-  public readonly cryoResistance = new CryoResistanceStat(this);
-  public readonly geoResistance = new GeoResistanceStat(this);
+  public readonly physicalResistance = new PhysicalResistanceStat(this.character);
+  public readonly pyroResistance = new PyroResistanceStat(this.character);
+  public readonly hydroResistance = new HydroResistanceStat(this.character);
+  public readonly anemoResistance = new AnemoResistanceStat(this.character);
+  public readonly electroResistance = new ElectroResistanceStat(this.character);
+  public readonly dendroResistance = new DendroResistanceStat(this.character);
+  public readonly cryoResistance = new CryoResistanceStat(this.character);
+  public readonly geoResistance = new GeoResistanceStat(this.character);
 }

@@ -7,8 +7,8 @@ export default abstract class CritStat extends PureStat {
    * @return {number} - crit balance
    * */
   get critBalance(): number {
-    const critChance = this.calculator.critChance.calc();
-    const critDamage = this.calculator.critDamage.calc();
+    const critChance = this.character.calculatorStats.critChance.calc();
+    const critDamage = this.character.calculatorStats.critDamage.calc();
 
     return critChance / critDamage * 100;
   }
@@ -19,8 +19,8 @@ export default abstract class CritStat extends PureStat {
    * @return {number} - crit effect
    * */
   get critEffect(): number {
-    const critChance = this.calculator.critChance.calc();
-    const critDamage = this.calculator.critDamage.calc();
+    const critChance = this.character.calculatorStats.critChance.calc();
+    const critDamage = this.character.calculatorStats.critDamage.calc();
 
     return 1 + (critChance + critDamage) / 100;
   }

@@ -1,12 +1,9 @@
-import CalculatorStats from "../CalculatorStats";
+import Character from "../../Character";
+import {StatType} from "../../../BaseStats/StatType";
 
 export default abstract class Stat {
-  protected baseStats = this.calculator.character.baseStats;
-  protected artifacts = this.calculator.character.artifactsManager;
-  protected weapon = this.calculator.character.weaponManager.weapon;
-
   constructor(
-    protected calculator: CalculatorStats,
+    protected character: Character,
   ) {
   }
 
@@ -32,5 +29,29 @@ export default abstract class Stat {
     const result =  this.calc();
     this.clear();
     return result;
+  }
+
+  /**
+   * Get weapon value bonus by stat
+   * @param {StatType} statType - stat type
+   * @return {number} - value
+   * */
+  protected getWeaponValue(statType: StatType) {
+    const {weaponManager} = this.character;
+
+    return weaponManager.weapon?.mainStat.isType(statType)
+      ? weaponManager.weapon?.mainStat.value
+      :0;
+  }
+
+  /**
+   * Get artifacts value bonus by stat
+   * @param {StatType} statType - stat type
+   * @return {number} - value
+   * */
+  protected getArtifactsValue(statType: StatType) {
+    const {artifactsManager} = this.character;
+
+    return artifactsManager.getStatSumByType(statType);
   }
 }

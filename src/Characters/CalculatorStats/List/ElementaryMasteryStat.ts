@@ -3,8 +3,8 @@ import {StatType} from "../../../BaseStats/StatType";
 
 export default class ElementaryMasteryStat extends PureStat {
   calc(): number {
-    const {elementalMastery} = this.baseStats;
-    const artifactsElementalMastery = this.artifacts.getStatSumByType(StatType.ElementalMastery);
+    const {elementalMastery} = this.character.baseStats;
+    const artifactsElementalMastery = this.getArtifactsValue(StatType.ElementalMastery);
 
     return elementalMastery.value + artifactsElementalMastery + this.additionalValuesSum;
   }

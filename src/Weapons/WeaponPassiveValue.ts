@@ -8,7 +8,6 @@ export class WeaponPassiveValue {
   ) {
   }
 
-
   public get valueAtRefinement(): number {
     return this.startValue + this.gain * (this.weapon.refinement - 1);
   }

@@ -3,9 +3,9 @@ import {StatType} from "../../../BaseStats/StatType";
 
 export default class HpStat extends MainStat {
   calc(): number {
-    const {baseHP, percentHP} = this.baseStats;
-    const artifactsFlatHP = this.artifacts.getStatSumByType(StatType.FlatHP);
-    const artifactsPercentHP = this.artifacts.getStatSumByType(StatType.PercentHP);
+    const {baseHP, percentHP} = this.character.baseStats;
+    const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);
+    const artifactsPercentHP = this.getArtifactsValue(StatType.PercentHP);
 
     return (baseHP.value)
       * (1 + (percentHP.value + artifactsPercentHP + this.prefixesSum) / 100

@@ -3,8 +3,8 @@ import {StatType} from "../../../BaseStats/StatType";
 
 export default class PhysicalDmgBonusStat extends PureStat {
   calc(): number {
-    const {physicalDmgBonus} = this.baseStats;
-    const artifactsPhysicalPercent = this.artifacts.getStatSumByType(StatType.PhysicalDmgBonus);
+    const {physicalDmgBonus} = this.character.baseStats;
+    const artifactsPhysicalPercent = this.getArtifactsValue(StatType.PhysicalDmgBonus);
 
     return physicalDmgBonus.value + artifactsPhysicalPercent + this.additionalValuesSum;
   }

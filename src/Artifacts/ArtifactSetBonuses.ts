@@ -39,8 +39,6 @@ export default class ArtifactSetBonuses {
         typeRow[0].item.computeFourPieceBonuses(this.manager.character);
       }
     }
-
-    console.log(this.currentSetsByType);
   }
 
   private findSet(artifactSetType: string) {

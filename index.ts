@@ -9,6 +9,7 @@ import TroupeSet from "./src/Artifacts/Sets/TroupeSet";
 import ArtifactGoblet from "./src/Artifacts/Type/ArtifactGoblet";
 import ArtifactSands from "./src/Artifacts/Type/ArtifactSands";
 import Stat from "./src/BaseStats/Stat";
+import WolfGravestoneWeapon from "./src/Weapons/List/Claymores/WolfGravestoneWeapon";
 
 const char = new Noelle();
 
@@ -39,12 +40,14 @@ char.artifactsManager
   .add(circlet)
   .add(flower);
 
+char.baseStats.applyLvl(90);
+char.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+char.weaponManager.changeRefinement(1);
+
 /*console.log(char.calculatorStats.ATK.prefixesSum);
 console.log(char.calculatorStats.elementalMastery.additionalValuesSum);*/
 
 char.artifactsManager.remove(ArtifactType.Flower);
-
-console.log(char.calculatorStats.ATK.prefixesSum);
-console.log(char.calculatorStats.elementalMastery.additionalValuesSum);
+console.log(char.calculatorStats.ATK.calc());
 
 //console.log(char.artifacts.getStatSumByType(ArtifactStatType.CritDamage));

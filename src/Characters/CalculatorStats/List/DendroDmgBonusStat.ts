@@ -3,8 +3,8 @@ import {StatType} from "../../../BaseStats/StatType";
 
 export default class DendroDmgBonusStat extends PureStat {
   calc(): number {
-    const {dendroDmgBonus} = this.baseStats;
-    const artifactsDendroPercent = this.artifacts.getStatSumByType(StatType.DendroDmgBonus);
+    const {dendroDmgBonus} = this.character.baseStats;
+    const artifactsDendroPercent = this.getArtifactsValue(StatType.DendroDmgBonus);
 
     return dendroDmgBonus.value + artifactsDendroPercent + this.additionalValuesSum;
   }
