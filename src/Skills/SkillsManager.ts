@@ -10,15 +10,17 @@ export default class SkillsManager {
 
   public calcRotation(rotationSkills: Skill[]): number {
     let totalRotationDmg = 0;
+    let totalFramesDuration = 0;
 
     for (let rotationSkill of rotationSkills) {
       const skill = this.skills.find(s => s.name === rotationSkill.name);
 
       if (skill) {
         totalRotationDmg += skill.calcDamage(this.character);
+        totalFramesDuration += skill.frames;
       }
     }
 
-    return totalRotationDmg;
+    return totalRotationDmg / (totalFramesDuration / 60);
   }
 }
