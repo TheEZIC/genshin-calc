@@ -2,7 +2,7 @@ import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
 import Character from "./Character";
 import BaseStat from "../BaseStats/BaseStat";
 
-export default abstract class CharacterAscendableBaseStats {
+export default abstract class CharacterBaseStats {
   constructor(
     public chapter: Character
   ) {
@@ -14,7 +14,7 @@ export default abstract class CharacterAscendableBaseStats {
   public abstract readonly baseATK: BaseStat;
   public readonly percentATK: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
-  public abstract baseDEF: BaseStat;
+  public abstract readonly baseDEF: BaseStat;
   public readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
 
   public readonly elementalMastery: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);
