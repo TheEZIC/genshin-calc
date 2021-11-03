@@ -46,7 +46,7 @@ export default class BaseStat {
   }
 
   /**
-   * Apply lvl to all character stats
+   * Apply lvl to stat
    * @param {number} lvl - apply lvl to stat
    * */
   public applyLvl(lvl: number) {

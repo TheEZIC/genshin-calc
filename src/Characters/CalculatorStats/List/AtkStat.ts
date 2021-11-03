@@ -6,7 +6,7 @@ export default class AtkStat extends MainStat {
     const {baseATK, percentATK} = this.character.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
-    const weaponPercentATK: number = this.getWeaponValue(StatType.PercentATK);
+    const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
 
     return (baseATK.value + (this.character.weaponManager.weapon?.baseATK.value ?? 0))
       * (1 + (percentATK.value + artifactsPercentATK + weaponPercentATK + this.prefixesSum) / 100
