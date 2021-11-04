@@ -2,7 +2,7 @@ import CharacterBaseStats from "./CharacterBaseStats";
 import ArtifactsManager from "../Artifacts/ArtifactsManager";
 import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import WeaponManager from "../Weapons/WeaponManager";
-import Skill from "../Skills/Skill";
+import NormalSkill from "../Skills/Skill";
 import SkillsManager from "../Skills/SkillsManager";
 
 export default abstract class Character {

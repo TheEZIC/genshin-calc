@@ -7,6 +7,8 @@ import AyakaA2 from "./Skills/Attacks/AyakaA2";
 import AyakaA3 from "./Skills/Attacks/AyakaA3";
 import AyakaA4 from "./Skills/Attacks/AyakaA4";
 import AyakaA5 from "./Skills/Attacks/AyakaA5";
+import AyakaElemental from "./Skills/AyakaElemental";
+import AyakaBurst from "./Skills/AyakaBurst";
 
 export default class Ayaka extends Character {
   public baseStats: CharacterBaseStats = new AyakaBaseStats(this);
@@ -16,5 +18,7 @@ export default class Ayaka extends Character {
     new AyakaA3(),
     new AyakaA4(),
     new AyakaA5(),
+    new AyakaElemental(),
+    new AyakaBurst(),
   ]);
 }

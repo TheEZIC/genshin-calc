@@ -1,4 +1,4 @@
-import Skill from "./Skill";
+import NormalSkill from "./NormalSkill";
 
-export default abstract class NormalAttackSkill extends Skill {
+export default abstract class NormalAttackSkill extends NormalSkill {
 }

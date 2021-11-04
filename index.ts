@@ -10,11 +10,21 @@ import ArtifactGoblet from "./src/Artifacts/Type/ArtifactGoblet";
 import ArtifactSands from "./src/Artifacts/Type/ArtifactSands";
 import Stat from "./src/BaseStats/Stat";
 import WolfGravestoneWeapon from "./src/Weapons/List/Claymores/WolfGravestoneWeapon";
+import Ayaka from "./src/Characters/List/Ayaka/Ayaka";
+import AyakaA1 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA1";
+import AyakaA2 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA2";
+import AyakaA3 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
+import AyakaA5 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA5";
+import AyakaBurst from "./src/Characters/List/Ayaka/Skills/AyakaBurst";
+import AyakaElemental from "./src/Characters/List/Ayaka/Skills/AyakaElemental";
 
-const char = new Noelle();
-
+const char = new Ayaka();
 const plume = new ArtifactPlume()
   .setMainStat(new Stat(StatType.FlatATK, 300))
+  .addSubStat(new Stat(StatType.CritDamage, 35))
+  .addSubStat(new Stat(StatType.CritChance, 8))
+  .addSubStat(new Stat(StatType.PercentATK, 10))
   .addSetBonus(new TroupeSet());
 
 const goblet = new ArtifactGoblet()
@@ -44,10 +54,14 @@ char.baseStats.applyLvl(90);
 char.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
 char.weaponManager.changeRefinement(1);
 
-/*console.log(char.calculatorStats.ATK.prefixesSum);
-console.log(char.calculatorStats.elementalMastery.additionalValuesSum);*/
+const dmg = char.skillManager.calcRotation([
+  new AyakaA1(),
+  new AyakaA2(),
+  new AyakaA3(),
+  new AyakaA4(),
+  new AyakaA5(),
+  new AyakaElemental(),
+  new AyakaBurst(),
+]);
 
-char.artifactsManager.remove(ArtifactType.Flower);
-console.log(char.calculatorStats.ATK.calc());
-
-//console.log(char.artifacts.getStatSumByType(ArtifactStatType.CritDamage));
+console.log(dmg);

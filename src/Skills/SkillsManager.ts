@@ -1,5 +1,7 @@
 import Skill from "./Skill";
 import Character from "../Characters/Character";
+import NormalSkill from "./NormalSkill";
+import SummonSkill from "./SummonSkill";
 
 export default class SkillsManager {
   constructor(
@@ -17,7 +19,14 @@ export default class SkillsManager {
 
       if (skill) {
         totalRotationDmg += skill.calcDamage(this.character);
-        totalFramesDuration += skill.frames;
+
+        if (skill instanceof NormalSkill) {
+          totalFramesDuration += skill.frames;
+        }
+
+        if (skill && skill instanceof SummonSkill) {
+          totalFramesDuration += skill.summonUsageFrames;
+        }
       }
     }
 
