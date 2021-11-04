@@ -25,7 +25,6 @@ export default class SkillsManager {
       const skill = this.skills.find(s => s.name === rotationSkill.name);
 
       if (skill) {
-        skill.changeLvl(rotationSkill.lvl);
         totalRotationDmg += skill.calcDamage(this.character);
 
         if (skill instanceof NormalSkill) {
