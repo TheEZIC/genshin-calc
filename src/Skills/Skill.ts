@@ -7,6 +7,10 @@ export default abstract class Skill {
 
   protected currentLvl = 10;
 
+  public get lvl(): number {
+    return this.currentLvl;
+  }
+
   public changeLvl(lvl: number): this {
     this.currentLvl = lvl;
     return this;
