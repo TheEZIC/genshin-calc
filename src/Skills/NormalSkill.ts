@@ -11,7 +11,7 @@ export default abstract class NormalSkill extends Skill {
   }
 
   public canceledFrames: number = 0;
-  public canCanceled: boolean = false;
+  public canBeCanceled: boolean = false;
 
   public get canceledMVs(): number {
     const dmg = this.value.getValueAtLvl(this.currentLvl);

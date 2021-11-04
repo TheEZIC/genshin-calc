@@ -2,7 +2,6 @@ import Noelle from "./src/Characters/List/Noelle/Noelle";
 import ArtifactCirclet from "./src/Artifacts/Type/ArtifactCirclet";
 import {StatType} from "./src/BaseStats/StatType";
 import GladiatorSet from "./src/Artifacts/Sets/GladiatorSet";
-import {ArtifactType} from "./src/Artifacts/ArtifactType";
 import ArtifactFlower from "./src/Artifacts/Type/ArtifactFlower";
 import ArtifactPlume from "./src/Artifacts/Type/ArtifactPlume";
 import TroupeSet from "./src/Artifacts/Sets/TroupeSet";

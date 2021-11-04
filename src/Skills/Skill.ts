@@ -1,6 +1,9 @@
 import Character from "../Characters/Character";
+import {SkillType} from "./SkillType";
 
 export default abstract class Skill {
+  public abstract type: SkillType;
+
   public get name(): string {
     return this.constructor.name;
   }

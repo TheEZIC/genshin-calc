@@ -1,8 +1,11 @@
 import Character from "../../../Character";
 import SkillValue from "../../../../Skills/SkillValue";
 import SummonSkill from "../../../../Skills/SummonSkill";
+import {SkillType} from "../../../../Skills/SkillType";
 
 export default class AyakaBurst extends SummonSkill {
+  type: SkillType = SkillType.Elemental;
+
   summonUsageFrames: number = 95;
   summonDurationFrames: number = 5 * 60;
 

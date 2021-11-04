@@ -2,12 +2,19 @@ import Skill from "./Skill";
 import Character from "../Characters/Character";
 import NormalSkill from "./NormalSkill";
 import SummonSkill from "./SummonSkill";
+import {SkillType} from "./SkillType";
 
 export default class SkillsManager {
   constructor(
     private character: Character,
     private skills: Skill[],
   ) {
+  }
+
+  public changeLvl(lvl: number, skillType: SkillType) {
+    this.skills
+      .filter(s => s.type === skillType)
+      .forEach(s => s.changeLvl(lvl));
   }
 
   public calcRotation(rotationSkills: Skill[]): number {
@@ -25,7 +32,7 @@ export default class SkillsManager {
           totalFramesDuration += skill.frames;
         }
 
-        if (skill && skill instanceof SummonSkill) {
+        if (skill instanceof SummonSkill) {
           totalFramesDuration += skill.summonUsageFrames;
         }
       }
