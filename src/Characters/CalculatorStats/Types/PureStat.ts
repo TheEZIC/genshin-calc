@@ -12,7 +12,7 @@ export default abstract class PureStat extends Stat {
   public addAdditionalValue(additionalValue: number): this {
     this.additionalValues.push(additionalValue);
     return this;
-  };
+  }
 
   /**
    * Remove additional value
@@ -21,7 +21,7 @@ export default abstract class PureStat extends Stat {
    * @return {PureStat} - this
    * */
   public removeAdditionalValue(additionalValue: number): this {
-    this.additionalValues = this.additionalValues.filter(v => v !== additionalValue);
+    this.additionalValues = this.additionalValues.filter((v) => v !== additionalValue);
     return this;
   }
 

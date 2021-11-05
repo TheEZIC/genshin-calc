@@ -1,4 +1,5 @@
-import Iterator from "../Helpers/Iterator";
+import Iterator from "@/Helpers/Iterator";
+
 import Ascension from "./Ascension";
 
 type AscensionRange = [min: number, max: number];

@@ -10,6 +10,11 @@
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "noImplicitOverride": true
-    }
+        "noImplicitOverride": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["*"]
+        }
+    },
+    "exclude": ["node_modules"]
 }

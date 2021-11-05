@@ -21,7 +21,7 @@ export default abstract class MainStat extends PureStat {
    * @return {MainStat} - this
    * */
   public removePrefix(prefix: number): this {
-    this.prefixes = this.prefixes.filter(p => p !== prefix);
+    this.prefixes = this.prefixes.filter((p) => p !== prefix);
     return this;
   }
 
@@ -52,7 +52,7 @@ export default abstract class MainStat extends PureStat {
    * @return {MainStat} - this
    * */
   public removeAffix(affix: number): this {
-    this.prefixes = this.prefixes.filter(p => p !== affix);
+    this.prefixes = this.prefixes.filter((p) => p !== affix);
     return this;
   }
 

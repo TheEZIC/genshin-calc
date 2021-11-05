@@ -1,5 +1,6 @@
-import SkillValue from "../../../../../Skills/SkillValue";
-import NormalAttackSkill from "../../../../../Skills/NormalAttackSkill";
+import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import SkillValue from "@/Skills/SkillValue";
+
 import AyakaNormalAttack from "./AyakaNormalAttack";
 
 export default class AyakaA3 extends AyakaNormalAttack {

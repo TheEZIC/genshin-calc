@@ -1,11 +1,8 @@
-import BaseStat from "../BaseStats/BaseStat";
-import AscensionsIterator from "../BaseStats/AscensionsIterator";
+import AscensionsIterator from "@/BaseStats/AscensionsIterator";
+import BaseStat from "@/BaseStats/BaseStat";
 
 export default class CharacterAscendableBaseStat extends BaseStat {
-  constructor(
-    private firstLvlValue: number,
-    private ascendGain?: number,
-  ) {
+  constructor(private firstLvlValue: number, private ascendGain?: number) {
     super(new AscensionsIterator([]));
   }
 
@@ -15,7 +12,7 @@ export default class CharacterAscendableBaseStat extends BaseStat {
    * @return {boolean} should or not add value
    * */
   private shouldAdd(lvl: number): boolean {
-    return (lvl === 40 || lvl === 50 || lvl === 70 || lvl === 80);
+    return lvl === 40 || lvl === 50 || lvl === 70 || lvl === 80;
   }
 
   public override applyLvl(lvl: number) {

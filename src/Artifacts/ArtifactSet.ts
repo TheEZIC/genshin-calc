@@ -1,6 +1,7 @@
+import Character from "@/Characters/Character";
+
 import IArtifactSetStrategy from "./ArtifactSetStrategy";
 import ArtifactsManager from "./ArtifactsManager";
-import Character from "../Characters/Character";
 
 export default abstract class ArtifactSet {
   //artifact set type is class name
@@ -22,7 +23,7 @@ export default abstract class ArtifactSet {
    * Remove two sets bonuses
    * @param {Character} character - character
    * */
-  public abstract removeTwoSetBonuses(character: Character): void
+  public abstract removeTwoSetBonuses(character: Character): void;
 
   /**
    * Remove four sets bonuses

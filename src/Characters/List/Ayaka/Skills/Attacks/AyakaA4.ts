@@ -1,7 +1,8 @@
-import SkillValue from "../../../../../Skills/SkillValue";
-import NormalAttackSkill from "../../../../../Skills/NormalAttackSkill";
+import Character from "@/Characters/Character";
+import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import SkillValue from "@/Skills/SkillValue";
+
 import AyakaNormalAttack from "./AyakaNormalAttack";
-import Character from "../../../../Character";
 
 export default class AyakaA4 extends AyakaNormalAttack {
   frames: number = 98;

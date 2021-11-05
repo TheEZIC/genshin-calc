@@ -1,14 +1,12 @@
+import { StatType } from "@/BaseStats/StatType";
+import Character from "@/Characters/Character";
+
 import Artifact from "./Artifact";
-import {ArtifactType} from "./ArtifactType";
-import {StatType} from "../BaseStats/StatType";
-import Character from "../Characters/Character";
 import ArtifactSetBonuses from "./ArtifactSetBonuses";
+import { ArtifactType } from "./ArtifactType";
 
 export default class ArtifactsManager {
-  constructor(
-    public character: Character,
-  ) {
-  }
+  constructor(public character: Character) {}
 
   public artifactSetBonuses = new ArtifactSetBonuses(this);
 
@@ -17,7 +15,7 @@ export default class ArtifactsManager {
   private artifacts: Artifact[] = [];
 
   public getArtifact(artifactType: ArtifactType) {
-    return this.artifacts.find(a => a.type === artifactType);
+    return this.artifacts.find((a) => a.type === artifactType);
   }
 
   public get artifactsCount() {
@@ -47,7 +45,7 @@ export default class ArtifactsManager {
   }
 
   public remove(artifactType: ArtifactType): this {
-    const artifact = this.artifacts.find(a => a.type === artifactType);
+    const artifact = this.artifacts.find((a) => a.type === artifactType);
     //nothing to remove
     if (!artifact) return this;
 
@@ -55,7 +53,7 @@ export default class ArtifactsManager {
       this.artifactSetBonuses.removeSet(artifact.setBonus);
     }
 
-    this.artifacts = this.artifacts.filter(a => a.type !== artifactType);
+    this.artifacts = this.artifacts.filter((a) => a.type !== artifactType);
     return this;
   }
 

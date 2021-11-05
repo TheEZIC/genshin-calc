@@ -1,4 +1,5 @@
-import Character from "../Characters/Character";
+import Character from "@/Characters/Character";
+
 import ArtifactsManager from "./ArtifactsManager";
 
 export default interface IArtifactSetStrategy {

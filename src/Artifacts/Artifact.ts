@@ -1,12 +1,13 @@
-import {AllStatsType, StatType} from "../BaseStats/StatType";
-import {ArtifactRarity} from "./ArtifactRarity";
-import {ArtifactType} from "./ArtifactType";
+import Stat from "@/BaseStats/Stat";
+import { AllStatsType, StatType } from "@/BaseStats/StatType";
+
+import { ArtifactRarity } from "./ArtifactRarity";
 import ArtifactSet from "./ArtifactSet";
-import Stat from "../BaseStats/Stat";
+import { ArtifactType } from "./ArtifactType";
 
 export default abstract class Artifact {
-  public readonly abstract type: ArtifactType;
-  protected readonly abstract allowedMainStats: StatType[];
+  public abstract readonly type: ArtifactType;
+  protected abstract readonly allowedMainStats: StatType[];
   protected readonly allowedSubStats: StatType[] = AllStatsType;
 
   private rarity: ArtifactRarity = ArtifactRarity.Legendary;
@@ -65,8 +66,7 @@ export default abstract class Artifact {
    * @return {boolean} - reached or not
    * */
   protected get isMaxSubStatCountReached(): boolean {
-    if (this.subStatsCount > 4)
-      return true;
+    if (this.subStatsCount > 4) return true;
 
     switch (this.rarity) {
       case ArtifactRarity.Common:
@@ -84,7 +84,7 @@ export default abstract class Artifact {
    * @return {Stat | undefined} - stat or undefined
    * */
   public getSubStat(statType: StatType): Stat | undefined {
-    return this.subStats.find(s => s.type === statType);
+    return this.subStats.find((s) => s.type === statType);
   }
 
   /**
@@ -113,7 +113,7 @@ export default abstract class Artifact {
    * @return {Artifact} - this
    * */
   public removeSubStat(statType: StatType): this {
-    this.subStats.filter(s => s.type !== statType);
+    this.subStats.filter((s) => s.type !== statType);
     return this;
   }
 

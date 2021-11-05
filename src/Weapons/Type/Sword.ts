@@ -1,5 +1,5 @@
-import Weapon from "../Weapon";
-import {WeaponType} from "../WeaponType";
+import Weapon from "@/Weapons/Weapon";
+import { WeaponType } from "@/Weapons/WeaponType";
 
 export default abstract class Sword extends Weapon {
   public type: WeaponType = WeaponType.Sword;

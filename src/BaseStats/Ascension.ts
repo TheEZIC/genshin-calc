@@ -1,13 +1,7 @@
 import AscensionsIterator from "./AscensionsIterator";
 
 export default class Ascension {
-  constructor(
-    public min: number,
-    public max: number,
-    private index: number,
-    private composite: AscensionsIterator,
-  ) {
-  }
+  constructor(public min: number, public max: number, private index: number, private composite: AscensionsIterator) {}
 
   /**
    * Get lvls required to ascension
@@ -16,9 +10,12 @@ export default class Ascension {
    * */
   private get ascensionLvls() {
     switch (this.index) {
-      case 0: return 20;
-      case 1: return 20;
-      default: return 10;
+      case 0:
+        return 20;
+      case 1:
+        return 20;
+      default:
+        return 10;
     }
   }
 
@@ -28,13 +25,20 @@ export default class Ascension {
    * */
   public get atLvl() {
     switch (this.index) {
-      case 0: return 0;
-      case 1: return 20;
-      case 2: return 40;
-      case 3: return 50;
-      case 4: return 60;
-      case 5: return 70;
-      case 6: return 80;
+      case 0:
+        return 0;
+      case 1:
+        return 20;
+      case 2:
+        return 40;
+      case 3:
+        return 50;
+      case 4:
+        return 60;
+      case 5:
+        return 70;
+      case 6:
+        return 80;
     }
   }
 

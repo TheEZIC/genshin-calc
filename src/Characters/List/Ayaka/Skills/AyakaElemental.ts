@@ -1,7 +1,7 @@
-import NormalSkill from "../../../../Skills/NormalSkill";
-import Character from "../../../Character";
-import SkillValue from "../../../../Skills/SkillValue";
-import {SkillType} from "../../../../Skills/SkillType";
+import Character from "@/Characters/Character";
+import NormalSkill from "@/Skills/NormalSkill";
+import { SkillType } from "@/Skills/SkillType";
+import SkillValue from "@/Skills/SkillValue";
 
 export default class AyakaElemental extends NormalSkill {
   type: SkillType = SkillType.Burst;

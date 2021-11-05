@@ -3,5 +3,5 @@ export enum ArtifactRarity {
   Uncommon,
   Rare,
   Mythical,
-  Legendary,
+  Legendary
 }
