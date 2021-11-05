@@ -16,7 +16,7 @@ export enum StatType {
   ElectroDmgBonus,
   DendroDmgBonus,
   CryoDmgBonus,
-  GeoDmgBonus,
+  GeoDmgBonus
 }
 
 export const AllStatsType: StatType[] = [
@@ -37,5 +37,5 @@ export const AllStatsType: StatType[] = [
   StatType.ElectroDmgBonus,
   StatType.DendroDmgBonus,
   StatType.CryoDmgBonus,
-  StatType.GeoDmgBonus,
-]
+  StatType.GeoDmgBonus
+];

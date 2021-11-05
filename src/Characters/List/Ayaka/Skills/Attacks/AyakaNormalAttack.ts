@@ -1,6 +1,6 @@
-import NormalAttackSkill from "../../../../../Skills/NormalAttackSkill";
-import Character from "../../../../Character";
-import {SkillType} from "../../../../../Skills/SkillType";
+import Character from "@/Characters/Character";
+import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import { SkillType } from "@/Skills/SkillType";
 
 export default abstract class AyakaNormalAttack extends NormalAttackSkill {
   type: SkillType = SkillType.Attack;

@@ -1,5 +1,5 @@
-import ArtifactSet from "../ArtifactSet";
-import Character from "../../Characters/Character";
+import ArtifactSet from "@/Artifacts/ArtifactSet";
+import Character from "@/Characters/Character";
 
 export default class DefenderWillSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
@@ -13,7 +13,7 @@ export default class DefenderWillSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove DefenderWill 2");
-    character.calculatorStats.DEF.remove(30);
+    character.calculatorStats.DEF.removeAdditionalValue(30);
   }
 
   removeFourSetBonuses(character: Character): void {

@@ -3,5 +3,5 @@ export enum ArtifactType {
   Plume,
   Sands,
   Circlet,
-  Goblet,
+  Goblet
 }

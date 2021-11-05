@@ -1,15 +1,11 @@
 export default class Iterator<T> {
-  constructor(
-    public data: T[],
-  ) {
-  }
+  constructor(public data: T[]) {}
 
   private currentIndex = 0;
 
   public getPrev(relativeIndex?: number) {
     if (relativeIndex) {
-      if (relativeIndex - 1 >= 0)
-        return this.data[relativeIndex - 1];
+      if (relativeIndex - 1 >= 0) return this.data[relativeIndex - 1];
     } else {
       if (this.currentIndex - 1 >= 0) {
         const item = this.data[this.currentIndex - 1];
@@ -25,8 +21,7 @@ export default class Iterator<T> {
 
   public getNext(relativeIndex?: number) {
     if (relativeIndex) {
-      if (relativeIndex + 1 <= this.data.length)
-        return this.data[relativeIndex + 1];
+      if (relativeIndex + 1 <= this.data.length) return this.data[relativeIndex + 1];
     } else {
       if (this.currentIndex + 1 <= this.data.length) {
         const item = this.data[this.currentIndex + 1];

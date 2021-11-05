@@ -1,34 +1,32 @@
-import Character from "../Character";
-import MainStat from "./Types/MainStat";
+import Character from "@/Characters/Character";
+
+import AnemoDmgBonusStat from "./List/AnemoDmgBonusStat";
+import AnemoResistanceStat from "./List/AnemoResistanceStat";
 import AtkStat from "./List/AtkStat";
-import DefStat from "./List/DefStat";
-import HpStat from "./List/HpStat";
-import ElementaryMasteryStat from "./List/ElementaryMasteryStat";
-import EnergyRechargeStat from "./List/EnergyRechargeStat";
 import CritChanceStat from "./List/CritChanceStat";
 import CritDamageStat from "./List/CritDamageStat";
-import PhysicalDmgBonusStat from "./List/PhysicalDmgBonusStat";
-import PyroDmgBonusStat from "./List/PyroDmgBonusStat";
-import HydroDmgBonusStat from "./List/HydroDmgBonusStat";
-import AnemoDmgBonusStat from "./List/AnemoDmgBonusStat";
-import ElectroDmgBonusStat from "./List/ElectroDmgBonusStat";
-import DendroDmgBonusStat from "./List/DendroDmgBonusStat";
 import CryoDmgBonusStat from "./List/CryoDmgBonusStat";
-import GeoDmgBonusStat from "./List/GeoDmgBonusStat";
-import HydroResistanceStat from "./List/HydroResistanceStat";
-import PyroResistanceStat from "./List/PyroResistanceStat";
-import PhysicalResistanceStat from "./List/PhysicalResistanceStat";
-import ElectroResistanceStat from "./List/ElectroResistanceStat";
-import AnemoResistanceStat from "./List/AnemoResistanceStat";
-import DendroResistanceStat from "./List/DendroResistanceStat";
 import CryoResistanceStat from "./List/CryoResistanceStat";
+import DefStat from "./List/DefStat";
+import DendroDmgBonusStat from "./List/DendroDmgBonusStat";
+import DendroResistanceStat from "./List/DendroResistanceStat";
+import ElectroDmgBonusStat from "./List/ElectroDmgBonusStat";
+import ElectroResistanceStat from "./List/ElectroResistanceStat";
+import ElementaryMasteryStat from "./List/ElementaryMasteryStat";
+import EnergyRechargeStat from "./List/EnergyRechargeStat";
+import GeoDmgBonusStat from "./List/GeoDmgBonusStat";
 import GeoResistanceStat from "./List/GeoResistanceStat";
+import HpStat from "./List/HpStat";
+import HydroDmgBonusStat from "./List/HydroDmgBonusStat";
+import HydroResistanceStat from "./List/HydroResistanceStat";
+import PhysicalDmgBonusStat from "./List/PhysicalDmgBonusStat";
+import PhysicalResistanceStat from "./List/PhysicalResistanceStat";
+import PyroDmgBonusStat from "./List/PyroDmgBonusStat";
+import PyroResistanceStat from "./List/PyroResistanceStat";
+import MainStat from "./Types/MainStat";
 
 export default class CalculatorStats {
-  constructor(
-    public character: Character,
-  ) {
-  }
+  constructor(public character: Character) {}
 
   public readonly ATK: MainStat = new AtkStat(this.character);
   public readonly DEF: MainStat = new DefStat(this.character);

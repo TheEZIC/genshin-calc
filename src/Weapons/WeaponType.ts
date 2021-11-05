@@ -3,5 +3,5 @@ export enum WeaponType {
   Claymore,
   Catalist,
   Bow,
-  Polearm,
+  Polearm
 }

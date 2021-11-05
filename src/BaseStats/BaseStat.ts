@@ -2,10 +2,7 @@ import Ascension from "./Ascension";
 import AscensionsIterator from "./AscensionsIterator";
 
 export default class BaseStat {
-  constructor(
-    protected ascensions: AscensionsIterator,
-  ) {
-  }
+  constructor(protected ascensions: AscensionsIterator) {}
 
   protected readonly maxLvl: number = 90;
   protected currentValue = this.ascensions.at(0)?.min ?? 0;

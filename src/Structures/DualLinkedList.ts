@@ -2,7 +2,7 @@ export class DualLinkedListNode<T> {
   constructor(
     public current: T,
     public prev: DualLinkedListNode<T> | null = null,
-    public next :DualLinkedListNode<T> | null = null,
+    public next: DualLinkedListNode<T> | null = null,
   ) {
   }
 }

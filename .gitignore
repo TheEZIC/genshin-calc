@@ -1,2 +1,5 @@
-/.idea
-/node-modules
+.idea/
+.vscode/
+node_modules/
+dist/
+tsc.log

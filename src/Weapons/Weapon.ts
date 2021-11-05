@@ -1,7 +1,8 @@
-import {WeaponType} from "./WeaponType";
-import BaseStat from "../BaseStats/BaseStat";
-import {WeaponBaseMainStat} from "./WeaponBaseMainStat";
-import Character from "../Characters/Character";
+import BaseStat from "@/BaseStats/BaseStat";
+import Character from "@/Characters/Character";
+
+import { WeaponBaseMainStat } from "./WeaponBaseMainStat";
+import { WeaponType } from "./WeaponType";
 
 export default abstract class Weapon {
   public abstract type: WeaponType;

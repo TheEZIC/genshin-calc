@@ -1,9 +1,10 @@
-import CharacterBaseStats from "./CharacterBaseStats";
-import ArtifactsManager from "../Artifacts/ArtifactsManager";
+import ArtifactsManager from "@/Artifacts/ArtifactsManager";
+import NormalSkill from "@/Skills/Skill";
+import SkillsManager from "@/Skills/SkillsManager";
+import WeaponManager from "@/Weapons/WeaponManager";
+
 import CalculatorStats from "./CalculatorStats/CalculatorStats";
-import WeaponManager from "../Weapons/WeaponManager";
-import NormalSkill from "../Skills/Skill";
-import SkillsManager from "../Skills/SkillsManager";
+import CharacterBaseStats from "./CharacterBaseStats";
 
 export default abstract class Character {
   public abstract baseStats: CharacterBaseStats;

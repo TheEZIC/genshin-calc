@@ -10,7 +10,7 @@ export default abstract class CritStat extends PureStat {
     const critChance = this.character.calculatorStats.critChance.calc();
     const critDamage = this.character.calculatorStats.critDamage.calc();
 
-    return critChance / critDamage * 100;
+    return (critChance / critDamage) * 100;
   }
 
   /**

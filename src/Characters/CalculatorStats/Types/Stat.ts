@@ -1,11 +1,8 @@
-import Character from "../../Character";
-import {StatType} from "../../../BaseStats/StatType";
+import { StatType } from "@/BaseStats/StatType";
+import Character from "@/Characters/Character";
 
 export default abstract class Stat {
-  constructor(
-    protected character: Character,
-  ) {
-  }
+  constructor(protected character: Character) {}
 
   /**
    * Calc this stat value
@@ -19,14 +16,14 @@ export default abstract class Stat {
    * */
   public clear(): this {
     return this;
-  };
+  }
 
   /**
    * Get value and clear all prefixes/affixes/additional
    * @return {Stat} - this
    * */
   public get value() {
-    const result =  this.calc();
+    const result = this.calc();
     this.clear();
     return result;
   }
@@ -37,11 +34,9 @@ export default abstract class Stat {
    * @return {number} - value
    * */
   protected getWeaponValue(statType: StatType) {
-    const {weaponManager} = this.character;
+    const { weaponManager } = this.character;
 
-    return weaponManager.weapon?.mainStat.isType(statType)
-      ? weaponManager.weapon?.mainStat.value
-      :0;
+    return weaponManager.weapon?.mainStat.isType(statType) ? weaponManager.weapon?.mainStat.value : 0;
   }
 
   /**
@@ -50,7 +45,7 @@ export default abstract class Stat {
    * @return {number} - value
    * */
   protected getArtifactsValue(statType: StatType) {
-    const {artifactsManager} = this.character;
+    const { artifactsManager } = this.character;
 
     return artifactsManager.getStatSumByType(statType);
   }

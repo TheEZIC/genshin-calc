@@ -1,5 +1,5 @@
-import ArtifactSet from "../ArtifactSet";
-import Character from "../../Characters/Character";
+import ArtifactSet from "@/Artifacts/ArtifactSet";
+import Character from "@/Characters/Character";
 
 export default class TinyMiracleSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {

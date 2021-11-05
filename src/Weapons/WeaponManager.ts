@@ -1,11 +1,9 @@
+import Character from "@/Characters/Character";
+
 import Weapon from "./Weapon";
-import Character from "../Characters/Character";
 
 export default class WeaponManager {
-  constructor(
-    public character: Character,
-  ) {
-  }
+  constructor(public character: Character) {}
 
   private _weapon: Weapon | null = null;
 
@@ -29,8 +27,7 @@ export default class WeaponManager {
   }
 
   public changeRefinement(refinement: number): this {
-    if (!this.weapon || this.weapon.refinement > this.weapon.MAX_REFINEMENT_COUNT)
-      return this;
+    if (!this.weapon || this.weapon.refinement > this.weapon.MAX_REFINEMENT_COUNT) return this;
 
     const oldRefinement = this.weapon.refinement;
 

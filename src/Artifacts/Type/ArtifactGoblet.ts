@@ -1,6 +1,6 @@
-import Artifact from "../Artifact";
-import {StatType} from "../../BaseStats/StatType";
-import {ArtifactType} from "../ArtifactType";
+import Artifact from "@/Artifacts/Artifact";
+import { ArtifactType } from "@/Artifacts/ArtifactType";
+import { StatType } from "@/BaseStats/StatType";
 
 export default class ArtifactGoblet extends Artifact {
   public readonly type: ArtifactType = ArtifactType.Goblet;
@@ -16,6 +16,6 @@ export default class ArtifactGoblet extends Artifact {
     StatType.ElectroDmgBonus,
     StatType.DendroDmgBonus,
     StatType.CryoDmgBonus,
-    StatType.GeoDmgBonus,
+    StatType.GeoDmgBonus
   ];
 }

@@ -1,12 +1,10 @@
-import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
+import BaseStat from "@/BaseStats/BaseStat";
+
 import Character from "./Character";
-import BaseStat from "../BaseStats/BaseStat";
+import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
 
 export default abstract class CharacterBaseStats {
-  constructor(
-    public chapter: Character
-  ) {
-  }
+  constructor(public chapter: Character) {}
 
   public abstract readonly baseHP: BaseStat;
   public readonly percentHP: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0);

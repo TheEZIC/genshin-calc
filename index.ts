@@ -1,22 +1,22 @@
-import Noelle from "./src/Characters/List/Noelle/Noelle";
-import ArtifactCirclet from "./src/Artifacts/Type/ArtifactCirclet";
-import {StatType} from "./src/BaseStats/StatType";
-import GladiatorSet from "./src/Artifacts/Sets/GladiatorSet";
-import ArtifactFlower from "./src/Artifacts/Type/ArtifactFlower";
-import ArtifactPlume from "./src/Artifacts/Type/ArtifactPlume";
-import TroupeSet from "./src/Artifacts/Sets/TroupeSet";
-import ArtifactGoblet from "./src/Artifacts/Type/ArtifactGoblet";
-import ArtifactSands from "./src/Artifacts/Type/ArtifactSands";
-import Stat from "./src/BaseStats/Stat";
-import WolfGravestoneWeapon from "./src/Weapons/List/Claymores/WolfGravestoneWeapon";
-import Ayaka from "./src/Characters/List/Ayaka/Ayaka";
-import AyakaA1 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA1";
-import AyakaA2 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA2";
-import AyakaA3 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA3";
-import AyakaA4 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
-import AyakaA5 from "./src/Characters/List/Ayaka/Skills/Attacks/AyakaA5";
-import AyakaBurst from "./src/Characters/List/Ayaka/Skills/AyakaBurst";
-import AyakaElemental from "./src/Characters/List/Ayaka/Skills/AyakaElemental";
+import GladiatorSet from "@/Artifacts/Sets/GladiatorSet";
+import TroupeSet from "@/Artifacts/Sets/TroupeSet";
+import ArtifactCirclet from "@/Artifacts/Type/ArtifactCirclet";
+import ArtifactFlower from "@/Artifacts/Type/ArtifactFlower";
+import ArtifactGoblet from "@/Artifacts/Type/ArtifactGoblet";
+import ArtifactPlume from "@/Artifacts/Type/ArtifactPlume";
+import ArtifactSands from "@/Artifacts/Type/ArtifactSands";
+import Stat from "@/BaseStats/Stat";
+import { StatType } from "@/BaseStats/StatType";
+import Ayaka from "@/Characters/List/Ayaka/Ayaka";
+import AyakaA1 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA1";
+import AyakaA2 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA2";
+import AyakaA3 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
+import AyakaA5 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA5";
+import AyakaBurst from "@/Characters/List/Ayaka/Skills/AyakaBurst";
+import AyakaElemental from "@/Characters/List/Ayaka/Skills/AyakaElemental";
+import Noelle from "@/Characters/List/Noelle/Noelle";
+import WolfGravestoneWeapon from "@/Weapons/List/Claymores/WolfGravestoneWeapon";
 
 const char = new Ayaka();
 const plume = new ArtifactPlume()
@@ -26,28 +26,15 @@ const plume = new ArtifactPlume()
   .addSubStat(new Stat(StatType.PercentATK, 10))
   .addSetBonus(new TroupeSet());
 
-const goblet = new ArtifactGoblet()
-  .setMainStat(new Stat(StatType.GeoDmgBonus, 44))
-  .addSetBonus(new TroupeSet());
+const goblet = new ArtifactGoblet().setMainStat(new Stat(StatType.GeoDmgBonus, 44)).addSetBonus(new TroupeSet());
 
-const sands = new ArtifactSands()
-  .setMainStat(new Stat(StatType.PercentATK, 40))
-  .addSetBonus(new GladiatorSet());
+const sands = new ArtifactSands().setMainStat(new Stat(StatType.PercentATK, 40)).addSetBonus(new GladiatorSet());
 
-const circlet = new ArtifactCirclet()
-  .setMainStat(new Stat(StatType.CritChance, 30))
-  .addSetBonus(new GladiatorSet());
+const circlet = new ArtifactCirclet().setMainStat(new Stat(StatType.CritChance, 30)).addSetBonus(new GladiatorSet());
 
-const flower = new ArtifactFlower()
-  .setMainStat(new Stat(StatType.FlatHP, 3000))
-  .addSetBonus(new GladiatorSet());
+const flower = new ArtifactFlower().setMainStat(new Stat(StatType.FlatHP, 3000)).addSetBonus(new GladiatorSet());
 
-char.artifactsManager
-  .add(plume)
-  .add(goblet)
-  .add(sands)
-  .add(circlet)
-  .add(flower);
+char.artifactsManager.add(plume).add(goblet).add(sands).add(circlet).add(flower);
 
 char.baseStats.applyLvl(90);
 char.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
@@ -60,7 +47,7 @@ const dmg = char.skillManager.calcRotation([
   new AyakaA4(),
   new AyakaA5(),
   new AyakaElemental(),
-  new AyakaBurst(),
+  new AyakaBurst()
 ]);
 
 console.log(dmg);
