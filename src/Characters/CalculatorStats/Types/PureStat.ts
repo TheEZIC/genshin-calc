@@ -1,15 +1,18 @@
+import { SkillType } from "@/Skills/SkillType";
+
 import Stat from "./Stat";
+import { StatValue } from "./StatValue";
 
 export default abstract class PureStat extends Stat {
-  private additionalValues: number[] = [];
+  private additionalValues: StatValue[] = [];
 
   /**
    * Add additional value
    * (ER, Elem dmg, crits, flat and etc)
-   * @param {number} additionalValue - additional value to add
+   * @param {StatValue} additionalValue - additional value to add
    * @return {PureStat} - this
    * */
-  public addAdditionalValue(additionalValue: number): this {
+  public addAdditionalValue(additionalValue: StatValue): this {
     this.additionalValues.push(additionalValue);
     return this;
   }
@@ -17,11 +20,11 @@ export default abstract class PureStat extends Stat {
   /**
    * Remove additional value
    * (ER, Elem dmg, crits, flat and etc)
-   * @param {number} additionalValue - additional value to remove
+   * @param {StatValue} additionalValue - additional value to remove
    * @return {PureStat} - this
    * */
-  public removeAdditionalValue(additionalValue: number): this {
-    this.additionalValues = this.additionalValues.filter((v) => v !== additionalValue);
+  public removeAdditionalValue(additionalValue: StatValue): this {
+    this.additionalValues = this.additionalValues.filter((v) => v.value !== additionalValue.value);
     return this;
   }
 
@@ -30,8 +33,25 @@ export default abstract class PureStat extends Stat {
    * (ER, Elem dmg, crits, flat and etc)
    * @return {number} - this
    * */
-  get additionalValuesSum(): number {
-    return this.additionalValues.reduce((a, b) => a + b, 0);
+  public getAdditionalValuesSum(skillFilter?: SkillType): number {
+    return this.filterValuesAndSum(this.additionalValues, skillFilter);
+  }
+
+  protected filterValuesAndSum(stats: StatValue[], skillFilter?: SkillType) {
+    if (!skillFilter) {
+      return stats.reduce((a, b) => a + b.value, 0);
+    }
+
+    const filtered: StatValue[] = [];
+
+    for (let stat of stats) {
+      const hasFilter = stat.skillFilters?.includes(skillFilter);
+      if (!stat.skillFilters || hasFilter) {
+        filtered.push(stat);
+      }
+    }
+
+    return filtered.reduce((a, b) => a + b.value, 0);
   }
 
   /**

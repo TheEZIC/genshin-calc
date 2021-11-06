@@ -1,10 +1,11 @@
 import ArtifactSet from "@/Artifacts/ArtifactSet";
+import { StatValue } from "@/Characters/CalculatorStats/Types/StatValue";
 import Character from "@/Characters/Character";
 
 export default class ExileSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Exile 2");
-    character.calculatorStats.energyRecharge.addAdditionalValue(20);
+    character.calculatorStats.energyRecharge.addAdditionalValue(new StatValue(20));
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -13,7 +14,7 @@ export default class ExileSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Exile 2");
-    character.calculatorStats.energyRecharge.removeAdditionalValue(20);
+    character.calculatorStats.energyRecharge.removeAdditionalValue(new StatValue(20));
   }
 
   removeFourSetBonuses(character: Character): void {

@@ -1,15 +1,18 @@
+import { SkillType } from "@/Skills/SkillType";
+
 import PureStat from "./PureStat";
+import { StatValue } from "./StatValue";
 
 export default abstract class MainStat extends PureStat {
-  protected prefixes: number[] = [];
+  protected prefixes: StatValue[] = [];
 
   /**
    * Add prefix to stat
    * (ATK%, DEF% etc..)
-   * @param {number} prefix - prefix value
+   * @param {StatValue} prefix - prefix value
    * @return {MainStat} - this
    * */
-  public addPrefix(prefix: number): this {
+  public addPrefix(prefix: StatValue): this {
     this.prefixes.push(prefix);
     return this;
   }
@@ -17,11 +20,11 @@ export default abstract class MainStat extends PureStat {
   /**
    * Remove prefix from stat
    * (ATK%, DEF% etc..)
-   * @param {number} prefix - prefix value
+   * @param {StatValue} prefix - prefix value
    * @return {MainStat} - this
    * */
-  public removePrefix(prefix: number): this {
-    this.prefixes = this.prefixes.filter((p) => p !== prefix);
+  public removePrefix(prefix: StatValue): this {
+    this.prefixes = this.prefixes.filter((p) => p.value !== prefix.value);
     return this;
   }
 
@@ -30,29 +33,29 @@ export default abstract class MainStat extends PureStat {
    * (ATK%, DEF% etc..)
    * @return {number} - sum
    * */
-  public get prefixesSum(): number {
-    return this.prefixes.reduce((a, b) => a + b, 0);
+  public getPrefixesSum(skillFilter?: SkillType): number {
+    return this.filterValuesAndSum(this.prefixes, skillFilter);
   }
 
-  protected affixes: number[] = [];
+  protected affixes: StatValue[] = [];
 
   /**
    * Add affix to stat
-   * @param {number} affix - affix value
+   * @param {StatValue} affix - affix value
    * @return {MainStat} - this
    * */
-  public addAffix(affix: number) {
+  public addAffix(affix: StatValue) {
     this.affixes.push(affix);
     return this;
   }
 
   /**
    * Remove affix from stat
-   * @param {number} affix - affix value
+   * @param {StatValue} affix - affix value
    * @return {MainStat} - this
    * */
-  public removeAffix(affix: number): this {
-    this.prefixes = this.prefixes.filter((p) => p !== affix);
+  public removeAffix(affix: StatValue): this {
+    this.prefixes = this.prefixes.filter((p) => p.value !== affix.value);
     return this;
   }
 
@@ -60,8 +63,8 @@ export default abstract class MainStat extends PureStat {
    * Affixes sum
    * @return {number} - sum
    * */
-  public get affixesSum(): number {
-    return this.affixes.reduce((a, b) => a + b, 0);
+  public getAffixesSum(skillFilter?: SkillType): number {
+    return this.filterValuesAndSum(this.affixes, skillFilter);
   }
 
   /**

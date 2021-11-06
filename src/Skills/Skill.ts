@@ -9,7 +9,7 @@ export default abstract class Skill {
     return this.constructor.name;
   }
 
-  protected currentLvl = 10;
+  protected currentLvl = 1;
 
   public get lvl(): number {
     return this.currentLvl;

@@ -1,9 +1,10 @@
 import PureStat from "@/Characters/CalculatorStats/Types/PureStat";
+import { SkillType } from "@/Skills/SkillType";
 
 export default class ElectroResistanceStat extends PureStat {
-  calc(): number {
+  calc(skillFilter?: SkillType): number {
     const { electroResistance } = this.character.baseStats;
 
-    return electroResistance.value + this.additionalValuesSum;
+    return electroResistance.value + this.getAdditionalValuesSum(skillFilter);
   }
 }

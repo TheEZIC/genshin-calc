@@ -1,8 +1,9 @@
 import { StatType } from "@/BaseStats/StatType";
 import MainStat from "@/Characters/CalculatorStats/Types/MainStat";
+import { SkillType } from "@/Skills/SkillType";
 
 export default class AtkStat extends MainStat {
-  calc(): number {
+  calc(skillFilter?: SkillType): number {
     const { baseATK, percentATK } = this.character.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
@@ -12,10 +13,10 @@ export default class AtkStat extends MainStat {
     return (
       (baseATK.value + (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
       (1 +
-        (percentATK.value + artifactsPercentATK + weaponPercentATK + this.prefixesSum) / 100 +
+        (percentATK.value + artifactsPercentATK + weaponPercentATK + this.getPrefixesSum(skillFilter)) / 100 +
         artifactsFlatATK +
-        this.additionalValuesSum) *
-      (1 + this.affixesSum / 100) *
+        this.getAdditionalValuesSum(skillFilter)) *
+      (1 + this.getAffixesSum(skillFilter) / 100) *
       critEffect
     );
   }
