@@ -7,6 +7,10 @@ export default class CryoDmgBonusStat extends PureStat {
     const { cryoDmgBonus } = this.character.baseStats;
     const artifactsCryoPercent = this.getArtifactsValue(StatType.CryoDmgBonus);
 
-    return cryoDmgBonus.value + artifactsCryoPercent + this.getAdditionalValuesSum(skillFilter);
+    return (
+      cryoDmgBonus.value +
+      artifactsCryoPercent +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 }

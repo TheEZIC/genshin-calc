@@ -5,8 +5,14 @@ import { SkillType } from "@/Skills/SkillType";
 export default class HydroDmgBonusStat extends PureStat {
   calc(skillFilter?: SkillType): number {
     const { hydroDmgBonus } = this.character.baseStats;
-    const artifactsHydroPercent = this.getArtifactsValue(StatType.HydroDmgBonus);
+    const artifactsHydroPercent = this.getArtifactsValue(
+      StatType.HydroDmgBonus
+    );
 
-    return hydroDmgBonus.value + artifactsHydroPercent + this.getAdditionalValuesSum(skillFilter);
+    return (
+      hydroDmgBonus.value +
+      artifactsHydroPercent +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 }

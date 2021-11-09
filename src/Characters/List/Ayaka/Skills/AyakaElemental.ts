@@ -4,7 +4,7 @@ import { SkillType } from "@/Skills/SkillType";
 import SkillValue from "@/Skills/SkillValue";
 
 export default class AyakaElemental extends NormalSkill {
-  type: SkillType = SkillType.Burst;
+  type: SkillType = SkillType.Elemental;
 
   frames: number = 56;
   protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);

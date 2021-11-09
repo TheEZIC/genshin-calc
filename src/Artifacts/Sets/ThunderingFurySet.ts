@@ -5,7 +5,9 @@ import Character from "@/Characters/Character";
 export default class ThunderingFurySet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute ThunderingFury 2");
-    character.calculatorStats.electroDmgBonus.addAdditionalValue(new StatValue(15));
+    character.calculatorStats.electroDmgBonus.addAdditionalValue(
+      new StatValue(15)
+    );
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +16,9 @@ export default class ThunderingFurySet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove ThunderingFury 2");
-    character.calculatorStats.electroDmgBonus.removeAdditionalValue(new StatValue(15));
+    character.calculatorStats.electroDmgBonus.removeAdditionalValue(
+      new StatValue(15)
+    );
   }
 
   removeFourSetBonuses(character: Character): void {

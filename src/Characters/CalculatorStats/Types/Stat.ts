@@ -37,7 +37,9 @@ export default abstract class Stat {
   protected getWeaponValue(statType: StatType) {
     const { weaponManager } = this.character;
 
-    return weaponManager.weapon?.mainStat.isType(statType) ? weaponManager.weapon?.mainStat.value : 0;
+    return weaponManager.weapon?.mainStat.isType(statType)
+      ? weaponManager.weapon?.mainStat.value
+      : 0;
   }
 
   /**

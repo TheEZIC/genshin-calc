@@ -38,5 +38,6 @@ export default class NoelleBaseStats extends CharacterBaseStats {
     ])
   );
 
-  public override readonly percentDEF: CharacterAscendableBaseStat = new CharacterAscendableBaseStat(0, 7.5);
+  public override readonly percentDEF: CharacterAscendableBaseStat =
+    new CharacterAscendableBaseStat(0, 7.5);
 }

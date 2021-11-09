@@ -11,9 +11,14 @@ export default class AtkStat extends MainStat {
     const critEffect = this.character.calculatorStats.critChance.critEffect;
 
     return (
-      (baseATK.value + (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
+      (baseATK.value +
+        (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
       (1 +
-        (percentATK.value + artifactsPercentATK + weaponPercentATK + this.getPrefixesSum(skillFilter)) / 100 +
+        (percentATK.value +
+          artifactsPercentATK +
+          weaponPercentATK +
+          this.getPrefixesSum(skillFilter)) /
+          100 +
         artifactsFlatATK +
         this.getAdditionalValuesSum(skillFilter)) *
       (1 + this.getAffixesSum(skillFilter) / 100) *

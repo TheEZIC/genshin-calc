@@ -7,6 +7,10 @@ export default class GeoDmgBonusStat extends PureStat {
     const { geoDmgBonus } = this.character.baseStats;
     const artifactsGeoPercent = this.getArtifactsValue(StatType.GeoDmgBonus);
 
-    return geoDmgBonus.value + artifactsGeoPercent + this.getAdditionalValuesSum(skillFilter);
+    return (
+      geoDmgBonus.value +
+      artifactsGeoPercent +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 }

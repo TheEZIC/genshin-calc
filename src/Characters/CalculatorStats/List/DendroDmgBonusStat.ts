@@ -5,8 +5,14 @@ import { SkillType } from "@/Skills/SkillType";
 export default class DendroDmgBonusStat extends PureStat {
   calc(skillFilter?: SkillType): number {
     const { dendroDmgBonus } = this.character.baseStats;
-    const artifactsDendroPercent = this.getArtifactsValue(StatType.DendroDmgBonus);
+    const artifactsDendroPercent = this.getArtifactsValue(
+      StatType.DendroDmgBonus
+    );
 
-    return dendroDmgBonus.value + artifactsDendroPercent + this.getAdditionalValuesSum(skillFilter);
+    return (
+      dendroDmgBonus.value +
+      artifactsDendroPercent +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 }

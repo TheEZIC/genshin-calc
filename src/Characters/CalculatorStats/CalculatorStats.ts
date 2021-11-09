@@ -47,7 +47,9 @@ export default class CalculatorStats {
   public readonly cryoDmgBonus = new CryoDmgBonusStat(this.character);
   public readonly geoDmgBonus = new GeoDmgBonusStat(this.character);
 
-  public readonly physicalResistance = new PhysicalResistanceStat(this.character);
+  public readonly physicalResistance = new PhysicalResistanceStat(
+    this.character
+  );
   public readonly pyroResistance = new PyroResistanceStat(this.character);
   public readonly hydroResistance = new HydroResistanceStat(this.character);
   public readonly anemoResistance = new AnemoResistanceStat(this.character);

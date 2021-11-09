@@ -8,6 +8,11 @@ export default class CritChanceStat extends CritStat {
     const artifactsCritChance = this.getArtifactsValue(StatType.CritChance);
     const weaponCritChange = this.getWeaponValue(StatType.CritChance);
 
-    return critChance.value + artifactsCritChance + weaponCritChange + this.getAdditionalValuesSum(skillFilter);
+    return (
+      critChance.value +
+      artifactsCritChance +
+      weaponCritChange +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 }

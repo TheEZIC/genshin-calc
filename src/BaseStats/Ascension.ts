@@ -1,7 +1,12 @@
 import AscensionsIterator from "./AscensionsIterator";
 
 export default class Ascension {
-  constructor(public min: number, public max: number, private index: number, private composite: AscensionsIterator) {}
+  constructor(
+    public min: number,
+    public max: number,
+    private index: number,
+    private composite: AscensionsIterator
+  ) {}
 
   /**
    * Get lvls required to ascension

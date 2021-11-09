@@ -2,11 +2,10 @@ import Skill from "./Skill";
 import SkillValue from "./SkillValue";
 
 export default abstract class NormalSkill extends Skill {
-  public abstract frames: number;
   protected abstract value: SkillValue;
 
   public get MVs(): number {
-    const dmg = this.value.getValueAtLvl(this.currentLvl);
+    const dmg = this.value.getValueAtLvl(this.lvl);
     return dmg / (this.frames / 60) / 100;
   }
 

@@ -12,7 +12,11 @@ export default class DefStat extends MainStat {
     return (
       baseDEF.value *
       (1 +
-        (percentDEF.value + artifactsPercentDEF + weaponPercentDef + this.getPrefixesSum(skillFilter)) / 100 +
+        (percentDEF.value +
+          artifactsPercentDEF +
+          weaponPercentDef +
+          this.getPrefixesSum(skillFilter)) /
+          100 +
         artifactsFlatDEF +
         this.getAdditionalValuesSum(skillFilter)) *
       (1 + this.getAffixesSum(skillFilter) / 100)

@@ -5,7 +5,9 @@ import Character from "@/Characters/Character";
 export default class SeveredFateSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute SeveredFate 2");
-    character.calculatorStats.energyRecharge.addAdditionalValue(new StatValue(20));
+    character.calculatorStats.energyRecharge.addAdditionalValue(
+      new StatValue(20)
+    );
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +16,9 @@ export default class SeveredFateSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove SeveredFate 2");
-    character.calculatorStats.energyRecharge.removeAdditionalValue(new StatValue(20));
+    character.calculatorStats.energyRecharge.removeAdditionalValue(
+      new StatValue(20)
+    );
   }
 
   removeFourSetBonuses(character: Character): void {

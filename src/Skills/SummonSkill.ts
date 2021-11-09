@@ -13,18 +13,20 @@ export default abstract class SummonSkill extends NormalSkill {
     return this.summonDurationFrames;
   }
 
+  public get frames() {
+    return this.usageFrames + this.durationFrames;
+  }
+
   protected abstract usageValue: SkillValue;
   protected abstract summonValue: SkillValue;
 
   public get usageMVs(): number {
-    const dmg = this.usageValue.getValueAtLvl(this.currentLvl);
+    const dmg = this.usageValue.getValueAtLvl(this.lvl);
     return dmg / (this.usageFrames / 60) / 100;
   }
 
   public get durationMVs(): number {
-    const dmg = this.summonValue.getValueAtLvl(this.currentLvl);
+    const dmg = this.summonValue.getValueAtLvl(this.lvl);
     return dmg / (this.durationFrames / 60) / 100;
   }
-
-  public frames = this.usageFrames + this.durationFrames;
 }

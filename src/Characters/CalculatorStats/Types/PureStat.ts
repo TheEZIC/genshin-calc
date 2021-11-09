@@ -24,7 +24,9 @@ export default abstract class PureStat extends Stat {
    * @return {PureStat} - this
    * */
   public removeAdditionalValue(additionalValue: StatValue): this {
-    this.additionalValues = this.additionalValues.filter((v) => v.value !== additionalValue.value);
+    this.additionalValues = this.additionalValues.filter(
+      (v) => v.value !== additionalValue.value
+    );
     return this;
   }
 

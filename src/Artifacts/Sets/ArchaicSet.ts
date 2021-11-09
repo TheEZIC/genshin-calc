@@ -14,7 +14,9 @@ export default class ArchaicSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Archaic 2");
-    character.calculatorStats.geoDmgBonus.removeAdditionalValue(new StatValue(15));
+    character.calculatorStats.geoDmgBonus.removeAdditionalValue(
+      new StatValue(15)
+    );
   }
 
   removeFourSetBonuses(character: Character): void {

@@ -5,7 +5,9 @@ import Character from "@/Characters/Character";
 export default class ViridescendSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Viridescend 2");
-    character.calculatorStats.anemoDmgBonus.addAdditionalValue(new StatValue(15));
+    character.calculatorStats.anemoDmgBonus.addAdditionalValue(
+      new StatValue(15)
+    );
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +16,9 @@ export default class ViridescendSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Viridescend 2");
-    character.calculatorStats.anemoDmgBonus.removeAdditionalValue(new StatValue(15));
+    character.calculatorStats.anemoDmgBonus.removeAdditionalValue(
+      new StatValue(15)
+    );
   }
 
   removeFourSetBonuses(character: Character): void {

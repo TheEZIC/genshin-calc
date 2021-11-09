@@ -5,9 +5,15 @@ import { SkillType } from "@/Skills/SkillType";
 export default class ElementaryMasteryStat extends PureStat {
   calc(skillFilter?: SkillType): number {
     const { elementalMastery } = this.character.baseStats;
-    const artifactsElementalMastery = this.getArtifactsValue(StatType.ElementalMastery);
+    const artifactsElementalMastery = this.getArtifactsValue(
+      StatType.ElementalMastery
+    );
 
-    return elementalMastery.value + artifactsElementalMastery + this.getAdditionalValuesSum(skillFilter);
+    return (
+      elementalMastery.value +
+      artifactsElementalMastery +
+      this.getAdditionalValuesSum(skillFilter)
+    );
   }
 
   public get vaporizeAndMeltReactionBonus() {

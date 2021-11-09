@@ -21,7 +21,8 @@ export default class Iterator<T> {
 
   public getNext(relativeIndex?: number) {
     if (relativeIndex) {
-      if (relativeIndex + 1 <= this.data.length) return this.data[relativeIndex + 1];
+      if (relativeIndex + 1 <= this.data.length)
+        return this.data[relativeIndex + 1];
     } else {
       if (this.currentIndex + 1 <= this.data.length) {
         const item = this.data[this.currentIndex + 1];
