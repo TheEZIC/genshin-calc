@@ -1,6 +1,6 @@
 import Character from "@/Characters/Character";
-
 import { SkillType } from "./SkillType";
+import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 
 export default abstract class Skill {
   public abstract type: SkillType;
@@ -8,6 +8,16 @@ export default abstract class Skill {
 
   public get name(): string {
     return this.constructor.name;
+  }
+
+  protected _hasInfusion: boolean = true;
+
+  public set hasInfusion(infusion: boolean) {
+    this._hasInfusion = infusion;
+  }
+
+  public get hasInfusion() {
+    return this._hasInfusion;
   }
 
   protected currentLvl = 1;
@@ -34,5 +44,18 @@ export default abstract class Skill {
     return this;
   }
 
-  public abstract calcDamage(character: Character): number;
+  protected abstract calcDamage(character: Character): number;
+
+  public getDamage(character: Character): number {
+    const dmgBonus = this.hasInfusion
+      ? character.calculatorStats.getElementalDmgBonus(character.vision)
+      : character.calculatorStats.getPhysicalDmgBonus();
+
+    const statValue = new StatValue(dmgBonus);
+    character.calculatorStats.ATK.addAffix(statValue);
+    const dmg = this.calcDamage(character);
+    character.calculatorStats.ATK.removeAffix(statValue);
+
+    return dmg;
+  }
 }

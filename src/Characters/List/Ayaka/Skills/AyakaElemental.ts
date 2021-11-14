@@ -1,7 +1,8 @@
 import Character from "@/Characters/Character";
 import NormalSkill from "@/Skills/NormalSkill";
-import { SkillType } from "@/Skills/SkillType";
+import {SkillType} from "@/Skills/SkillType";
 import SkillValue from "@/Skills/SkillValue";
+import {DmgType} from "@/DmgType";
 
 export default class AyakaElemental extends NormalSkill {
   type: SkillType = SkillType.Elemental;
@@ -9,7 +10,7 @@ export default class AyakaElemental extends NormalSkill {
   frames: number = 56;
   protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);
 
-  calcDamage(character: Character): number {
+  protected calcDamage(character: Character): number {
     const atk = character.calculatorStats.ATK.calc();
     return this.MVs * atk;
   }

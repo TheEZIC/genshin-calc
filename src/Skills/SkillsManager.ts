@@ -27,7 +27,7 @@ export default class SkillsManager {
       const skill = this.skills.find((s) => s.name === rotationSkill.name);
 
       if (skill) {
-        totalRotationDmg += skill.calcDamage(this.character);
+        totalRotationDmg += skill.getDamage(this.character);
 
         if (skill instanceof NormalSkill) {
           totalFramesDuration += skill.frames;

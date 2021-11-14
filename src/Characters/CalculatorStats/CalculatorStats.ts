@@ -24,6 +24,7 @@ import PhysicalResistanceStat from "./List/PhysicalResistanceStat";
 import PyroDmgBonusStat from "./List/PyroDmgBonusStat";
 import PyroResistanceStat from "./List/PyroResistanceStat";
 import MainStat from "./Types/MainStat";
+import {VisionType} from "@/VisionType";
 
 export default class CalculatorStats {
   constructor(public character: Character) {}
@@ -57,4 +58,27 @@ export default class CalculatorStats {
   public readonly dendroResistance = new DendroResistanceStat(this.character);
   public readonly cryoResistance = new CryoResistanceStat(this.character);
   public readonly geoResistance = new GeoResistanceStat(this.character);
+
+  public getElementalDmgBonus(visionType: VisionType): number {
+    switch (visionType) {
+      case VisionType.Anemo:
+        return this.anemoDmgBonus.calc();
+      case VisionType.Cryo:
+        return this.cryoDmgBonus.calc();
+      case VisionType.Dendro:
+        return this.dendroDmgBonus.calc();
+      case VisionType.Electro:
+        return this.electroDmgBonus.calc();
+      case VisionType.Geo:
+        return this.geoDmgBonus.calc();
+      case VisionType.Hydro:
+        return this.hydroDmgBonus.calc();
+      default:
+        return 0;
+    }
+  }
+
+  public getPhysicalDmgBonus(): number {
+    return this.physicalDmgBonus.calc();
+  }
 }

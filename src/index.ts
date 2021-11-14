@@ -29,7 +29,7 @@ const plume = new ArtifactPlume()
   .addSetBonus(new TroupeSet());
 
 const goblet = new ArtifactGoblet()
-  .setMainStat(new Stat(StatType.GeoDmgBonus, 44))
+  .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
   .addSetBonus(new TroupeSet());
 
 const sands = new ArtifactSands()
@@ -64,6 +64,7 @@ const dmg = char.skillManager.calcRotation([
   new AyakaA2(),
   new AyakaA3(),
   new AyakaA4(),
+  new AyakaA5(),
   new AyakaA1(),
   new AyakaA2(),
   new AyakaElemental()
