@@ -2,7 +2,6 @@ import Character from "@/Characters/Character";
 import NormalSkill from "@/Skills/NormalSkill";
 import {SkillType} from "@/Skills/SkillType";
 import SkillValue from "@/Skills/SkillValue";
-import {DmgType} from "@/DmgType";
 
 export default class AyakaElemental extends NormalSkill {
   type: SkillType = SkillType.Elemental;

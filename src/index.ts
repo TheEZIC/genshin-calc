@@ -17,10 +17,15 @@ import AyakaBurst from "@/Characters/List/Ayaka/Skills/AyakaBurst";
 import AyakaElemental from "@/Characters/List/Ayaka/Skills/AyakaElemental";
 import { SkillType } from "@/Skills/SkillType";
 import WolfGravestoneWeapon from "@/Weapons/List/Claymores/WolfGravestoneWeapon";
+import Roster from "@/Roster/Roster";
 
 import "./paths";
 
-const char = new Ayaka();
+const roster = new Roster();
+roster.addCharacter(Ayaka);
+
+const char = roster.currentCharacter;
+
 const plume = new ArtifactPlume()
   .setMainStat(new Stat(StatType.FlatATK, 300))
   .addSubStat(new Stat(StatType.CritDamage, 35))

@@ -20,6 +20,10 @@ export default abstract class Skill {
     return this._hasInfusion;
   }
 
+  public changeInfusion(infusion: boolean) {
+    this._hasInfusion = infusion;
+  }
+
   protected currentLvl = 1;
   private additionalLvls: number[] = [];
 
