@@ -4,9 +4,16 @@ import NormalSkill from "./NormalSkill";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
 import SummonSkill from "./SummonSkill";
+import BuffManager from "@/Buffs/BuffManager";
 
 export default class SkillsManager {
-  constructor(private character: Character, private skills: Skill[]) {}
+  constructor(public character: Character, private skills: Skill[]) {}
+
+  public get allSkills() {
+    return this.skills;
+  }
+
+  public buffs: BuffManager = new BuffManager(this.character)
 
   public changeLvl(lvl: number, skillType: SkillType) {
     this.skills
@@ -16,47 +23,5 @@ export default class SkillsManager {
 
   public getSkillByType(skillType: SkillType) {
     return this.skills.find((s) => s.type === skillType);
-  }
-
-  public calcRotation(rotationSkills: Skill[]): number {
-    let totalRotationDmg = 0;
-    let totalFramesDuration = 0;
-    let index = 0;
-
-    for (let rotationSkill of rotationSkills) {
-      const skill = this.skills.find((s) => s.name === rotationSkill.name);
-
-      if (skill) {
-        // this.buffs.FuckYouAll();
-        // this.genshin.IFuckingHateThisGame();
-        // this.code.FuckingSucks();
-        // this.I.DontWantToReadThis();
-        
-        totalRotationDmg += skill.getDamage(this.character);
-
-        if (skill instanceof NormalSkill) {
-          totalFramesDuration += skill.frames;
-        }
-
-        if (skill instanceof SummonSkill) {
-          const remainingSkills = rotationSkills.slice(index + 1);
-          const remainingSkillsFrames = remainingSkills.reduce(
-            (a, b) => a + b.frames,
-            0
-          );
-
-          totalFramesDuration += skill.summonUsageFrames;
-
-          if (skill.summonDurationFrames > remainingSkillsFrames) {
-            totalFramesDuration +=
-              skill.summonDurationFrames - remainingSkillsFrames;
-          }
-        }
-      }
-
-      index++;
-    }
-
-    return totalRotationDmg / (totalFramesDuration / 60);
   }
 }

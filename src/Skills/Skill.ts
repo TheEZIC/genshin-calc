@@ -1,6 +1,7 @@
 import Character from "@/Characters/Character";
 import { SkillType } from "./SkillType";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
+import BuffManager from "@/Buffs/BuffManager";
 
 export default abstract class Skill {
   public abstract type: SkillType;

@@ -4,11 +4,13 @@ import Character from "@/Characters/Character";
 import Artifact from "./Artifact";
 import ArtifactSetBonuses from "./ArtifactSetBonuses";
 import { ArtifactType } from "./ArtifactType";
+import BuffManager from "@/Buffs/BuffManager";
 
 export default class ArtifactsManager {
   constructor(public character: Character) {}
 
   public artifactSetBonuses = new ArtifactSetBonuses(this);
+  public buffs: BuffManager = new BuffManager(this.character);
 
   public readonly MAXIMUM_ARTIFACTS = 5;
 
@@ -46,7 +48,7 @@ export default class ArtifactsManager {
 
   public remove(artifactType: ArtifactType): this {
     const artifact = this.artifacts.find((a) => a.type === artifactType);
-    //nothing to remove
+    //if nothing to remove
     if (!artifact) return this;
 
     if (artifact.setBonus) {

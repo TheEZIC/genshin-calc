@@ -63,16 +63,3 @@ char.weaponManager.changeRefinement(1);
 char.constellationsManager.activateConstellation(3);
 
 char.skillManager.changeLvl(10, SkillType.Attack);
-const dmg = char.skillManager.calcRotation([
-  new AyakaBurst(),
-  new AyakaA1(),
-  new AyakaA2(),
-  new AyakaA3(),
-  new AyakaA4(),
-  new AyakaA5(),
-  new AyakaA1(),
-  new AyakaA2(),
-  new AyakaElemental()
-]);
-
-console.log(dmg);

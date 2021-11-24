@@ -1,11 +1,13 @@
 import Character from "@/Characters/Character";
 
 import Weapon from "./Weapon";
+import BuffManager from "@/Buffs/BuffManager";
 
 export default class WeaponManager {
   constructor(public character: Character) {}
 
   private _weapon: Weapon | null = null;
+  private buffs: BuffManager = new BuffManager(this.character);
 
   public get weapon(): Weapon | null {
     return this._weapon;

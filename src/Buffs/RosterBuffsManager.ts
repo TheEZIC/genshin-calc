@@ -6,7 +6,7 @@ export interface ICharacterBuffItem {
   buff: Buff;
 }
 
-export default class BuffsManager {
+export default class RosterBuffsManager {
   private _charactersBuffs: ICharacterBuffItem[] = [];
 
   public addCharacterBuff(buffItem: ICharacterBuffItem) {
