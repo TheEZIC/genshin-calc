@@ -5,6 +5,7 @@ import SkillStrategy from "@/Skills/SkillStrategy";
 import DashSkillStrategy from "@/Skills/SkillStrategy/DashSkillStrategy";
 import AyakaDashBuff from "@/Characters/List/Ayaka/Skills/Buffs/AyakaDashBuff";
 import SkillsManager from "@/Skills/SkillsManager";
+import Buff from "@/Buffs/Buff";
 
 export default class AyakaDash extends NormalSkill {
   strategy: SkillStrategy = new DashSkillStrategy(this)
@@ -13,11 +14,15 @@ export default class AyakaDash extends NormalSkill {
   frames: number = 20;
   protected value: SkillValue = new SkillValue(0, 0);
 
-  private ayakaDashBuff = new AyakaDashBuff();
+  protected override _buffs: Buff[] = [
+    new AyakaDashBuff()
+  ]
 
   public override initBuffs(skillManager: SkillsManager) {
     super.initBuffs(skillManager);
-    skillManager.listeners.DashSkillStarted.subscribe(this.ayakaDashBuff);
+    const [ayakaDashBuff] = this._buffs;
+
+    skillManager.listeners.DashSkillStarted.subscribe(ayakaDashBuff);
   }
 
   protected override calcDamage(character: Character): number {

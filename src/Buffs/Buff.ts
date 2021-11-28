@@ -22,6 +22,7 @@ export default abstract class Buff implements ISubscriber<ISkillStartedListenerA
     if (framesToRemove.length) {
       for (let frameToRemove of framesToRemove) {
         this.removeEffect(character);
+        character.ongoingBuffs = character.ongoingBuffs.filter((b) => b.name !== this.name);
       }
 
       this.activationFrames = this.activationFrames.filter((f) => !(f + this.framesDuration < currentFrame));
@@ -39,6 +40,7 @@ export default abstract class Buff implements ISubscriber<ISkillStartedListenerA
 
   public runOnListener(args: ISkillStartedListenerArgs) {
     const {character, startTime} = args;
+    character.ongoingBuffs.push(this);
     this.activate(character, startTime);
   }
 }

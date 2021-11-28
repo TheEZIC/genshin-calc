@@ -115,7 +115,8 @@ export default class Roster {
 
       const {skill, character} = skillItem;
 
-      totalRotationDmg += skillItem.skill.getDamage(character, frames);
+      character.ongoingBuffs.forEach((b) => b.update(character, frames));
+      totalRotationDmg += skill.getDamage(character, frames);
       frames += this.calcSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
       console.log(frames);
     }

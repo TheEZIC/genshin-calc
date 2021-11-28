@@ -2,6 +2,7 @@ import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import SkillsManager from "@/Skills/SkillsManager";
+import Buff from "@/Buffs/Buff";
 
 export default abstract class Skill {
   public abstract strategy: SkillStrategy;
@@ -35,7 +36,12 @@ export default abstract class Skill {
     return this;
   }
 
+  protected _buffs: Buff[] = [];
   public initBuffs(skillManager: SkillsManager): void {};
+
+  public get buffs() {
+    return this._buffs;
+  }
 
   protected abstract calcDamage(character: Character): number;
 
