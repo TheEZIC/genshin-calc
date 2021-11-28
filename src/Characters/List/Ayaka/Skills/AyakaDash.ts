@@ -15,7 +15,7 @@ export default class AyakaDash extends NormalSkill {
   protected value: SkillValue = new SkillValue(0, 0);
 
   protected override _buffs: Buff[] = [
-    new AyakaDashBuff()
+    new AyakaDashBuff(),
   ]
 
   public override initBuffs(skillManager: SkillsManager) {

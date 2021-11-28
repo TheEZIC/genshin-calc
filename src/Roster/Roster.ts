@@ -93,16 +93,8 @@ export default class Roster {
     return temp;
   }
 
-  private calcRotationDuration(skills: ISkillsItem[], rotationSkills: Skill[]): number {
-    return rotationSkills.reduce((a, b, index) => {
-      return a + this.calcSkillDuration(skills, rotationSkills, b, index);
-    }, 0);
-  }
-
   public calcRotation(rotationSkills: Skill[]): number {
     const rosterSkills = this.getCharactersSkills();
-    const totalFramesDuration = this.calcRotationDuration(rosterSkills, rotationSkills);
-    const totalSecondsDuration = totalFramesDuration / 60;
 
     let totalRotationDmg = 0
     let frames = 0;
@@ -117,10 +109,10 @@ export default class Roster {
 
       character.ongoingBuffs.forEach((b) => b.update(character, frames));
       totalRotationDmg += skill.getDamage(character, frames);
+      console.log(frames, skill.name, character.ongoingBuffs.map(b => b.name))
       frames += this.calcSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
-      console.log(frames);
     }
 
-    return totalRotationDmg / totalSecondsDuration;
+    return totalRotationDmg / (frames / 60);
   }
 }

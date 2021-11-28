@@ -55,7 +55,7 @@ export default abstract class MainStat extends PureStat {
    * @return {MainStat} - this
    * */
   public removeAffix(affix: StatValue): this {
-    this.prefixes = this.prefixes.filter((p) => p.value !== affix.value);
+    this.affixes = this.affixes.filter((p) => p.value !== affix.value);
     return this;
   }
 

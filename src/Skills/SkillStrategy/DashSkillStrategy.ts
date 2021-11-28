@@ -7,7 +7,6 @@ export default class DashSkillStrategy extends SkillStrategy {
   protected override _hasInfusion = false;
 
   runListener(character: Character, startTime: number): void {
-    console.log(character, "ch");
     character.skillManager.listeners.DashSkillStarted.notifyAll({character, startTime});
   }
 }
