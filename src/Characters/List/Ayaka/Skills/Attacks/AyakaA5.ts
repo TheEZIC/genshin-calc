@@ -1,7 +1,5 @@
-import NormalAttackSkill from "@/Skills/NormalAttackSkill";
-import SkillValue from "@/Skills/SkillValue";
-
 import AyakaNormalAttack from "./AyakaNormalAttack";
+import SkillValue from "@/Skills/SkillValue";
 
 export default class AyakaA5 extends AyakaNormalAttack {
   frames: number = 136;

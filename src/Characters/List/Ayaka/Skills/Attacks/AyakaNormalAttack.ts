@@ -1,10 +1,10 @@
 import Character from "@/Characters/Character";
-import NormalAttackSkill from "@/Skills/NormalAttackSkill";
-import {SkillType} from "@/Skills/SkillType";
+import NormalSkill from "@/Skills/NormalSkill";
+import SkillStrategy from "@/Skills/SkillStrategy";
+import NormalAttackSkillStrategy from "@/Skills/SkillStrategy/NormalAttackSkillStrategy";
 
-export default abstract class AyakaNormalAttack extends NormalAttackSkill {
-  type: SkillType = SkillType.Attack;
-  override _hasInfusion = true;
+export default abstract class AyakaNormalAttack extends NormalSkill {
+  public strategy: SkillStrategy = new NormalAttackSkillStrategy(this);
 
   protected override calcDamage(character: Character): number {
     const atk = character.calculatorStats.ATK.calc();

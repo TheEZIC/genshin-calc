@@ -15,14 +15,15 @@ import AyakaA4 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
 import AyakaA5 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA5";
 import AyakaBurst from "@/Characters/List/Ayaka/Skills/AyakaBurst";
 import AyakaElemental from "@/Characters/List/Ayaka/Skills/AyakaElemental";
+import AyakaDash from "@/Characters/List/Ayaka/Skills/AyakaDash";
 import { SkillType } from "@/Skills/SkillType";
 import WolfGravestoneWeapon from "@/Weapons/List/Claymores/WolfGravestoneWeapon";
-import Roster from "@/Roster/Roster";
 
+import Roster from "@/Roster/Roster";
 import "./paths";
 
 const roster = new Roster();
-roster.addCharacter(Ayaka);
+roster.addCharacter(new Ayaka());
 
 const char = roster.currentCharacter;
 
@@ -62,4 +63,16 @@ char.weaponManager.changeRefinement(1);
 
 char.constellationsManager.activateConstellation(3);
 
-char.skillManager.changeLvl(10, SkillType.Attack);
+char.skillManager.changeLvl(10, SkillType.NormalAttack);
+
+const dmg = roster.calcRotation([
+  new AyakaDash(),
+  new AyakaBurst(),
+  new AyakaA1(),
+  new AyakaA2(),
+  new AyakaA3(),
+  new AyakaA4(),
+  new AyakaA5(),
+])
+
+console.log(dmg)

@@ -7,7 +7,7 @@ export default class WeaponManager {
   constructor(public character: Character) {}
 
   private _weapon: Weapon | null = null;
-  private buffs: BuffManager = new BuffManager(this.character);
+  public buffs: BuffManager = new BuffManager(this.character);
 
   public get weapon(): Weapon | null {
     return this._weapon;

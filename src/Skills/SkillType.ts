@@ -1,6 +1,8 @@
 export enum SkillType {
-  Attack,
+  NormalAttack,
+  HoldAttack,
+  PlungeAttack,
+  Dash,
   Elemental,
   Burst,
-  Dash,
 }

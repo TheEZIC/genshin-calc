@@ -31,4 +31,8 @@ export default class RosterBuffsManager {
       return item.name !== buff.name;
     });
   }
+
+  public get allRosterBuffs() {
+    return this._rosterBuffs;
+  }
 }

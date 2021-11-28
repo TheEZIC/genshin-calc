@@ -18,6 +18,7 @@ import AyakaA5 from "./Skills/Attacks/AyakaA5";
 import AyakaBurst from "./Skills/AyakaBurst";
 import AyakaElemental from "./Skills/AyakaElemental";
 import {VisionType} from "@/VisionType";
+import AyakaDash from "@/Characters/List/Ayaka/Skills/AyakaDash";
 
 export default class Ayaka extends Character {
   public vision: VisionType = VisionType.Cryo;
@@ -28,6 +29,7 @@ export default class Ayaka extends Character {
     new AyakaA3(),
     new AyakaA4(),
     new AyakaA5(),
+    new AyakaDash(),
     new AyakaElemental(),
     new AyakaBurst()
   ]);

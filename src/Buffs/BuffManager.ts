@@ -19,6 +19,6 @@ export default class BuffManager {
   }
 
   public removeAll() {
-    this._buffs.forEach((b) => b.remove(this.character));
+    this._buffs.forEach((b) => b.removeEffect(this.character));
   }
 }
