@@ -7,7 +7,11 @@ export default class HoldAttackSkillStrategy extends SkillStrategy {
 
   protected override _hasInfusion = false;
 
-  runListener(character: Character, startTime: number): void {
-    character.skillManager.listeners.HoldAttackStarted.notifyAll({character, startTime});
+  runStartListener(character: Character, startTime: number): void {
+    character.listeners.HoldAttackStarted.notifyAll({character, startTime});
+  }
+
+  runEndListener(character: Character, startTime: number) {
+    character.listeners.HoldAttackEnded.notifyAll({character, startTime});
   }
 }

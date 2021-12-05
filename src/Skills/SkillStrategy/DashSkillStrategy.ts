@@ -6,7 +6,11 @@ export default class DashSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Dash;
   protected override _hasInfusion = false;
 
-  runListener(character: Character, startTime: number): void {
-    character.skillManager.listeners.DashSkillStarted.notifyAll({character, startTime});
+  runStartListener(character: Character, startTime: number): void {
+    character.listeners.DashSkillStarted.notifyAll({character, startTime});
+  }
+
+  runEndListener(character: Character, startTime: number) {
+    character.listeners.DashSkillEnded.notifyAll({character, startTime});
   }
 }

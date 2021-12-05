@@ -6,6 +6,7 @@ import Character from "@/Characters/Character";
 import Claymore from "@/Weapons/Type/Claymore";
 import { WeaponBaseMainStat } from "@/Weapons/WeaponBaseMainStat";
 import { WeaponPassiveValue } from "@/Weapons/WeaponPassiveValue";
+import Buff from "@/Buffs/Buff";
 
 export default class WolfGravestoneWeapon extends Claymore {
   baseATK: BaseStat = new BaseStat(
@@ -19,6 +20,7 @@ export default class WolfGravestoneWeapon extends Claymore {
       [563, 608]
     ])
   );
+
   mainStat: WeaponBaseMainStat = new WeaponBaseMainStat(
     StatType.PercentATK,
     new AscensionsIterator([
@@ -54,5 +56,13 @@ export default class WolfGravestoneWeapon extends Claymore {
 
   override removePassives(character: Character): this {
     return super.removePassives(character);
+  }
+
+  protected _buffs: Buff[] = [];
+
+  abortBuffs(character: Character): void {
+  }
+
+  initBuffs(character: Character): void {
   }
 }

@@ -5,7 +5,11 @@ import {SkillType} from "@/Skills/SkillType";
 export default class BurstSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Burst;
 
-  runListener(character: Character, startTime: number): void {
-    character.skillManager.listeners.BurstSkillStarted.notifyAll({character, startTime});
+  runStartListener(character: Character, startTime: number): void {
+    character.listeners.BurstSkillStarted.notifyAll({character, startTime});
+  }
+
+  runEndListener(character: Character, startTime: number) {
+    character.listeners.BurstSkillEnded.notifyAll({character, startTime});
   }
 }

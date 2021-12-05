@@ -19,10 +19,14 @@ import AyakaBurst from "./Skills/AyakaBurst";
 import AyakaElemental from "./Skills/AyakaElemental";
 import {VisionType} from "@/VisionType";
 import AyakaDash from "@/Characters/List/Ayaka/Skills/AyakaDash";
+import CharacterTalent from "@/Characters/CharacterTalent";
+import AyakaTalent1 from "@/Characters/List/Ayaka/Talents/AyakaTalent1";
+import AyakaTalent2 from "@/Characters/List/Ayaka/Talents/AyakaTalent2";
 
 export default class Ayaka extends Character {
   public vision: VisionType = VisionType.Cryo;
   public baseStats: CharacterBaseStats = new AyakaBaseStats(this);
+
   public skillManager: SkillsManager = new SkillsManager(this, [
     new AyakaA1(),
     new AyakaA2(),
@@ -33,6 +37,7 @@ export default class Ayaka extends Character {
     new AyakaElemental(),
     new AyakaBurst()
   ]);
+
   public constellationsManager: ConstellationsManager =
     new ConstellationsManager(this, [
       new AyakaC1(),
@@ -42,4 +47,7 @@ export default class Ayaka extends Character {
       new BurstConstellation(),
       new AyakaC6()
     ]);
+
+  public override talent1: CharacterTalent = new AyakaTalent1(this);
+  public override talent2: CharacterTalent = new AyakaTalent2(this);
 }

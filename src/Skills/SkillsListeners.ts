@@ -1,18 +1,27 @@
 import Listener from "@/Helpers/Listener";
 import Character from "@/Characters/Character";
 
-export interface ISkillStartedListenerArgs {
+export interface ISkillListenerArgs {
   character: Character;
   startTime: number;
 }
 
 export default class SkillsListeners {
-  public NormalAttackStarted: Listener<ISkillStartedListenerArgs> = new Listener();
-  public HoldAttackStarted: Listener<ISkillStartedListenerArgs> = new Listener();
-  public PlungeAttackStarted: Listener<ISkillStartedListenerArgs> = new Listener();
+  public NormalAttackStarted: Listener<ISkillListenerArgs> = new Listener();
+  public HoldAttackStarted: Listener<ISkillListenerArgs> = new Listener();
+  public PlungeAttackStarted: Listener<ISkillListenerArgs> = new Listener();
 
-  public DashSkillStarted: Listener<ISkillStartedListenerArgs> = new Listener();
+  public NormalAttackEnded: Listener<ISkillListenerArgs> = new Listener();
+  public HoldAttackEnded: Listener<ISkillListenerArgs> = new Listener();
+  public PlungeAttackEnded: Listener<ISkillListenerArgs> = new Listener();
 
-  public ElementalSkillStarted: Listener<ISkillStartedListenerArgs> = new Listener();
-  public BurstSkillStarted: Listener<ISkillStartedListenerArgs> = new Listener();
+  public DashSkillStarted: Listener<ISkillListenerArgs> = new Listener();
+
+  public DashSkillEnded: Listener<ISkillListenerArgs> = new Listener();
+
+  public ElementalSkillStarted: Listener<ISkillListenerArgs> = new Listener();
+  public BurstSkillStarted: Listener<ISkillListenerArgs> = new Listener();
+
+  public ElementalSkillEnded: Listener<ISkillListenerArgs> = new Listener();
+  public BurstSkillEnded: Listener<ISkillListenerArgs> = new Listener();
 }

@@ -4,7 +4,7 @@ import Character from "./Character";
 import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
 
 export default abstract class CharacterBaseStats {
-  constructor(public chapter: Character) {}
+  constructor(public character: Character) {}
 
   public abstract readonly baseHP: BaseStat;
   public readonly percentHP: CharacterAscendableBaseStat =
@@ -67,6 +67,18 @@ export default abstract class CharacterBaseStats {
    * @param {number} lvl - lvl of character
    * */
   public applyLvl(lvl: number): this {
+    if (lvl > 40) {
+      this.character.talent1?.activate();
+    } else {
+      this.character.talent1?.deactivate();
+    }
+
+    if (lvl > 70) {
+      this.character.talent2?.activate();
+    } else {
+      this.character.talent2?.deactivate();
+    }
+
     Object.entries(this).map(([key, value]) => {
       const isStat = value instanceof BaseStat;
 

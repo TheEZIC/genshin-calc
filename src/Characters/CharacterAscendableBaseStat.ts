@@ -12,7 +12,7 @@ export default class CharacterAscendableBaseStat extends BaseStat {
    * @return {boolean} should or not add value
    * */
   private shouldAdd(lvl: number): boolean {
-    return lvl === 40 || lvl === 50 || lvl === 70 || lvl === 80;
+    return lvl === 41 || lvl === 51 || lvl === 71 || lvl === 81;
   }
 
   public override applyLvl(lvl: number) {

@@ -1,14 +1,14 @@
 import Character from "@/Characters/Character";
 import {ISubscriber} from "@/Helpers/Listener";
-import {ISkillStartedListenerArgs} from "@/Skills/SkillsListeners";
+import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 
-export default abstract class Buff implements ISubscriber<ISkillStartedListenerArgs> {
+export default abstract class Buff implements ISubscriber<ISkillListenerArgs> {
   public name = this.constructor.name;
 
   public abstract framesDuration: number;
 
-  public abstract applyEffect(character: Character): void;
-  public abstract removeEffect(character: Character): void;
+  protected abstract applyEffect(character: Character): void;
+  protected abstract removeEffect(character: Character): void;
 
   protected activationFrames: number[] = [];
 
@@ -21,7 +21,8 @@ export default abstract class Buff implements ISubscriber<ISkillStartedListenerA
 
     if (framesToRemove.length) {
       for (let frameToRemove of framesToRemove) {
-        this.removeEffect(character);
+        this.remove(character);
+
         character.ongoingBuffs = character.ongoingBuffs.filter((b) => b.name !== this.name);
       }
 
@@ -30,15 +31,20 @@ export default abstract class Buff implements ISubscriber<ISkillStartedListenerA
   }
 
   public activate(character: Character, startFrame: number) {
+    if (this.isActive) return;
     this.applyEffect(character);
     this.activationFrames.push(startFrame);
+  }
+
+  public remove(character: Character) {
+    this.removeEffect(character);
   }
 
   public update(character: Character, currentFrame: number) {
     this.checkRemove(character, currentFrame);
   }
 
-  public runOnListener(args: ISkillStartedListenerArgs) {
+  public runOnListener(args: ISkillListenerArgs) {
     const {character, startTime} = args;
     character.ongoingBuffs.push(this);
     this.activate(character, startTime);

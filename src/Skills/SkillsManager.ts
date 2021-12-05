@@ -4,7 +4,6 @@ import NormalSkill from "./NormalSkill";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
 import SummonSkill from "./SummonSkill";
-import BuffManager from "@/Buffs/BuffManager";
 import SkillsListeners from "@/Skills/SkillsListeners";
 
 export default class SkillsManager {
@@ -12,7 +11,7 @@ export default class SkillsManager {
 
   constructor(public character: Character, skills: Skill[]) {
     skills.forEach((s) => {
-      s.initBuffs(this);
+      s.initBuffs(this.character);
       this.skills.push(s);
     });
   }
@@ -21,16 +20,17 @@ export default class SkillsManager {
     return this.skills;
   }
 
-  public listeners: SkillsListeners = new SkillsListeners();
-  public buffs: BuffManager = new BuffManager(this.character)
-
   public changeLvl(lvl: number, skillType: SkillType) {
     this.skills
       .filter((s) => s.strategy.type === skillType)
       .forEach((s) => s.changeLvl(lvl));
   }
 
-  public getSkillByType(skillType: SkillType) {
+  public getSkillByType(skillType: SkillType): Skill | undefined {
     return this.skills.find((s) => s.strategy.type === skillType);
+  }
+
+  public getAllSkillsByType(skillType: SkillType): Skill[] {
+    return this.skills.filter((s) => s.strategy.type === skillType);
   }
 }

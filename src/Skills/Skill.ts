@@ -3,8 +3,9 @@ import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import SkillsManager from "@/Skills/SkillsManager";
 import Buff from "@/Buffs/Buff";
+import {IWithBuffs} from "@/Buffs/IWithBuffs";
 
-export default abstract class Skill {
+export default abstract class Skill implements IWithBuffs {
   public abstract strategy: SkillStrategy;
   public abstract frames: number;
 
@@ -36,17 +37,19 @@ export default abstract class Skill {
     return this;
   }
 
-  protected _buffs: Buff[] = [];
-  public initBuffs(skillManager: SkillsManager): void {};
+  protected abstract _buffs: Buff[];
 
   public get buffs() {
     return this._buffs;
   }
 
+  public abstract initBuffs(character: Character): void;
+  public abstract abortBuffs(character: Character): void;
+
   protected abstract calcDamage(character: Character): number;
 
   public getDamage(character: Character, startFrame: number): number {
-    this.strategy.runListener(character, startFrame);
+    this.strategy.runStartListener(character, startFrame);
 
     const dmgBonus = this.strategy.hasInfusion
       ? character.calculatorStats.getElementalDmgBonus(character.vision)

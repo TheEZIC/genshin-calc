@@ -18,11 +18,14 @@ export default class AyakaDash extends NormalSkill {
     new AyakaDashBuff(),
   ]
 
-  public override initBuffs(skillManager: SkillsManager) {
-    super.initBuffs(skillManager);
+  public override initBuffs(character: Character) {
     const [ayakaDashBuff] = this._buffs;
+    character.listeners.DashSkillStarted.subscribe(ayakaDashBuff);
+  }
 
-    skillManager.listeners.DashSkillStarted.subscribe(ayakaDashBuff);
+  abortBuffs(character: Character): void {
+    const [ayakaDashBuff] = this._buffs;
+    character.listeners.DashSkillStarted.unsubscribe(ayakaDashBuff);
   }
 
   protected override calcDamage(character: Character): number {

@@ -7,6 +7,8 @@ import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import CharacterBaseStats from "./CharacterBaseStats";
 import {VisionType} from "@/VisionType";
 import Buff from "@/Buffs/Buff";
+import SkillsListeners from "@/Skills/SkillsListeners";
+import CharacterTalent from "@/Characters/CharacterTalent";
 
 export default abstract class Character {
   public name = this.constructor.name;
@@ -14,6 +16,11 @@ export default abstract class Character {
   public abstract vision: VisionType;
 
   public ongoingBuffs: Buff[] = [];
+
+  public talent1: CharacterTalent | null = null;
+  public talent2: CharacterTalent | null = null;
+
+  public listeners: SkillsListeners = new SkillsListeners();
 
   public abstract baseStats: CharacterBaseStats;
   public abstract skillManager: SkillsManager;

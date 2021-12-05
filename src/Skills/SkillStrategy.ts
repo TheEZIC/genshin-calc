@@ -9,7 +9,9 @@ export default abstract class SkillStrategy {
   }
 
   public abstract type: SkillType;
-  public abstract runListener(character: Character, startTime: number): void;
+
+  public abstract runStartListener(character: Character, startTime: number): void;
+  public abstract runEndListener(character: Character, startTime: number): void;
 
   protected _hasInfusion: boolean = true;
 

@@ -1,6 +1,7 @@
 import SkillValue from "@/Skills/SkillValue";
 
 import AyakaNormalAttack from "./AyakaNormalAttack";
+import SkillsManager from "@/Skills/SkillsManager";
 
 export default class AyakaA3 extends AyakaNormalAttack {
   frames: number = 56;

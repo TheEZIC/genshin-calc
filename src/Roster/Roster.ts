@@ -51,7 +51,7 @@ export default class Roster {
     return this._characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
   }
 
-  public calcSkillDuration(
+  private calcRotationSkillDuration(
     skills: ISkillsItem[],
     rotationSkills: Skill[],
     rotationSkill: Skill,
@@ -93,11 +93,25 @@ export default class Roster {
     return temp;
   }
 
+  private calcSkillDuration(skill: Skill) {
+    if (skill instanceof SummonSkill)
+      return skill.summonUsageFrames;
+
+    return skill.frames;
+  }
+
   public calcRotation(rotationSkills: Skill[]): number {
     const rosterSkills = this.getCharactersSkills();
 
-    let totalRotationDmg = 0
-    let frames = 0;
+    interface IOngoingSkill {
+      startTime: number;
+      skill: Skill;
+    }
+
+    let ongoingSkills: IOngoingSkill[] = [];
+    let totalRotationDmg: number = 0
+    let rotationFrames: number = 0;
+    let frames: number = 0;
 
     for (let i = 0; i < rotationSkills.length; i++) {
       const rotationSkill = rotationSkills[i];
@@ -107,12 +121,29 @@ export default class Roster {
 
       const {skill, character} = skillItem;
 
+      //push to active skills
+      ongoingSkills.push({
+        startTime: frames,
+        skill,
+      });
+
       character.ongoingBuffs.forEach((b) => b.update(character, frames));
       totalRotationDmg += skill.getDamage(character, frames);
-      console.log(frames, skill.name, character.ongoingBuffs.map(b => b.name))
-      frames += this.calcSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
+
+      //run something if skill end
+      ongoingSkills
+        .filter((s) => s.startTime + s.skill.frames < frames)
+        .forEach((s) => s.skill.strategy.runEndListener(character, frames));
+
+      //remove ended skills from active skills array
+      ongoingSkills = ongoingSkills.filter((s) => !(s.startTime + s.skill.frames < frames));
+
+      console.log(frames, skill.name, character.ongoingBuffs.map(b => b.name));
+
+      frames += this.calcSkillDuration(skill);
+      rotationFrames += this.calcRotationSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
     }
 
-    return totalRotationDmg / (frames / 60);
+    return totalRotationDmg / (rotationFrames / 60);
   }
 }

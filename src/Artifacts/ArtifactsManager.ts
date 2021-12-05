@@ -4,13 +4,11 @@ import Character from "@/Characters/Character";
 import Artifact from "./Artifact";
 import ArtifactSetBonuses from "./ArtifactSetBonuses";
 import { ArtifactType } from "./ArtifactType";
-import BuffManager from "@/Buffs/BuffManager";
 
 export default class ArtifactsManager {
   constructor(public character: Character) {}
 
   public artifactSetBonuses = new ArtifactSetBonuses(this);
-  public buffs: BuffManager = new BuffManager(this.character);
 
   public readonly MAXIMUM_ARTIFACTS = 5;
 

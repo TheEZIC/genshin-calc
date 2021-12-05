@@ -29,17 +29,11 @@ export default class BaseStat {
    * @return {number} ascend number
    * */
   protected getCurrentAscensionIndex(lvl: number): number {
-    let ascension: number = 0;
+    if (lvl > 0 && lvl <=20) return 0;
+    if (lvl <= 40 ) return 1;
+    if (lvl === this.maxLvl) return 6;
 
-    if (lvl > 0 && lvl <= 20) ascension = 0;
-    if (lvl > 20 && lvl <= 40) ascension = 1;
-    if (lvl > 40 && lvl <= 50) ascension = 2;
-    if (lvl > 50 && lvl <= 60) ascension = 3;
-    if (lvl > 60 && lvl <= 70) ascension = 4;
-    if (lvl > 70 && lvl <= 80) ascension = 5;
-    if (lvl > 80 && lvl <= this.maxLvl) ascension = 6;
-
-    return ascension;
+    return Math.floor((lvl - 40) / 10 + 2);
   }
 
   /**
