@@ -1,4 +1,4 @@
-import Effect from "@/Buffs/Effect";
+import Effect from "./Effect";
 import Character from "@/Characters/Character";
 
 export interface IWithEffects {

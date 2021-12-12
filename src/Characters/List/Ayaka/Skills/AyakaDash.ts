@@ -4,9 +4,9 @@ import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import DashSkillStrategy from "@/Skills/SkillStrategy/DashSkillStrategy";
 import AyakaDashBuff from "@/Characters/List/Ayaka/Skills/Buffs/AyakaDashBuff";
-import Effect from "@/Buffs/Effect";
-import {IWithEffects} from "@/Buffs/IWithEffects";
-import EffectManager from "@/Buffs/EffectManager";
+import Effect from "@/Effects/Effect";
+import {IWithEffects} from "@/Effects/IWithEffects";
+import EffectManager from "@/Effects/EffectManager";
 
 export default class AyakaDash extends NormalSkill implements IWithEffects {
   strategy: SkillStrategy = new DashSkillStrategy(this)

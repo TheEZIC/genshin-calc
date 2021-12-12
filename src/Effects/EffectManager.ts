@@ -1,5 +1,5 @@
 import Character from "@/Characters/Character";
-import {IWithEffects} from "@/Buffs/IWithEffects";
+import {IWithEffects} from "@/Effects/IWithEffects";
 
 export default class EffectManager {
   constructor(

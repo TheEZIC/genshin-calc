@@ -1,7 +1,7 @@
 import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
-import EffectManager from "@/Buffs/EffectManager";
+import EffectManager from "@/Effects/EffectManager";
 
 export default abstract class Skill {
   public abstract strategy: SkillStrategy;

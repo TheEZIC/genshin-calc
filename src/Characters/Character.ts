@@ -6,7 +6,7 @@ import WeaponManager from "@/Weapons/WeaponManager";
 import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import CharacterBaseStats from "./CharacterBaseStats";
 import {VisionType} from "@/VisionType";
-import Effect from "@/Buffs/Effect";
+import Effect from "@/Effects/Effect";
 import SkillsListeners from "@/Skills/SkillsListeners";
 import CharacterTalent from "@/Characters/CharacterTalent";
 

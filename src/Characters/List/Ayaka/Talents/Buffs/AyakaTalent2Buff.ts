@@ -1,6 +1,5 @@
-import Effect from "@/Buffs/Effect";
+import Effect from "@/Effects/Effect";
 import Character from "@/Characters/Character";
-import {SkillType} from "@/Skills/SkillType";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 
 export default class AyakaTalent2Buff extends Effect {

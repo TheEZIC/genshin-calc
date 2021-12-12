@@ -1,9 +1,8 @@
 import Character from "@/Characters/Character";
-import {Constructor} from "@/Helpers/Constructor";
 import Skill from "@/Skills/Skill";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
-import RosterBuffsManager from "@/Buffs/RosterBuffsManager";
+import RosterBuffsManager from "@/Effects/RosterBuffsManager";
 import {SkillType} from "@/Skills/SkillType";
 
 interface ISkillsItem {
