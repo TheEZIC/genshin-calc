@@ -1,17 +1,13 @@
 import Character from "@/Characters/Character";
-
-import NormalSkill from "./NormalSkill";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
-import SummonSkill from "./SummonSkill";
-import SkillsListeners from "@/Skills/SkillsListeners";
 
 export default class SkillsManager {
   private skills: Skill[] = [];
 
   constructor(public character: Character, skills: Skill[]) {
     skills.forEach((s) => {
-      s.initBuffs(this.character);
+      s.buffManager?.initEffects(this.character);
       this.skills.push(s);
     });
   }

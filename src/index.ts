@@ -75,11 +75,6 @@ const dmg = roster.calcRotation([
   new AyakaA3(),
   new AyakaA4(),
   new AyakaA5(),
-  new AyakaA1(),
-  new AyakaA2(),
-  new AyakaA3(),
-  new AyakaA4(),
-  new AyakaA5(),
 ])
 
 console.log(dmg)

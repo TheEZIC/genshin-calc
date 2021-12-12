@@ -1,9 +1,9 @@
 import Character from "@/Characters/Character";
-import Buff from "./Buff";
+import Effect from "./Effect";
 
 export interface ICharacterBuffItem {
   character: Character;
-  buff: Buff;
+  buff: Effect;
 }
 
 export default class RosterBuffsManager {
@@ -20,13 +20,13 @@ export default class RosterBuffsManager {
     });
   }
 
-  private _rosterBuffs: Buff[] = [];
+  private _rosterBuffs: Effect[] = [];
 
-  public addRosterBuff(buff: Buff) {
+  public addRosterBuff(buff: Effect) {
     this._rosterBuffs.push(buff);
   }
 
-  public removeRosterBuff(buff: Buff) {
+  public removeRosterBuff(buff: Effect) {
     this._rosterBuffs = this._rosterBuffs.filter((item) => {
       return item.name !== buff.name;
     });

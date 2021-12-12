@@ -127,7 +127,7 @@ export default class Roster {
         skill,
       });
 
-      character.ongoingBuffs.forEach((b) => b.update(character, frames));
+      character.ongoingEffects.forEach((b) => b.update(character, frames));
       totalRotationDmg += skill.getDamage(character, frames);
 
       //run something if skill end
@@ -138,7 +138,7 @@ export default class Roster {
       //remove ended skills from active skills array
       ongoingSkills = ongoingSkills.filter((s) => !(s.startTime + s.skill.frames < frames));
 
-      console.log(frames, skill.name, character.ongoingBuffs.map(b => b.name));
+      console.log(frames, skill.name, character.ongoingEffects.map(b => b.name));
 
       frames += this.calcSkillDuration(skill);
       rotationFrames += this.calcRotationSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);

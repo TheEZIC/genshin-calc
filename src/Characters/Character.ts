@@ -6,7 +6,7 @@ import WeaponManager from "@/Weapons/WeaponManager";
 import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import CharacterBaseStats from "./CharacterBaseStats";
 import {VisionType} from "@/VisionType";
-import Buff from "@/Buffs/Buff";
+import Effect from "@/Buffs/Effect";
 import SkillsListeners from "@/Skills/SkillsListeners";
 import CharacterTalent from "@/Characters/CharacterTalent";
 
@@ -15,7 +15,7 @@ export default abstract class Character {
 
   public abstract vision: VisionType;
 
-  public ongoingBuffs: Buff[] = [];
+  public ongoingEffects: Effect[] = [];
 
   public talent1: CharacterTalent | null = null;
   public talent2: CharacterTalent | null = null;

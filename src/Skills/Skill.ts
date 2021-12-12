@@ -1,13 +1,13 @@
 import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
-import SkillsManager from "@/Skills/SkillsManager";
-import Buff from "@/Buffs/Buff";
-import {IWithBuffs} from "@/Buffs/IWithBuffs";
+import EffectManager from "@/Buffs/EffectManager";
 
-export default abstract class Skill implements IWithBuffs {
+export default abstract class Skill {
   public abstract strategy: SkillStrategy;
   public abstract frames: number;
+
+  public buffManager: EffectManager | null = null;
 
   public get name(): string {
     return this.constructor.name;
@@ -36,15 +36,6 @@ export default abstract class Skill implements IWithBuffs {
     this.currentLvl = lvl;
     return this;
   }
-
-  protected abstract _buffs: Buff[];
-
-  public get buffs() {
-    return this._buffs;
-  }
-
-  public abstract initBuffs(character: Character): void;
-  public abstract abortBuffs(character: Character): void;
 
   protected abstract calcDamage(character: Character): number;
 
