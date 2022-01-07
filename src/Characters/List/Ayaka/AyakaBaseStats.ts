@@ -5,7 +5,7 @@ import CharacterBaseStats from "@/Characters/CharacterBaseStats";
 export default class AyakaBaseStats extends CharacterBaseStats {
   readonly baseATK: BaseStat = new BaseStat(
     new AscensionsIterator([
-      [27, 70],
+      [27, 79],
       [92, 138],
       [154, 177],
       [198, 222],

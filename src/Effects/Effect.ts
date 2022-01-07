@@ -1,7 +1,6 @@
 import {ISubscriber} from "@/Helpers/Listener";
 import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
-import Character from "@/Characters/Character";
 
 export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>> {
   public name = this.constructor.name;

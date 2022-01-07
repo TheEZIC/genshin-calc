@@ -1,5 +1,6 @@
 import Character from "@/Characters/Character";
 import Timeline from "@/Roster/Timeline";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 
 export default class Roster {
   public static readonly MAX_CHARACTERS_COUNT = 4;

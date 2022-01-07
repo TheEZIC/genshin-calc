@@ -75,6 +75,6 @@ const dmg = roster.timeline.calcRotation([
   new AyakaA3(),
   new AyakaA4(),
   new AyakaA5(),
-])
+]);
 
 console.log(dmg)

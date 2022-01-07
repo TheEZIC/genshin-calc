@@ -4,6 +4,7 @@ import SummonSkill from "@/Skills/SummonSkill";
 import {SkillType} from "@/Skills/SkillType";
 import Character from "@/Characters/Character";
 import Roster from "@/Roster/Roster";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 
 interface ISkillsItem {
   character: Character;
@@ -15,6 +16,8 @@ export default class Timeline {
     private roster: Roster,
   ) {
   }
+
+  private elementalReactionManager = new ElementalReactionManager();
 
   private getCharactersSkills(): ISkillsItem[] {
     return this.roster.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
