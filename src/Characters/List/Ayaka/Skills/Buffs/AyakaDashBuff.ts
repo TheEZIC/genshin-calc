@@ -2,7 +2,7 @@ import Effect from "@/Effects/Effect";
 import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 
-export default class AyakaDashBuff extends Effect {
+export default class AyakaDashBuff extends Effect<Character> {
   framesDuration: number = 5 * 60; //5sec
 
   protected applyEffect(character: Character): void {

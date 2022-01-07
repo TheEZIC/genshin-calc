@@ -1,15 +1,16 @@
-import Character from "@/Characters/Character";
 import {ISubscriber} from "@/Helpers/Listener";
 import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
+import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
+import Character from "@/Characters/Character";
 
-export default abstract class Effect implements ISubscriber<ISkillListenerArgs> {
+export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>> {
   public name = this.constructor.name;
 
   public abstract framesDuration: number;
   public readonly countdown: number = 0;
 
-  protected abstract applyEffect(character: Character): void;
-  protected abstract removeEffect(character: Character): void;
+  protected abstract applyEffect(entity: T): void;
+  protected abstract removeEffect(entity: T): void;
 
   protected activationFrames: number[] = [];
 
@@ -17,14 +18,14 @@ export default abstract class Effect implements ISubscriber<ISkillListenerArgs> 
     return Boolean(this.activationFrames.length);
   }
 
-  protected checkRemove(character: Character, currentFrame: number): void {
+  protected checkRemove(entity: T, currentFrame: number): void {
     const framesToRemove = this.activationFrames.filter((f) => f + this.framesDuration < currentFrame);
 
     if (framesToRemove.length) {
       for (let frameToRemove of framesToRemove) {
-        this.remove(character);
+        this.remove(entity);
 
-        character.ongoingEffects = character.ongoingEffects.filter((b) => b.name !== this.name);
+        entity.ongoingEffects = entity.ongoingEffects.filter((b) => b.name !== this.name);
       }
 
       this.activationFrames = this.activationFrames.filter((f) => !(f + this.framesDuration < currentFrame));
@@ -39,9 +40,9 @@ export default abstract class Effect implements ISubscriber<ISkillListenerArgs> 
     return !this.isActive && !this.isOnCountdown(startFrame);
   }
 
-  public activate(character: Character, startFrame: number): boolean {
+  public activate(entity: T, startFrame: number): boolean {
     if (!this.shouldActivate(startFrame)) return false;
-    this.applyEffect(character);
+    this.applyEffect(entity);
     this.activationFrames.push(startFrame);
 
     return true;
@@ -51,20 +52,20 @@ export default abstract class Effect implements ISubscriber<ISkillListenerArgs> 
     return true;
   }
 
-  public remove(character: Character): boolean {
+  public remove(entity: T): boolean {
     if (!this.shouldRemove()) return false;
-    this.removeEffect(character);
+    this.removeEffect(entity);
 
     return true;
   }
 
-  public update(character: Character, currentFrame: number) {
-    this.checkRemove(character, currentFrame);
+  public update(entity: T, currentFrame: number) {
+    this.checkRemove(entity, currentFrame);
   }
 
-  public runOnListener(args: ISkillListenerArgs) {
-    const {character, startTime} = args;
-    character.ongoingEffects.push(this);
-    this.activate(character, startTime);
+  public runOnListener(args: ISkillListenerArgs<T>) {
+    const {entity, startTime} = args;
+    entity.ongoingEffects.push(this);
+    this.activate(entity, startTime);
   }
 }

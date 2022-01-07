@@ -8,10 +8,10 @@ export default class ElementalSkillStrategy extends SkillStrategy {
   protected override _hasInfusion = false;
 
   runStartListener(character: Character, startTime: number): void {
-    character.listeners.ElementalSkillStarted.notifyAll({character, startTime});
+    character.listeners.ElementalSkillStarted.notifyAll({entity: character, startTime});
   }
 
   runEndListener(character: Character, startTime: number) {
-    character.listeners.ElementalSkillEnded.notifyAll({character, startTime});
+    character.listeners.ElementalSkillEnded.notifyAll({entity: character, startTime});
   }
 }

@@ -8,10 +8,10 @@ export default class NormalAttackSkillStrategy extends SkillStrategy {
   protected override _hasInfusion = false;
 
   runStartListener(character: Character, startTime: number): void {
-    character.listeners.NormalAttackStarted.notifyAll({character, startTime});
+    character.listeners.NormalAttackStarted.notifyAll({entity: character, startTime});
   }
 
   runEndListener(character: Character, startTime: number): void {
-    character.listeners.NormalAttackEnded.notifyAll({character, startTime});
+    character.listeners.NormalAttackEnded.notifyAll({entity: character, startTime});
   }
 }

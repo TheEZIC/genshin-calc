@@ -9,18 +9,19 @@ import {VisionType} from "@/VisionType";
 import Effect from "@/Effects/Effect";
 import SkillsListeners from "@/Skills/SkillsListeners";
 import CharacterTalent from "@/Characters/CharacterTalent";
+import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
-export default abstract class Character {
+export default abstract class Character implements IWithOngoingEffects {
   public name = this.constructor.name;
 
   public abstract vision: VisionType;
 
-  public ongoingEffects: Effect[] = [];
+  public ongoingEffects: Effect<Character>[] = [];
 
   public talent1: CharacterTalent | null = null;
   public talent2: CharacterTalent | null = null;
 
-  public listeners: SkillsListeners = new SkillsListeners();
+  public listeners: SkillsListeners<Character> = new SkillsListeners();
 
   public abstract baseStats: CharacterBaseStats;
   public abstract skillManager: SkillsManager;

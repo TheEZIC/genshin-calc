@@ -3,7 +3,7 @@ import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 
-export default class AyakaTalent1Buff extends Effect {
+export default class AyakaTalent1Buff extends Effect<Character> {
   framesDuration: number = 5 * 60; //5sec
 
   private talentAffix = new StatValue(30, [

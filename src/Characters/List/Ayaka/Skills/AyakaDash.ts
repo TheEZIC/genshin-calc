@@ -8,16 +8,16 @@ import Effect from "@/Effects/Effect";
 import {IWithEffects} from "@/Effects/IWithEffects";
 import EffectManager from "@/Effects/EffectManager";
 
-export default class AyakaDash extends NormalSkill implements IWithEffects {
+export default class AyakaDash extends NormalSkill implements IWithEffects<Character> {
   strategy: SkillStrategy = new DashSkillStrategy(this)
     .modify((strategy) => strategy.hasInfusion = true);
 
   frames: number = 20;
   protected value: SkillValue = new SkillValue(0, 0);
 
-  public override buffManager = new EffectManager(this);
+  public override effectManager = new EffectManager(this);
 
-  public effects: Effect[] = [
+  public effects: Effect<Character>[] = [
     new AyakaDashBuff(),
   ]
 

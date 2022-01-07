@@ -1,7 +1,8 @@
 import Effect from "./Effect";
 import Character from "@/Characters/Character";
+import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
-export default abstract class StackEffect extends Effect {
+export default abstract class StackEffect<T extends IWithOngoingEffects> extends Effect<T> {
   private _stacks: number = 0;
   protected abstract maxStacks: number;
 
@@ -25,14 +26,14 @@ export default abstract class StackEffect extends Effect {
     return this.shouldAddStack(this.stacks - 1);
   }
 
-  public override activate(character: Character, startFrame: number): boolean {
-    if (!super.activate(character, startFrame)) return false;
+  public override activate(entity: T, startFrame: number): boolean {
+    if (!super.activate(entity, startFrame)) return false;
     this.setStacks(this.stacks + 1);
     return true;
   }
 
-  public override remove(character: Character): boolean {
-    if (!super.remove(character)) return false;
+  public override remove(entity: T): boolean {
+    if (!super.remove(entity)) return false;
     this.setStacks(this.stacks - 1);
     return true;
   }

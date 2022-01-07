@@ -6,10 +6,10 @@ export default class BurstSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Burst;
 
   runStartListener(character: Character, startTime: number): void {
-    character.listeners.BurstSkillStarted.notifyAll({character, startTime});
+    character.listeners.BurstSkillStarted.notifyAll({entity: character, startTime});
   }
 
   runEndListener(character: Character, startTime: number) {
-    character.listeners.BurstSkillEnded.notifyAll({character, startTime});
+    character.listeners.BurstSkillEnded.notifyAll({entity: character, startTime});
   }
 }

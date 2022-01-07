@@ -66,7 +66,7 @@ char.constellationsManager.activateConstellation(3);
 char.skillManager.changeLvl(10, SkillType.NormalAttack);
 //char.skillManager.changeLvl(10, SkillType.Burst);
 
-const dmg = roster.calcRotation([
+const dmg = roster.timeline.calcRotation([
   new AyakaBurst(),
   new AyakaDash(),
   new AyakaElemental(),

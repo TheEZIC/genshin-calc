@@ -7,7 +7,7 @@ export default abstract class Skill {
   public abstract strategy: SkillStrategy;
   public abstract frames: number;
 
-  public buffManager: EffectManager | null = null;
+  public effectManager: EffectManager<Character> | null = null;
 
   public get name(): string {
     return this.constructor.name;

@@ -6,10 +6,10 @@ export default class SkillsManager {
   private skills: Skill[] = [];
 
   constructor(public character: Character, skills: Skill[]) {
-    skills.forEach((s) => {
-      s.buffManager?.initEffects(this.character);
-      this.skills.push(s);
-    });
+    for (let skill of skills) {
+      skill.effectManager?.initEffects(this.character);
+      this.skills.push(skill);
+    }
   }
 
   public get allSkills() {
