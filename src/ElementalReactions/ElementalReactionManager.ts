@@ -69,5 +69,7 @@ export default class ElementalReactionManager {
       const [,,reaction] = combination;
       return reaction.calcBonusDamage(character, damage);
     }
+
+    return damage;
   }
 }
