@@ -1,14 +1,23 @@
 import Character from "@/Characters/Character";
-import { IConstellation } from "@/Constellations/IConstellation";
+import Constellation from "@/Constellations/Constellation";
 
 export default class ConstellationsManager {
   constructor(
     private character: Character,
-    public constellations: IConstellation[]
+    public constellations: Constellation[]
   ) {}
 
   public activateConstellation(order: number) {
-    this.constellations[order - 1].activate(this.character);
+    const index = order - 1;
+
+    for (let i = 0; i < this.constellations.length; i++) {
+      if (i < index) {
+
+      }
+      const constellation = this.constellations[i];
+
+    }
+    this.constellations[index].activate(this.character);
   }
 
   public deactivateConstellation(order: number) {
