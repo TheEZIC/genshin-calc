@@ -17,11 +17,11 @@ export default class AtkStat extends MainStat {
         (percentATK.value +
           artifactsPercentATK +
           weaponPercentATK +
-          this.getPrefixesSum(skillFilter)) /
+          this.prefixes.getSum(skillFilter)) /
           100 +
         artifactsFlatATK +
-        this.getAdditionalValuesSum(skillFilter)) *
-      (1 + this.getAffixesSum(skillFilter) / 100) *
+        this.additionalValues.getSum(skillFilter)) *
+      (1 + this.affixes.getSum(skillFilter) / 100) *
       critEffect
     );
   }

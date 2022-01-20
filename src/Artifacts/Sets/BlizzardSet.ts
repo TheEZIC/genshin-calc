@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class BlizzardSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Blizzard 2");
-    character.calculatorStats.cryoDmgBonus.addAdditionalValue(
+    character.calculatorStats.cryoDmgBonus.additionalValues.add(
       new StatValue(15)
     );
   }
@@ -16,7 +16,7 @@ export default class BlizzardSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Blizzard 2");
-    character.calculatorStats.cryoDmgBonus.removeAdditionalValue(
+    character.calculatorStats.cryoDmgBonus.additionalValues.remove(
       new StatValue(15)
     );
   }

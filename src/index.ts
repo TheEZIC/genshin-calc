@@ -68,8 +68,8 @@ char.skillManager.changeLvl(10, SkillType.NormalAttack);
 
 const dmg = roster.timeline.calcRotation([
   new AyakaBurst(),
-  new AyakaDash(),
   new AyakaElemental(),
+  new AyakaDash(),
   new AyakaA1(),
   new AyakaA2(),
   new AyakaA3(),

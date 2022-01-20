@@ -3,6 +3,7 @@ import SkillValue from "@/Skills/SkillValue";
 import SummonSkill from "@/Skills/SummonSkill";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
+import {ICalcDamageArgs} from "@/Skills/Skill";
 
 export default class AyakaBurst extends SummonSkill {
   strategy: SkillStrategy = new BurstSkillStrategy(this);
@@ -13,7 +14,7 @@ export default class AyakaBurst extends SummonSkill {
   protected summonValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
   protected usageValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
 
-  protected calcDamage(character: Character): number {
+  protected calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     return this.usageMVs * atk + this.durationMVs * atk * 19;
   }

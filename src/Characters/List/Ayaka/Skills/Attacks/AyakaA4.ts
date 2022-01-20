@@ -1,8 +1,9 @@
 import AyakaNormalAttack from "./AyakaNormalAttack";
 import SkillValue from "@/Skills/SkillValue";
-import SkillsManager from "@/Skills/SkillsManager";
+import {IMultipleHitSkill} from "@/Skills/IMultipleHitSkill";
 
-export default class AyakaA4 extends AyakaNormalAttack {
+export default class AyakaA4 extends AyakaNormalAttack implements IMultipleHitSkill {
   frames: number = 98;
-  value: SkillValue = new SkillValue(22.65 * 3, 1.84 * 3);
+  hits: number =  3;
+  value: SkillValue = new SkillValue(22.65 * this.hits, 1.84 * this.hits);
 }

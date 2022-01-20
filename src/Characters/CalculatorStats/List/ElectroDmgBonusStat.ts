@@ -12,7 +12,7 @@ export default class ElectroDmgBonusStat extends PureStat {
     return (
       electroDmgBonus.value +
       artifactsElectroPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

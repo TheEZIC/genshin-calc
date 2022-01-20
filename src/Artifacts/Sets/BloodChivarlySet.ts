@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class BloodChivarlySet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute BloodChivarly 2");
-    character.calculatorStats.physicalDmgBonus.addAdditionalValue(
+    character.calculatorStats.physicalDmgBonus.additionalValues.add(
       new StatValue(25)
     );
   }
@@ -16,7 +16,7 @@ export default class BloodChivarlySet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove BloodChivarly 2");
-    character.calculatorStats.physicalDmgBonus.removeAdditionalValue(
+    character.calculatorStats.physicalDmgBonus.additionalValues.remove(
       new StatValue(25)
     );
   }

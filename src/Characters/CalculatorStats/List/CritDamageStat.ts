@@ -12,7 +12,7 @@ export default class CritDamageStat extends CritStat {
       critDamage.value +
       artifactsCritDamage +
       weaponCritDamage +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

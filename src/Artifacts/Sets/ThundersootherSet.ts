@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class ThundersootherSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Thundersoother 2");
-    character.calculatorStats.electroResistance.addAdditionalValue(
+    character.calculatorStats.electroResistance.additionalValues.add(
       new StatValue(40)
     );
   }
@@ -16,7 +16,7 @@ export default class ThundersootherSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Thundersoother 2");
-    character.calculatorStats.electroResistance.removeAdditionalValue(
+    character.calculatorStats.electroResistance.additionalValues.remove(
       new StatValue(40)
     );
   }

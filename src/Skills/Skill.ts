@@ -1,7 +1,15 @@
 import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
-import EffectManager from "@/Effects/EffectManager";
+import EffectManager from "@/Effects/EffectsManagers/EffectManager";
+
+export interface ICalcDamageArgs {
+  character: Character;
+  prevSkill?: Skill;
+  nextSkill?: Skill;
+  prevSkills: Skill[];
+  nextSkills: Skill[];
+}
 
 export default abstract class Skill {
   public abstract strategy: SkillStrategy;
@@ -37,19 +45,32 @@ export default abstract class Skill {
     return this;
   }
 
-  protected abstract calcDamage(character: Character): number;
+  protected abstract calcDamage(args: ICalcDamageArgs): number;
 
-  public getDamage(character: Character, startFrame: number): number {
+  public getDamage(character: Character, startFrame: number, skills: Skill[], currentSkillIndex: number): number {
     this.strategy.runStartListener(character, startFrame);
+
+    const prevSkill = skills[currentSkillIndex - 1] ?? null;
+    const nextSkill = skills[currentSkillIndex + 1] ?? null;
+    const prevSkills = skills.filter((s, i) => i < currentSkillIndex);
+    const nextSkills = skills.filter((s, i) => i > currentSkillIndex);
 
     const dmgBonus = this.strategy.hasInfusion
       ? character.calculatorStats.getElementalDmgBonus(character.vision)
       : character.calculatorStats.getPhysicalDmgBonus();
 
     const statValue = new StatValue(dmgBonus);
-    character.calculatorStats.ATK.addAffix(statValue);
-    const dmg = this.calcDamage(character);
-    character.calculatorStats.ATK.removeAffix(statValue);
+    character.calculatorStats.ATK.affixes.add(statValue);
+
+    const dmg = this.calcDamage({
+      character,
+      prevSkill,
+      nextSkill,
+      prevSkills,
+      nextSkills,
+    });
+
+    character.calculatorStats.ATK.affixes.remove(statValue);
 
     return dmg;
   }

@@ -12,7 +12,7 @@ export default class HydroDmgBonusStat extends PureStat {
     return (
       hydroDmgBonus.value +
       artifactsHydroPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

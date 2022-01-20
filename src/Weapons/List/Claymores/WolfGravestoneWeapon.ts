@@ -3,7 +3,7 @@ import BaseStat from "@/BaseStats/BaseStat";
 import { StatType } from "@/BaseStats/StatType";
 import { StatValue } from "@/Characters/CalculatorStats/Types/StatValue";
 import Character from "@/Characters/Character";
-import Claymore from "@/Weapons/Type/Claymore";
+import Claymore from "@/Weapons/WeaponTypes/Claymore";
 import { WeaponBaseMainStat } from "@/Weapons/WeaponBaseMainStat";
 import { WeaponPassiveValue } from "@/Weapons/WeaponPassiveValue";
 
@@ -36,14 +36,14 @@ export default class WolfGravestoneWeapon extends Claymore {
   private permanentATKPrefix = new WeaponPassiveValue(this, 20, 5);
 
   override applyPermanentPassives(character: Character): this {
-    character.calculatorStats.ATK.addPrefix(
+    character.calculatorStats.ATK.prefixes.add(
       new StatValue(this.permanentATKPrefix.valueAtRefinement)
     );
     return super.applyPermanentPassives(character);
   }
 
   override removePermanentPassives(character: Character): this {
-    character.calculatorStats.ATK.removePrefix(
+    character.calculatorStats.ATK.prefixes.remove(
       new StatValue(this.permanentATKPrefix.valueAtRefinement)
     );
     return super.removePermanentPassives(character);

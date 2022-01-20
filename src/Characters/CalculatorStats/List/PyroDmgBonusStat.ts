@@ -10,7 +10,7 @@ export default class PyroDmgBonusStat extends PureStat {
     return (
       pyroDmgBonus.value +
       artifactsPyroPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

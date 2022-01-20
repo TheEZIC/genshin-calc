@@ -12,7 +12,7 @@ export default class EnergyRechargeStat extends PureStat {
     return (
       energyRecharge.value +
       artifactsEnergyRecharge +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

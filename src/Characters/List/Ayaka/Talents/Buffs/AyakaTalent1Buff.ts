@@ -12,10 +12,10 @@ export default class AyakaTalent1Buff extends Effect<Character> {
   ]);
 
   protected applyEffect(character: Character): void {
-    character.calculatorStats.ATK.addAffix(this.talentAffix);
+    character.calculatorStats.ATK.affixes.add(this.talentAffix);
   }
 
   protected removeEffect(character: Character): void {
-    character.calculatorStats.ATK.removeAffix(this.talentAffix);
+    character.calculatorStats.ATK.affixes.remove(this.talentAffix);
   }
 }

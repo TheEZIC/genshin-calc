@@ -6,22 +6,22 @@ export interface ISkillListenerArgs<T> {
   startTime: number;
 }
 
-export default class SkillsListeners<T> {
-  public NormalAttackStarted: Listener<ISkillListenerArgs<T>> = new Listener();
-  public HoldAttackStarted: Listener<ISkillListenerArgs<T>> = new Listener();
-  public PlungeAttackStarted: Listener<ISkillListenerArgs<T>> = new Listener();
+export default class SkillsListeners {
+  public NormalAttackStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public HoldAttackStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public PlungeAttackStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
 
-  public NormalAttackEnded: Listener<ISkillListenerArgs<T>> = new Listener();
-  public HoldAttackEnded: Listener<ISkillListenerArgs<T>> = new Listener();
-  public PlungeAttackEnded: Listener<ISkillListenerArgs<T>> = new Listener();
+  public NormalAttackEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public HoldAttackEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public PlungeAttackEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
 
-  public DashSkillStarted: Listener<ISkillListenerArgs<T>> = new Listener();
+  public DashSkillStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
 
-  public DashSkillEnded: Listener<ISkillListenerArgs<T>> = new Listener();
+  public DashSkillEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
 
-  public ElementalSkillStarted: Listener<ISkillListenerArgs<T>> = new Listener();
-  public BurstSkillStarted: Listener<ISkillListenerArgs<T>> = new Listener();
+  public ElementalSkillStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public BurstSkillStarted: Listener<ISkillListenerArgs<Character>> = new Listener();
 
-  public ElementalSkillEnded: Listener<ISkillListenerArgs<T>> = new Listener();
-  public BurstSkillEnded: Listener<ISkillListenerArgs<T>> = new Listener();
+  public ElementalSkillEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
+  public BurstSkillEnded: Listener<ISkillListenerArgs<Character>> = new Listener();
 }

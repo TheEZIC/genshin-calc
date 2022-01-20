@@ -12,7 +12,7 @@ export default class AnemoDmgBonusStat extends PureStat {
     return (
       anemoDmgBonus.value +
       artifactsAnemoPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

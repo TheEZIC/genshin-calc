@@ -5,33 +5,34 @@ import SkillStrategy from "@/Skills/SkillStrategy";
 import DashSkillStrategy from "@/Skills/SkillStrategy/DashSkillStrategy";
 import AyakaDashBuff from "@/Characters/List/Ayaka/Skills/Buffs/AyakaDashBuff";
 import Effect from "@/Effects/Effect";
-import {IWithEffects} from "@/Effects/IWithEffects";
-import EffectManager from "@/Effects/EffectManager";
+import {IWithInitializedEffects} from "@/Effects/IWithEffects";
+import {ICalcDamageArgs} from "@/Skills/Skill";
+import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 
-export default class AyakaDash extends NormalSkill implements IWithEffects<Character> {
+export default class AyakaDash extends NormalSkill implements IWithInitializedEffects<Character> {
   strategy: SkillStrategy = new DashSkillStrategy(this)
     .modify((strategy) => strategy.hasInfusion = true);
 
   frames: number = 20;
   protected value: SkillValue = new SkillValue(0, 0);
 
-  public override effectManager = new EffectManager(this);
-
-  public effects: Effect<Character>[] = [
+  public effectsToInitialize: Effect<Character>[] = [
     new AyakaDashBuff(),
-  ]
+  ];
 
-  public initEffects(character: Character) {
-    const [ayakaDashBuff] = this.effects;
+  public override effectManager = new EffectManager(this.effectsToInitialize);
+
+  public subscribeEffects(character: Character): void {
+    const [ayakaDashBuff] = this.effectsToInitialize;
     character.listeners.DashSkillStarted.subscribe(ayakaDashBuff);
   }
 
-  public abortEffects(character: Character): void {
-    const [ayakaDashBuff] = this.effects;
+  public unsubscribeEffects(character: Character): void {
+    const [ayakaDashBuff] = this.effectsToInitialize;
     character.listeners.DashSkillStarted.unsubscribe(ayakaDashBuff);
   }
 
-  protected override calcDamage(character: Character): number {
+  protected override calcDamage({character}: ICalcDamageArgs): number {
     return 0;
   }
 }

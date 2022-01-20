@@ -44,8 +44,11 @@ export default class ElementalReactionManager {
     [ElectroStatus, CryoStatus, new SuperConductReaction()],
   ];
 
+  private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction();
+  private swirlReaction: SwirlReaction = new SwirlReaction();
+
   public getReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus) {
-    const enemyStatus = enemy.effects.find((e) => e instanceof ElementalStatus);
+    const enemyStatus = enemy.ongoingEffects.find((e) => e instanceof ElementalStatus);
 
     if (!enemyStatus) {
       enemy.effectManager.addEffect(currentAttackStatus);
@@ -53,11 +56,11 @@ export default class ElementalReactionManager {
     }
 
     if (enemyStatus instanceof GeoStatus || currentAttackStatus instanceof GeoStatus) {
-      return new CrystallizeReaction().calcBonusDamage(character, damage);
+      return this.crystallizeReaction.calcBonusDamage(character, damage);
     }
 
     if (enemyStatus instanceof AnemoStatus || currentAttackStatus instanceof AnemoStatus) {
-      return new SwirlReaction().calcBonusDamage(character, damage);
+      return this.swirlReaction.calcBonusDamage(character, damage);
     }
 
     const combination = this.elementalCombinations.find((c) => {

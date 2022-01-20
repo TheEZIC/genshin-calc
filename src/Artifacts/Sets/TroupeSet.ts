@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class TroupeSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute troupe 2");
-    character.calculatorStats.elementalMastery.addAdditionalValue(
+    character.calculatorStats.elementalMastery.additionalValues.add(
       new StatValue(80)
     );
   }
@@ -16,7 +16,7 @@ export default class TroupeSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove troupe 2");
-    character.calculatorStats.elementalMastery.removeAdditionalValue(
+    character.calculatorStats.elementalMastery.additionalValues.remove(
       new StatValue(80)
     );
   }

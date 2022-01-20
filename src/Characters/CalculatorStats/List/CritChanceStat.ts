@@ -12,7 +12,7 @@ export default class CritChanceStat extends CritStat {
       critChance.value +
       artifactsCritChance +
       weaponCritChange +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

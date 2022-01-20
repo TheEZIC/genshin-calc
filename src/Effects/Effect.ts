@@ -23,7 +23,6 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     if (framesToRemove.length) {
       for (let frameToRemove of framesToRemove) {
         this.remove(entity);
-
         entity.ongoingEffects = entity.ongoingEffects.filter((b) => b.name !== this.name);
       }
 
@@ -39,15 +38,15 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     return !this.isActive && !this.isOnCountdown(startFrame);
   }
 
+  protected shouldRemove(): boolean {
+    return true;
+  }
+
   public activate(entity: T, startFrame: number): boolean {
     if (!this.shouldActivate(startFrame)) return false;
     this.applyEffect(entity);
     this.activationFrames.push(startFrame);
 
-    return true;
-  }
-
-  protected shouldRemove(): boolean {
     return true;
   }
 

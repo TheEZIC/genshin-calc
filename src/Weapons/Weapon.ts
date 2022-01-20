@@ -4,7 +4,7 @@ import Character from "@/Characters/Character";
 import { WeaponBaseMainStat } from "./WeaponBaseMainStat";
 import { WeaponType } from "./WeaponType";
 import WeaponManager from "@/Weapons/WeaponManager";
-import EffectManager from "@/Effects/EffectManager";
+import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 
 export default abstract class Weapon {
   public abstract type: WeaponType;

@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class TenacitySet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Tenacity 2");
-    character.calculatorStats.HP.addPrefix(new StatValue(20));
+    character.calculatorStats.HP.prefixes.add(new StatValue(20));
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +14,7 @@ export default class TenacitySet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Tenacity 2");
-    character.calculatorStats.HP.removePrefix(new StatValue(20));
+    character.calculatorStats.HP.prefixes.remove(new StatValue(20));
   }
 
   removeFourSetBonuses(character: Character): void {

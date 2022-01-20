@@ -12,7 +12,7 @@ export default class DendroDmgBonusStat extends PureStat {
     return (
       dendroDmgBonus.value +
       artifactsDendroPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

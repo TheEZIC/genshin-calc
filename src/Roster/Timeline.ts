@@ -86,6 +86,9 @@ export default class Timeline {
     let frames: number = 0;
 
     for (let i = 0; i < rotationSkills.length; i++) {
+      const prevSkill = rosterSkills[i - 1] ?? null;
+      const nextSkill = rosterSkills[i + 1] ?? null;
+
       const rotationSkill = rotationSkills[i];
       const skillItem = rosterSkills.find((s) => s.skill.name === rotationSkill.name);
 
@@ -100,7 +103,7 @@ export default class Timeline {
       });
 
       character.ongoingEffects.forEach((b) => b.update(character, frames));
-      totalRotationDmg += skill.getDamage(character, frames);
+      totalRotationDmg += skill.getDamage(character, frames, rotationSkills, i);
 
       //run something if skill end
       ongoingSkills
@@ -112,7 +115,9 @@ export default class Timeline {
 
       console.log(frames, skill.name, character.ongoingEffects.map(b => b.name));
 
+      //not considering the duration of the summons
       frames += this.calcSkillDuration(skill);
+      //considering the duration of the summons
       rotationFrames += this.calcRotationSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
     }
 

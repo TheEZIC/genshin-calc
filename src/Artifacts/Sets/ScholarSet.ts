@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class ScholarSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Scholar 2");
-    character.calculatorStats.energyRecharge.addAdditionalValue(
+    character.calculatorStats.energyRecharge.additionalValues.add(
       new StatValue(20)
     );
   }
@@ -16,7 +16,7 @@ export default class ScholarSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Scholar 2");
-    character.calculatorStats.energyRecharge.addAdditionalValue(
+    character.calculatorStats.energyRecharge.additionalValues.remove(
       new StatValue(20)
     );
   }

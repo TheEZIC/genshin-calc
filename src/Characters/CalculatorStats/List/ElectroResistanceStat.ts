@@ -5,6 +5,6 @@ export default class ElectroResistanceStat extends PureStat {
   calc(skillFilter?: SkillType): number {
     const { electroResistance } = this.character.baseStats;
 
-    return electroResistance.value + this.getAdditionalValuesSum(skillFilter);
+    return electroResistance.value + this.additionalValues.getSum(skillFilter);
   }
 }

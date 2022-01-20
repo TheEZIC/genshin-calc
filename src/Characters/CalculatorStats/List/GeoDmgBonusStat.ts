@@ -10,7 +10,7 @@ export default class GeoDmgBonusStat extends PureStat {
     return (
       geoDmgBonus.value +
       artifactsGeoPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

@@ -1,13 +1,17 @@
 import Character from "@/Characters/Character";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
+import {isIWithInitializedEffects, IWithInitializedEffects} from "@/Effects/IWithEffects";
 
 export default class SkillsManager {
   private skills: Skill[] = [];
 
   constructor(public character: Character, skills: Skill[]) {
     for (let skill of skills) {
-      skill.effectManager?.initEffects(this.character);
+      if (isIWithInitializedEffects(skill)) {
+        (skill as unknown as IWithInitializedEffects<Character>).subscribeEffects(character);
+      }
+
       this.skills.push(skill);
     }
   }

@@ -10,12 +10,12 @@ export default class AyakaTalent2Buff extends Effect<Character> {
   protected applyEffect(character: Character): void {
     character.calculatorStats
       .cryoDmgBonus
-      .addAdditionalValue(this.talentCryDmgValue)
+      .additionalValues.add(this.talentCryDmgValue)
   }
 
   protected removeEffect(character: Character): void {
     character.calculatorStats
       .cryoDmgBonus
-      .removeAdditionalValue(this.talentCryDmgValue)
+      .additionalValues.remove(this.talentCryDmgValue)
   }
 }

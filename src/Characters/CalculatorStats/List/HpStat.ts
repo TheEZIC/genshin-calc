@@ -13,11 +13,11 @@ export default class HpStat extends MainStat {
       (1 +
         (percentHP.value +
           artifactsPercentHP +
-          this.getPrefixesSum(skillFilter)) /
+          this.prefixes.getSum(skillFilter)) /
           100 +
         artifactsFlatHP +
-        this.getAdditionalValuesSum(skillFilter)) *
-      (1 + this.getAffixesSum(skillFilter) / 100)
+        this.additionalValues.getSum(skillFilter)) *
+      (1 + this.prefixes.getSum(skillFilter) / 100)
     );
   }
 }

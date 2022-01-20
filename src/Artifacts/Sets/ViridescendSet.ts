@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class ViridescendSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Viridescend 2");
-    character.calculatorStats.anemoDmgBonus.addAdditionalValue(
+    character.calculatorStats.anemoDmgBonus.additionalValues.add(
       new StatValue(15)
     );
   }
@@ -16,7 +16,7 @@ export default class ViridescendSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Viridescend 2");
-    character.calculatorStats.anemoDmgBonus.removeAdditionalValue(
+    character.calculatorStats.anemoDmgBonus.additionalValues.remove(
       new StatValue(15)
     );
   }

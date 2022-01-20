@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class BraveHeartSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute BraveHeart 2");
-    character.calculatorStats.ATK.addPrefix(new StatValue(18));
+    character.calculatorStats.ATK.prefixes.add(new StatValue(18));
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +14,7 @@ export default class BraveHeartSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove BraveHeart 2");
-    character.calculatorStats.ATK.removePrefix(new StatValue(18));
+    character.calculatorStats.ATK.prefixes.remove(new StatValue(18));
   }
 
   removeFourSetBonuses(character: Character): void {

@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class CrimsonWitchSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute CrimsonWitch 2");
-    character.calculatorStats.pyroDmgBonus.addAdditionalValue(
+    character.calculatorStats.pyroDmgBonus.additionalValues.add(
       new StatValue(15)
     );
   }
@@ -16,7 +16,7 @@ export default class CrimsonWitchSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove CrimsonWitch 2");
-    character.calculatorStats.pyroDmgBonus.removeAdditionalValue(
+    character.calculatorStats.pyroDmgBonus.additionalValues.remove(
       new StatValue(15)
     );
   }

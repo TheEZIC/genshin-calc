@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class LavawalkerSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Lavawalker 2");
-    character.calculatorStats.pyroResistance.addAdditionalValue(
+    character.calculatorStats.pyroResistance.additionalValues.add(
       new StatValue(40)
     );
   }
@@ -16,7 +16,7 @@ export default class LavawalkerSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Lavawalker 2");
-    character.calculatorStats.pyroResistance.removeAdditionalValue(
+    character.calculatorStats.pyroResistance.additionalValues.remove(
       new StatValue(40)
     );
   }

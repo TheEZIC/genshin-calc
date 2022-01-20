@@ -12,7 +12,7 @@ export default class PhysicalDmgBonusStat extends PureStat {
     return (
       physicalDmgBonus.value +
       artifactsPhysicalPercent +
-      this.getAdditionalValuesSum(skillFilter)
+      this.additionalValues.getSum(skillFilter)
     );
   }
 }

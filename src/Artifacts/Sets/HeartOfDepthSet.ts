@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class HeartOfDepthSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute HeartOfDepth 2");
-    character.calculatorStats.hydroDmgBonus.addAdditionalValue(
+    character.calculatorStats.hydroDmgBonus.additionalValues.add(
       new StatValue(15)
     );
   }
@@ -16,7 +16,7 @@ export default class HeartOfDepthSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove HeartOfDepth 2");
-    character.calculatorStats.hydroDmgBonus.removeAdditionalValue(
+    character.calculatorStats.hydroDmgBonus.additionalValues.remove(
       new StatValue(15)
     );
   }

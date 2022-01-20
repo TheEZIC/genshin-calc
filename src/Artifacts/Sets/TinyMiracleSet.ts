@@ -5,25 +5,25 @@ import Character from "@/Characters/Character";
 export default class TinyMiracleSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute TinyMiracle 2");
-    character.calculatorStats.hydroResistance.addAdditionalValue(
+    character.calculatorStats.hydroResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.pyroResistance.addAdditionalValue(
+    character.calculatorStats.pyroResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.dendroResistance.addAdditionalValue(
+    character.calculatorStats.dendroResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.cryoResistance.addAdditionalValue(
+    character.calculatorStats.cryoResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.electroResistance.addAdditionalValue(
+    character.calculatorStats.electroResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.geoResistance.addAdditionalValue(
+    character.calculatorStats.geoResistance.additionalValues.add(
       new StatValue(20)
     );
-    character.calculatorStats.anemoResistance.addAdditionalValue(
+    character.calculatorStats.anemoResistance.additionalValues.add(
       new StatValue(20)
     );
   }
@@ -34,25 +34,25 @@ export default class TinyMiracleSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove TinyMiracle 2");
-    character.calculatorStats.hydroResistance.removeAdditionalValue(
+    character.calculatorStats.hydroResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.pyroResistance.removeAdditionalValue(
+    character.calculatorStats.pyroResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.dendroResistance.removeAdditionalValue(
+    character.calculatorStats.dendroResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.cryoResistance.removeAdditionalValue(
+    character.calculatorStats.cryoResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.electroResistance.removeAdditionalValue(
+    character.calculatorStats.electroResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.geoResistance.removeAdditionalValue(
+    character.calculatorStats.geoResistance.additionalValues.remove(
       new StatValue(20)
     );
-    character.calculatorStats.anemoResistance.removeAdditionalValue(
+    character.calculatorStats.anemoResistance.additionalValues.remove(
       new StatValue(20)
     );
   }

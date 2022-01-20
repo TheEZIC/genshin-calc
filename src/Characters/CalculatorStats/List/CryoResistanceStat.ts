@@ -5,6 +5,6 @@ export default class CryoResistanceStat extends PureStat {
   calc(skillFilter?: SkillType): number {
     const { cryoResistance } = this.character.baseStats;
 
-    return cryoResistance.value + this.getAdditionalValuesSum(skillFilter);
+    return cryoResistance.value + this.additionalValues.getSum(skillFilter);
   }
 }

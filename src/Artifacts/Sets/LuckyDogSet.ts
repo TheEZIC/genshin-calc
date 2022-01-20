@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class LuckyDogSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute LuckyDog 2");
-    character.calculatorStats.DEF.addAdditionalValue(new StatValue(100));
+    character.calculatorStats.DEF.additionalValues.add(new StatValue(100));
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +14,7 @@ export default class LuckyDogSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove LuckyDog 2");
-    character.calculatorStats.DEF.removeAdditionalValue(new StatValue(100));
+    character.calculatorStats.DEF.additionalValues.remove(new StatValue(100));
   }
 
   removeFourSetBonuses(character: Character): void {

@@ -21,7 +21,7 @@ export default abstract class Character implements IWithOngoingEffects {
   public talent1: CharacterTalent | null = null;
   public talent2: CharacterTalent | null = null;
 
-  public listeners: SkillsListeners<Character> = new SkillsListeners();
+  public listeners: SkillsListeners = new SkillsListeners();
 
   public abstract baseStats: CharacterBaseStats;
   public abstract skillManager: SkillsManager;

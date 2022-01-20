@@ -5,7 +5,7 @@ import Character from "@/Characters/Character";
 export default class ArchaicSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {
     console.log("execute Archaic 2");
-    character.calculatorStats.geoDmgBonus.addAdditionalValue(new StatValue(15));
+    character.calculatorStats.geoDmgBonus.additionalValues.add(new StatValue(15));
   }
 
   computeFourPieceBonuses(character: Character): void {
@@ -14,7 +14,7 @@ export default class ArchaicSet extends ArtifactSet {
 
   removeTwoSetBonuses(character: Character): void {
     console.log("remove Archaic 2");
-    character.calculatorStats.geoDmgBonus.removeAdditionalValue(
+    character.calculatorStats.geoDmgBonus.additionalValues.remove(
       new StatValue(15)
     );
   }
