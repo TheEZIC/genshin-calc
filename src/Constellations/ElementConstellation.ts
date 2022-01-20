@@ -1,15 +1,15 @@
 import Character from "@/Characters/Character";
-import { IConstellation } from "@/Constellations/IConstellation";
+import Constellation from "@/Constellations/Constellation";
 import { SkillType } from "@/Skills/SkillType";
 
-export default class ElementConstellation implements IConstellation {
-  public activate(character: Character): void {
+export default class ElementConstellation extends Constellation {
+  public applyEffect(character: Character): void {
     character.skillManager
       .getSkillByType(SkillType.Elemental)
       ?.addAdditionalLvl(3);
   }
 
-  public deactivate(character: Character): void {
+  public removeEffect(character: Character): void {
     character.skillManager
       .getSkillByType(SkillType.Elemental)
       ?.removeAdditionalLvl(3);
