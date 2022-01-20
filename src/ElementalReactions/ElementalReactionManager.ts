@@ -48,7 +48,9 @@ export default class ElementalReactionManager {
   private swirlReaction: SwirlReaction = new SwirlReaction();
 
   public getReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus) {
-    const enemyStatus = enemy.ongoingEffects.find((e) => e instanceof ElementalStatus);
+    const enemyStatus = enemy.ongoingEffects.find((e) => {
+      return e instanceof ElementalStatus;
+    });
 
     if (!enemyStatus) {
       enemy.effectManager.addEffect(currentAttackStatus);

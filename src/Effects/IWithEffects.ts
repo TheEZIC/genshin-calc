@@ -9,6 +9,6 @@ export interface IWithInitializedEffects<T extends IWithOngoingEffects> {
   unsubscribeEffects(character: T): void;
 }
 
-export function isIWithInitializedEffects(obj: any): Boolean {
+export function isIWithInitializedEffects(obj: any): obj is IWithInitializedEffects<any> {
   return obj["effectManager"] && obj["effectsToInitialize"]
 }

@@ -9,7 +9,7 @@ export default class SkillsManager {
   constructor(public character: Character, skills: Skill[]) {
     for (let skill of skills) {
       if (isIWithInitializedEffects(skill)) {
-        (skill as unknown as IWithInitializedEffects<Character>).subscribeEffects(character);
+        skill.subscribeEffects(character);
       }
 
       this.skills.push(skill);
