@@ -1,126 +1,179 @@
 import Skill from "@/Skills/Skill";
-import NormalSkill from "@/Skills/NormalSkill";
-import SummonSkill from "@/Skills/SummonSkill";
-import {SkillType} from "@/Skills/SkillType";
+import {IOngoingSkill, ISkillsItem} from "@/Roster/DamageCalculator";
+import Effect from "@/Effects/Effect";
 import Character from "@/Characters/Character";
-import Roster from "@/Roster/Roster";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import {ISubscriber} from "@/Helpers/Listener";
+import {IAnySKillListenerArgs} from "@/Skills/SkillsListeners";
+import SummonSkill from "@/Skills/SummonSkill";
 
-interface ISkillsItem {
-  character: Character;
-  skill: Skill;
+enum TimelineItemType {
+  Skill,
+  Effect,
 }
 
-export default class Timeline {
+interface ITimelineBase {
+  duration: number;
+  startFrame: number;
+  endFrame: number;
+}
+
+interface ITimelineItem extends ITimelineBase {
+  type: TimelineItemType;
+  item: Effect<any> | Skill;
+}
+
+interface ITimelineChunk extends ITimelineBase {
+  activeSkills: Skill[];
+  activeEffects: Effect<any>[];
+}
+
+export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>> {
   constructor(
-    private roster: Roster,
+    private rotationSkills: Skill[],
+    private rosterSkills: ISkillsItem[],
   ) {
+    this.generateTimeline();
+    this.generateChunks();
   }
 
-  private elementalReactionManager = new ElementalReactionManager();
+  public timelineItems: ITimelineItem[] = [];
 
-  private getCharactersSkills(): ISkillsItem[] {
-    return this.roster.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
+  private get timelineItemsSortedByStartFrame(): ITimelineItem[] {
+    return this.timelineItems.sort((a, b) => a.startFrame - b.startFrame);
   }
 
-  private calcRotationSkillDuration(
-    skills: ISkillsItem[],
-    rotationSkills: Skill[],
-    rotationSkill: Skill,
-    rotationSkillIndex: number,
-  ): number {
-    const skillItemIndex = skills.findIndex((s) => s.skill.name === rotationSkill.name);
+  private get timelineItemsSortedByEndFrame(): ITimelineItem[] {
+    return this.timelineItems.sort((a, b) => a.endFrame - b.endFrame);
+  }
 
-    if (skillItemIndex === -1) return 0;
+  private get timelineItemsSortedByDuration(): ITimelineItem[] {
+    return this.timelineItems.sort((a, b) => a.duration - b.duration);
+  }
 
-    const skillItem = skills[skillItemIndex];
-    const nextSkill: Skill | undefined = skills[skillItemIndex + 1]?.skill;
-    const prevSkill: Skill | undefined = skills[skillItemIndex - 1]?.skill;
+  private getTimelineItemAt(frame: number, type: TimelineItemType) {
+    return this.timelineItems.filter((t) => (
+      t.startFrame <= frame
+      && t.endFrame > frame
+      && t.type === type
+    ));
+  }
 
-    const { skill } = skillItem;
-    let temp = 0;
+  public chunks: ITimelineChunk[] = [];
 
-    if (skill instanceof NormalSkill) {
-      temp += skill.frames;
-    }
+  private generateChunks() {
+    const skillsOnly = this.timelineItems.filter((t) => t.type === TimelineItemType.Skill);
+    const startFrames = this.timelineItems.map((t) => t.startFrame);
+    const endFrames = this.timelineItems.map((t) => t.startFrame + t.duration);
+    const allFrames: number[] = [...startFrames, ...endFrames];
+    const uniqueAllFrames = [...new Set(allFrames)].sort((a, b) => a - b);
 
-    if (skill instanceof SummonSkill) {
-      const remainingSkills = rotationSkills.slice(rotationSkillIndex + 1);
-      const remainingSkillsFrames = remainingSkills.reduce((c, d) => c + d.frames, 0);
+    for (let i = 0; i < uniqueAllFrames.length; i++) {
+      const currentFrame = uniqueAllFrames[i];
+      const nextFrame = uniqueAllFrames[i + 1];
+      const skills = new Set<ITimelineItem>();
+      const effects = new Set<ITimelineItem>();
 
-      temp += skill.summonUsageFrames;
+      this.getTimelineItemAt(currentFrame, TimelineItemType.Skill).forEach((t) => skills.add(t));
+      this.getTimelineItemAt(currentFrame, TimelineItemType.Effect).forEach((t) => effects.add(t));
 
-      if (skill.summonDurationFrames > remainingSkillsFrames) {
-        temp += skill.summonDurationFrames - remainingSkillsFrames;
+      if (skills.size === 0) {
+        continue;
       }
-    }
 
-    if (skill instanceof NormalSkill
-      && nextSkill?.strategy.type === SkillType.Dash
-      && skill.canBeCanceled
-    ) {
-      temp -= skill.frames - skill.canceledFrames;
+      this.chunks.push({
+        startFrame: currentFrame,
+        endFrame: nextFrame,
+        duration: nextFrame - currentFrame,
+        activeSkills: Array.from(skills).filter(s => s.item instanceof Skill).map(s => s.item as Skill),
+        activeEffects: Array.from(effects).filter(s => s.item instanceof Effect).map(e => e.item as Effect<any>),
+      });
     }
-
-    return temp;
   }
 
-  private calcSkillDuration(skill: Skill) {
-    if (skill instanceof SummonSkill)
-      return skill.summonUsageFrames;
-
-    return skill.frames;
-  }
-
-  public calcRotation(rotationSkills: Skill[]): number {
-    const rosterSkills = this.getCharactersSkills();
-
-    interface IOngoingSkill {
-      startTime: number;
-      skill: Skill;
-    }
-
+  private generateTimeline() {
+    const {rosterSkills, rotationSkills} = this;
+    const rotationCharacters: Character[] = [];
     let ongoingSkills: IOngoingSkill[] = [];
-    let totalRotationDmg: number = 0
-    let rotationFrames: number = 0;
-    let frames: number = 0;
+    let frames: number = 0; //considering the duration of the summons (need for damage calculation)
+    let prevSkill: Skill | null = null;
+
+    rosterSkills.forEach((rs) => {
+      if (!rotationCharacters.includes(rs.character))
+        rotationCharacters.push(rs.character);
+    });
+
+    for (let character of rotationCharacters) {
+      character.onAnyEffectStarted.subscribe(this);
+    }
 
     for (let i = 0; i < rotationSkills.length; i++) {
-      const prevSkill = rosterSkills[i - 1] ?? null;
-      const nextSkill = rosterSkills[i + 1] ?? null;
-
       const rotationSkill = rotationSkills[i];
       const skillItem = rosterSkills.find((s) => s.skill.name === rotationSkill.name);
 
       if (!skillItem) continue;
 
       const {skill, character} = skillItem;
+      const duration = skill.frames;
+      const startFrame = frames;
+      const endFrame = startFrame + skill.timelineDurationFrames;
+      const onEndStartFrame = frames
+        - (prevSkill?.frames ?? 0)
+        + (prevSkill?.timelineDurationFrames ?? 0);
 
-      //push to active skills
-      ongoingSkills.push({
-        startTime: frames,
-        skill,
-      });
+      if (skill instanceof SummonSkill) {
+        this.timelineItems.push({
+          type: TimelineItemType.Skill,
+          startFrame: endFrame,
+          endFrame: duration,
+          duration: duration - endFrame,
+          item: rotationSkill,
+        });
+      } else {
+        this.timelineItems.push({
+          type: TimelineItemType.Skill,
+          startFrame,
+          endFrame,
+          duration,
+          item: rotationSkill,
+        });
+      }
 
+      ongoingSkills.push({startTime: frames, skill});
       character.ongoingEffects.forEach((b) => b.update(character, frames));
-      totalRotationDmg += skill.getDamage(character, frames, rotationSkills, i);
+      skill.getDamage(character, frames, rotationSkills, i);
 
-      //run something if skill end
       ongoingSkills
-        .filter((s) => s.startTime + s.skill.frames < frames)
-        .forEach((s) => s.skill.strategy.runEndListener(character, frames));
+        .filter((s) => s.startTime + s.skill.frames <= frames)
+        .map((s) => {
+          s.skill.strategy.runEndListener(character, onEndStartFrame)
+          return s;
+        })
+        .filter((s) => !(s.startTime + s.skill.frames <= frames));
 
-      //remove ended skills from active skills array
-      ongoingSkills = ongoingSkills.filter((s) => !(s.startTime + s.skill.frames < frames));
-
-      console.log(frames, skill.name, character.ongoingEffects.map(b => b.name));
-
-      //not considering the duration of the summons
-      frames += this.calcSkillDuration(skill);
-      //considering the duration of the summons
-      rotationFrames += this.calcRotationSkillDuration(rosterSkills, rotationSkills, rotationSkill, i);
+      prevSkill = skill;
+      frames += skill.timelineDurationFrames;
     }
 
-    return totalRotationDmg / (rotationFrames / 60);
+    for (let character of rotationCharacters) {
+      character.onAnyEffectStarted.unsubscribe(this);
+    }
+
+    this.timelineItems = this.timelineItems.sort((a, b) => a.startFrame - b.startFrame);
+
+    return this.timelineItems;
   }
+
+  runOnEvent(args: IAnySKillListenerArgs<any>) {
+    const startFrame = args.startTime;
+    const duration = args.effect.framesDuration;
+    const endFrame = startFrame + duration;
+
+    this.timelineItems.push({
+      type: TimelineItemType.Effect,
+      startFrame,
+      endFrame,
+      duration,
+      item: args.effect,
+    });
+  };
 }

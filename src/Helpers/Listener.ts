@@ -1,5 +1,5 @@
 export interface ISubscriber<SubscriberArgs = void > {
-  runOnListener: (args: SubscriberArgs) => void;
+  runOnEvent: (args: SubscriberArgs) => void;
 }
 
 export default class Listener<SubscriberArgs = void> {
@@ -20,6 +20,6 @@ export default class Listener<SubscriberArgs = void> {
   }
 
   public notifyAll(args: SubscriberArgs): void {
-    this.subscribers.forEach((s) => s.runOnListener(args));
+    this.subscribers.forEach((s) => s.runOnEvent(args));
   }
 }

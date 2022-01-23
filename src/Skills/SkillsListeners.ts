@@ -1,9 +1,17 @@
 import Listener from "@/Helpers/Listener";
 import Character from "@/Characters/Character";
+import Effect from "@/Effects/Effect";
+import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
 export interface ISkillListenerArgs<T> {
   entity: T;
   startTime: number;
+}
+
+export interface IAnySKillListenerArgs<T extends IWithOngoingEffects> {
+  entity: T;
+  startTime: number;
+  effect: Effect<T>;
 }
 
 export default class SkillsListeners {

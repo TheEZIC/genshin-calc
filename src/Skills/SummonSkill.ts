@@ -17,6 +17,10 @@ export default abstract class SummonSkill extends NormalSkill {
     return this.usageFrames + this.durationFrames;
   }
 
+  public override get timelineDurationFrames(): number {
+    return this.summonUsageFrames;
+  }
+
   protected abstract usageValue: SkillValue;
   protected abstract summonValue: SkillValue;
 

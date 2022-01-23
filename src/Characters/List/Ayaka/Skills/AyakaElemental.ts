@@ -4,12 +4,15 @@ import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import ElementalSkillStrategy from "@/Skills/SkillStrategy/ElementalSkillStrategy";
 import {ICalcDamageArgs} from "@/Skills/Skill";
+import {SkillTargetType} from "@/Skills/SkillTargetType";
 
 export default class AyakaElemental extends NormalSkill {
-  strategy: SkillStrategy = new ElementalSkillStrategy(this);
+  public strategy: SkillStrategy = new ElementalSkillStrategy(this);
 
-  frames: number = 56;
+  public frames: number = 56;
   protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);
+
+  public skillTargetType: SkillTargetType = SkillTargetType.AOE;
 
   protected calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();

@@ -7,9 +7,10 @@ import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import CharacterBaseStats from "./CharacterBaseStats";
 import {VisionType} from "@/VisionType";
 import Effect from "@/Effects/Effect";
-import SkillsListeners from "@/Skills/SkillsListeners";
+import SkillsListeners, {IAnySKillListenerArgs, ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import CharacterTalent from "@/Characters/CharacterTalent";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
+import Listener from "@/Helpers/Listener";
 
 export default abstract class Character implements IWithOngoingEffects {
   public name = this.constructor.name;
@@ -17,6 +18,7 @@ export default abstract class Character implements IWithOngoingEffects {
   public abstract vision: VisionType;
 
   public ongoingEffects: Effect<Character>[] = [];
+  public onAnyEffectStarted: Listener<IAnySKillListenerArgs<Character>> = new Listener();
 
   public talent1: CharacterTalent | null = null;
   public talent2: CharacterTalent | null = null;

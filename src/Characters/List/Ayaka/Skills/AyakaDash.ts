@@ -8,6 +8,7 @@ import Effect from "@/Effects/Effect";
 import {IWithInitializedEffects} from "@/Effects/IWithEffects";
 import {ICalcDamageArgs} from "@/Skills/Skill";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
+import {SkillTargetType} from "@/Skills/SkillTargetType";
 
 export default class AyakaDash extends NormalSkill implements IWithInitializedEffects<Character> {
   strategy: SkillStrategy = new DashSkillStrategy(this)
@@ -15,6 +16,8 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
 
   frames: number = 20;
   protected value: SkillValue = new SkillValue(0, 0);
+
+  skillTargetType: SkillTargetType = SkillTargetType.AOE;
 
   public effectsToInitialize: Effect<Character>[] = [
     new AyakaDashBuff(),
@@ -24,12 +27,12 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
 
   public subscribeEffects(character: Character): void {
     const [ayakaDashBuff] = this.effectsToInitialize;
-    character.listeners.DashSkillStarted.subscribe(ayakaDashBuff);
+    character.listeners.DashSkillEnded.subscribe(ayakaDashBuff);
   }
 
   public unsubscribeEffects(character: Character): void {
     const [ayakaDashBuff] = this.effectsToInitialize;
-    character.listeners.DashSkillStarted.unsubscribe(ayakaDashBuff);
+    character.listeners.DashSkillEnded.unsubscribe(ayakaDashBuff);
   }
 
   protected override calcDamage({character}: ICalcDamageArgs): number {

@@ -7,7 +7,7 @@ export default abstract class SkillStrategy {
     protected skill: Skill,
   ) {
   }
-
+  
   public abstract type: SkillType;
 
   public abstract runStartListener(character: Character, startTime: number): void;

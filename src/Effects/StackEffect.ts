@@ -32,8 +32,8 @@ export default abstract class StackEffect<T extends IWithOngoingEffects> extends
     return true;
   }
 
-  public override remove(entity: T): boolean {
-    if (!super.remove(entity)) return false;
+  public override deactivate(entity: T): boolean {
+    if (!super.deactivate(entity)) return false;
     this.setStacks(this.stacks - 1);
     return true;
   }

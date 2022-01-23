@@ -6,13 +6,13 @@ export default class AyakaTalent1 extends CharacterTalent{
 
   activate(): void {
     this.character.listeners
-      .ElementalSkillStarted
+      .ElementalSkillEnded
       .subscribe(this.talent1Buff);
   }
 
   deactivate(): void {
     this.character.listeners
-      .ElementalSkillStarted
+      .ElementalSkillEnded
       .unsubscribe(this.talent1Buff);
   }
 }

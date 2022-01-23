@@ -9,6 +9,6 @@ export default class AyakaTalent2 extends CharacterTalent{
   }
 
   deactivate(): void {
-    this.character.listeners.ElementalSkillEnded.unsubscribe(this.talent2Buff);
+    this.character.listeners.DashSkillEnded.unsubscribe(this.talent2Buff);
   }
 }

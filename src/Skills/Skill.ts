@@ -2,6 +2,7 @@ import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
+import {SkillTargetType} from "@/Skills/SkillTargetType";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -14,6 +15,8 @@ export interface ICalcDamageArgs {
 export default abstract class Skill {
   public abstract strategy: SkillStrategy;
   public abstract frames: number;
+
+  public abstract skillTargetType: SkillTargetType;
 
   public effectManager: EffectManager<Character> | null = null;
 
@@ -38,6 +41,10 @@ export default abstract class Skill {
 
   public get lvl(): number {
     return this.currentLvl + this.sumOfAdditionalLvls;
+  }
+
+  public get timelineDurationFrames(): number {
+    return this.frames;
   }
 
   public changeLvl(lvl: number): this {
