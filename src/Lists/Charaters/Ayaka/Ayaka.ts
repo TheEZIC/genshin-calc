@@ -1,9 +1,5 @@
 import Character from "@/Characters/Character";
 import CharacterBaseStats from "@/Characters/CharacterBaseStats";
-import AyakaC1 from "@/Characters/List/Ayaka/Constellation/AyakaC1";
-import AyakaC2 from "@/Characters/List/Ayaka/Constellation/AyakaC2";
-import AyakaC4 from "@/Characters/List/Ayaka/Constellation/AyakaC4";
-import AyakaC6 from "@/Characters/List/Ayaka/Constellation/AyakaC6";
 import BurstConstellation from "@/Constellations/BurstConstellation";
 import ConstellationsManager from "@/Constellations/ConstellationsManager";
 import ElementConstellation from "@/Constellations/ElementConstellation";
@@ -18,10 +14,15 @@ import AyakaA5 from "./Skills/Attacks/AyakaA5";
 import AyakaBurst from "./Skills/AyakaBurst";
 import AyakaElemental from "./Skills/AyakaElemental";
 import {VisionType} from "@/VisionType";
-import AyakaDash from "@/Characters/List/Ayaka/Skills/AyakaDash";
 import CharacterTalent from "@/Characters/CharacterTalent";
-import AyakaTalent1 from "@/Characters/List/Ayaka/Talents/AyakaTalent1";
-import AyakaTalent2 from "@/Characters/List/Ayaka/Talents/AyakaTalent2";
+import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
+import AyakaDash from "@/Lists/Charaters/Ayaka/Skills/AyakaDash";
+import AyakaTalent1 from "@/Lists/Charaters/Ayaka/Talents/AyakaTalent1";
+import AyakaTalent2 from "@/Lists/Charaters/Ayaka/Talents/AyakaTalent2";
+import AyakaC1 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC1";
+import AyakaC2 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC2";
+import AyakaC4 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC4";
+import AyakaC6 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC6";
 
 export default class Ayaka extends Character {
   public vision: VisionType = VisionType.Cryo;
@@ -33,6 +34,7 @@ export default class Ayaka extends Character {
     new AyakaA3(),
     new AyakaA4(),
     new AyakaA5(),
+    new AyakaHoldAttack(),
     new AyakaDash(),
     new AyakaElemental(),
     new AyakaBurst()

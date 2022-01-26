@@ -6,7 +6,7 @@ export default abstract class NormalSkill extends Skill {
 
   public get MVs(): number {
     const dmg = this.value.getValueAtLvl(this.lvl);
-    return dmg / (this.frames / 60) / 100;
+    return dmg / (this.frames / (this.isMVsMode ? 60 : 1)) / 100;
   }
 
   public canceledFrames: number = 0;
@@ -14,6 +14,6 @@ export default abstract class NormalSkill extends Skill {
 
   public get canceledMVs(): number {
     const dmg = this.value.getValueAtLvl(this.currentLvl);
-    return dmg / (this.canceledFrames / 60) / 100;
+    return dmg / (this.canceledFrames / (this.isMVsMode ? 60 : 1)) / 100;
   }
 }

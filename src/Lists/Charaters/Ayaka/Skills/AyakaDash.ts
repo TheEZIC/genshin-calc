@@ -3,12 +3,13 @@ import NormalSkill from "@/Skills/NormalSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import DashSkillStrategy from "@/Skills/SkillStrategy/DashSkillStrategy";
-import AyakaDashBuff from "@/Characters/List/Ayaka/Skills/Buffs/AyakaDashBuff";
 import Effect from "@/Effects/Effect";
 import {IWithInitializedEffects} from "@/Effects/IWithEffects";
 import {ICalcDamageArgs} from "@/Skills/Skill";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
+import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import AyakaDashBuff from "@/Lists/Charaters/Ayaka/Skills/Buffs/AyakaDashBuff";
 
 export default class AyakaDash extends NormalSkill implements IWithInitializedEffects<Character> {
   strategy: SkillStrategy = new DashSkillStrategy(this)
@@ -17,7 +18,8 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
   frames: number = 20;
   protected value: SkillValue = new SkillValue(0, 0);
 
-  skillTargetType: SkillTargetType = SkillTargetType.AOE;
+  targetType: SkillTargetType = SkillTargetType.AOE;
+  damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
   public effectsToInitialize: Effect<Character>[] = [
     new AyakaDashBuff(),

@@ -1,5 +1,3 @@
-import GladiatorSet from "@/Artifacts/Sets/GladiatorSet";
-import TroupeSet from "@/Artifacts/Sets/TroupeSet";
 import ArtifactCirclet from "@/Artifacts/Type/ArtifactCirclet";
 import ArtifactFlower from "@/Artifacts/Type/ArtifactFlower";
 import ArtifactGoblet from "@/Artifacts/Type/ArtifactGoblet";
@@ -7,20 +5,21 @@ import ArtifactPlume from "@/Artifacts/Type/ArtifactPlume";
 import ArtifactSands from "@/Artifacts/Type/ArtifactSands";
 import Stat from "@/BaseStats/Stat";
 import { StatType } from "@/BaseStats/StatType";
-import Ayaka from "@/Characters/List/Ayaka/Ayaka";
-import AyakaA1 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA1";
-import AyakaA2 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA2";
-import AyakaA3 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA3";
-import AyakaA4 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
-import AyakaA5 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA5";
-import AyakaBurst from "@/Characters/List/Ayaka/Skills/AyakaBurst";
-import AyakaElemental from "@/Characters/List/Ayaka/Skills/AyakaElemental";
-import AyakaDash from "@/Characters/List/Ayaka/Skills/AyakaDash";
-import { SkillType } from "@/Skills/SkillType";
-import WolfGravestoneWeapon from "@/Weapons/List/Claymores/WolfGravestoneWeapon";
 
 import Roster from "@/Roster/Roster";
 import "./paths";
+import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
+import TroupeSet from "@/Lists/ArtifactsSets/TroupeSet";
+import GladiatorSet from "@/Lists/ArtifactsSets/GladiatorSet";
+import WolfGravestoneWeapon from "@/Lists/Weapons/Claymores/WolfGravestoneWeapon";
+import AyakaBurst from "@/Lists/Charaters/Ayaka/Skills/AyakaBurst";
+import AyakaElemental from "@/Lists/Charaters/Ayaka/Skills/AyakaElemental";
+import AyakaDash from "@/Lists/Charaters/Ayaka/Skills/AyakaDash";
+import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
+import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
+import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
+import AyakaA5 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA5";
 
 const roster = new Roster();
 roster.addCharacter(new Ayaka());
@@ -63,12 +62,12 @@ char.weaponManager.changeRefinement(1);
 
 char.constellationsManager.activateConstellation(3);
 
-char.skillManager.changeLvl(10, SkillType.NormalAttack);
+//char.skillManager.changeLvl(10, SkillType.NormalAttack);
 //char.skillManager.changeLvl(10, SkillType.Burst);
 
 roster.addEnemy();
-roster.addEnemy();
-roster.addEnemy();
+// roster.addEnemy();
+// roster.addEnemy();
 
 const dmg = roster.timeline.calcRotation([
   new AyakaBurst(),

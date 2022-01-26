@@ -5,20 +5,22 @@ import SkillStrategy from "@/Skills/SkillStrategy";
 import HoldAttackSkillStrategy from "@/Skills/SkillStrategy/HoldAttackSkillStrategy";
 import {ICalcDamageArgs} from "@/Skills/Skill";
 import {SkillType} from "@/Skills/SkillType";
-import AyakaA1 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA1";
-import AyakaA2 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA2";
-import AyakaA3 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA3";
-import AyakaA4 from "@/Characters/List/Ayaka/Skills/Attacks/AyakaA4";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
+import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
+import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
+import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 
-export default class AyakaChargedAttack extends NormalSkill implements IMultipleHitSkill {
+export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
   public strategy: SkillStrategy = new HoldAttackSkillStrategy(this);
   public frames: number = 0;
   public hits: number = 3;
 
   protected value: SkillValue = new SkillValue(55.13 * this.hits, (59.61 - 55.13) * this.hits);
 
-  public skillTargetType: SkillTargetType = SkillTargetType.AOE;
+  public targetType: SkillTargetType = SkillTargetType.AOE;
+  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
   protected calcDamage({character, prevSkill}: ICalcDamageArgs): number {
     if (!prevSkill) {

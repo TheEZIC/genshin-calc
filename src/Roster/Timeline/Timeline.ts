@@ -2,11 +2,11 @@ import Skill from "@/Skills/Skill";
 import {IOngoingSkill, ISkillsItem} from "@/Roster/DamageCalculator";
 import Effect from "@/Effects/Effect";
 import Character from "@/Characters/Character";
-import {ISubscriber} from "@/Helpers/Listener";
-import {IAnySKillListenerArgs} from "@/Skills/SkillsListeners";
 import SummonSkill from "@/Skills/SummonSkill";
+import Roster from "@/Roster/Roster";
+import {CharactersEffectsSubscriber} from "@/Roster/Timeline/CharactersEffectsSubscriber";
 
-enum TimelineItemType {
+export enum TimelineItemType {
   Skill,
   Effect,
 }
@@ -20,21 +20,26 @@ interface ITimelineBase {
 interface ITimelineItem extends ITimelineBase {
   type: TimelineItemType;
   item: Effect<any> | Skill;
+  characterSnapshot: Character;
 }
 
 interface ITimelineChunk extends ITimelineBase {
-  activeSkills: Skill[];
-  activeEffects: Effect<any>[];
+  activeSkills: ITimelineItem[];
+  activeEffects: ITimelineItem[];
 }
 
-export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>> {
+export default class Timeline {
   constructor(
+    private roster: Roster,
     private rotationSkills: Skill[],
     private rosterSkills: ISkillsItem[],
   ) {
     this.generateTimeline();
     this.generateChunks();
   }
+
+  private chaptersEffectsSubscriber = new CharactersEffectsSubscriber(this);
+  //private enemyEffectsSubscriber = new CharactersEffectsSubscriber(this);
 
   public timelineItems: ITimelineItem[] = [];
 
@@ -84,8 +89,8 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
         startFrame: currentFrame,
         endFrame: nextFrame,
         duration: nextFrame - currentFrame,
-        activeSkills: Array.from(skills).filter(s => s.item instanceof Skill).map(s => s.item as Skill),
-        activeEffects: Array.from(effects).filter(s => s.item instanceof Effect).map(e => e.item as Effect<any>),
+        activeSkills: Array.from(skills).filter(s => s.item instanceof Skill),
+        activeEffects: Array.from(effects).filter(s => s.item instanceof Effect),
       });
     }
   }
@@ -93,8 +98,8 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
   private generateTimeline() {
     const {rosterSkills, rotationSkills} = this;
     const rotationCharacters: Character[] = [];
-    let ongoingSkills: IOngoingSkill[] = [];
-    let frames: number = 0; //considering the duration of the summons (need for damage calculation)
+    let ongoingSkills: Skill[] = [];
+    let frames: number = 0;
     let prevSkill: Skill | null = null;
 
     rosterSkills.forEach((rs) => {
@@ -103,7 +108,7 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
     });
 
     for (let character of rotationCharacters) {
-      character.onAnyEffectStarted.subscribe(this);
+      this.chaptersEffectsSubscriber.subscribe(character);
     }
 
     for (let i = 0; i < rotationSkills.length; i++) {
@@ -113,6 +118,15 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
       if (!skillItem) continue;
 
       const {skill, character} = skillItem;
+      const characterSnapshot = character;
+
+      ongoingSkills.push(skill);
+      skill.getDamage({
+        character,
+        skills: rotationSkills,
+        currentSkillIndex: i
+      });
+
       const duration = skill.frames;
       const startFrame = frames;
       const endFrame = startFrame + skill.timelineDurationFrames;
@@ -127,6 +141,7 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
           endFrame: duration,
           duration: duration - endFrame,
           item: rotationSkill,
+          characterSnapshot,
         });
       } else {
         this.timelineItems.push({
@@ -135,45 +150,21 @@ export default class Timeline implements ISubscriber<IAnySKillListenerArgs<any>>
           endFrame,
           duration,
           item: rotationSkill,
+          characterSnapshot,
         });
       }
 
-      ongoingSkills.push({startTime: frames, skill});
-      character.ongoingEffects.forEach((b) => b.update(character, frames));
-      skill.getDamage(character, frames, rotationSkills, i);
-
-      ongoingSkills
-        .filter((s) => s.startTime + s.skill.frames <= frames)
-        .map((s) => {
-          s.skill.strategy.runEndListener(character, onEndStartFrame)
-          return s;
-        })
-        .filter((s) => !(s.startTime + s.skill.frames <= frames));
 
       prevSkill = skill;
       frames += skill.timelineDurationFrames;
     }
 
     for (let character of rotationCharacters) {
-      character.onAnyEffectStarted.unsubscribe(this);
+      this.chaptersEffectsSubscriber.unsubscribe(character);
     }
 
     this.timelineItems = this.timelineItems.sort((a, b) => a.startFrame - b.startFrame);
 
     return this.timelineItems;
   }
-
-  runOnEvent(args: IAnySKillListenerArgs<any>) {
-    const startFrame = args.startTime;
-    const duration = args.effect.framesDuration;
-    const endFrame = startFrame + duration;
-
-    this.timelineItems.push({
-      type: TimelineItemType.Effect,
-      startFrame,
-      endFrame,
-      duration,
-      item: args.effect,
-    });
-  };
 }

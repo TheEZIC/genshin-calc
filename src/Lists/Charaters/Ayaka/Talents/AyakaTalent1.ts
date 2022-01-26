@@ -1,5 +1,5 @@
 import CharacterTalent from "@/Characters/CharacterTalent";
-import AyakaTalent1Buff from "@/Characters/List/Ayaka/Talents/Buffs/AyakaTalent1Buff";
+import AyakaTalent1Buff from "@/Lists/Charaters/Ayaka/Talents/Buffs/AyakaTalent1Buff";
 
 export default class AyakaTalent1 extends CharacterTalent{
   private talent1Buff = new AyakaTalent1Buff();

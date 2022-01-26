@@ -2,6 +2,7 @@ import Character from "@/Characters/Character";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
 import {isIWithInitializedEffects, IWithInitializedEffects} from "@/Effects/IWithEffects";
+import Listener from "@/Helpers/Listener";
 
 export default class SkillsManager {
   private skills: Skill[] = [];
@@ -15,6 +16,9 @@ export default class SkillsManager {
       this.skills.push(skill);
     }
   }
+
+  public onAnySkillStarted: Listener<Skill> = new Listener<Skill>();
+  public onAnySkillEnded: Listener<Skill> = new Listener<Skill>();
 
   public get allSkills() {
     return this.skills;

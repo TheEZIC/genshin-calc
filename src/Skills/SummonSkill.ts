@@ -13,12 +13,12 @@ export default abstract class SummonSkill extends NormalSkill {
     return this.summonDurationFrames;
   }
 
-  public get frames() {
-    return this.usageFrames + this.durationFrames;
+  public override get timelineDurationFrames(): number {
+    return this.usageFrames;
   }
 
-  public override get timelineDurationFrames(): number {
-    return this.summonUsageFrames;
+  public get frames() {
+    return this.usageFrames + this.durationFrames;
   }
 
   protected abstract usageValue: SkillValue;
@@ -26,11 +26,11 @@ export default abstract class SummonSkill extends NormalSkill {
 
   public get usageMVs(): number {
     const dmg = this.usageValue.getValueAtLvl(this.lvl);
-    return dmg / (this.usageFrames / 60) / 100;
+    return dmg / (this.usageFrames / (this.isMVsMode ? 60 : 1)) / 100;
   }
 
   public get durationMVs(): number {
     const dmg = this.summonValue.getValueAtLvl(this.lvl);
-    return dmg / (this.durationFrames / 60) / 100;
+    return dmg / (this.durationFrames / (this.isMVsMode ? 60 : 1)) / 100;
   }
 }

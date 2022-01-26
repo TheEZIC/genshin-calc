@@ -3,6 +3,8 @@ import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
+import lodash from "lodash";
+import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -12,11 +14,19 @@ export interface ICalcDamageArgs {
   nextSkills: Skill[];
 }
 
+export interface IGetDamageArgs {
+  character: Character;
+  skills: Skill[];
+  currentSkillIndex: number;
+  mvsCalcMode?: boolean;
+}
+
 export default abstract class Skill {
   public abstract strategy: SkillStrategy;
   public abstract frames: number;
 
-  public abstract skillTargetType: SkillTargetType;
+  public abstract targetType: SkillTargetType;
+  public abstract damageRegistrationType: SkillDamageRegistrationType;
 
   public effectManager: EffectManager<Character> | null = null;
 
@@ -54,8 +64,12 @@ export default abstract class Skill {
 
   protected abstract calcDamage(args: ICalcDamageArgs): number;
 
-  public getDamage(character: Character, startFrame: number, skills: Skill[], currentSkillIndex: number): number {
-    this.strategy.runStartListener(character, startFrame);
+  protected isMVsMode: boolean = false;
+
+  public getDamage(args: IGetDamageArgs): number {
+    const {skills, currentSkillIndex, character, mvsCalcMode} = args;
+
+    this.isMVsMode = mvsCalcMode ?? false;
 
     const prevSkill = skills[currentSkillIndex - 1] ?? null;
     const nextSkill = skills[currentSkillIndex + 1] ?? null;
@@ -80,5 +94,39 @@ export default abstract class Skill {
     character.calculatorStats.ATK.affixes.remove(statValue);
 
     return dmg;
+  }
+
+  private isStarted = false;
+  private currentFrame = 0;
+
+  public start(character: Character): this {
+    if (this.isStarted) return this;
+    this.strategy.runStartListener(character);
+    character.skillManager.onAnySkillStarted.notifyAll(this);
+    this.isStarted = true;
+    return this;
+  }
+
+  public update(character: Character) {
+    if (!this.isStarted) return;
+    this.currentFrame++;
+
+    if (this.currentFrame === this.frames) {
+      this.end(character);
+    }
+  }
+
+  public end(character: Character): this {
+    if (!this.isStarted) return this;
+    this.strategy.runEndListener(character);
+    character.skillManager.onAnySkillEnded.notifyAll(this);
+    this.isStarted = false;
+    this.isMVsMode = false;
+    this.currentFrame = 0;
+    return this;
+  }
+
+  public get clone(): this {
+    return lodash.clone(this);
   }
 }
