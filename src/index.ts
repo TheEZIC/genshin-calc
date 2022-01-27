@@ -20,6 +20,8 @@ import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 import AyakaA5 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA5";
+import {SkillType} from "@/Skills/SkillType";
+import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
 
 const roster = new Roster();
 roster.addCharacter(new Ayaka());
@@ -62,8 +64,9 @@ char.weaponManager.changeRefinement(1);
 
 char.constellationsManager.activateConstellation(3);
 
-//char.skillManager.changeLvl(10, SkillType.NormalAttack);
-//char.skillManager.changeLvl(10, SkillType.Burst);
+char.skillManager.changeLvl(10, SkillType.NormalAttack);
+char.skillManager.changeLvl(10, SkillType.HoldAttack);
+char.skillManager.changeLvl(10, SkillType.Burst);
 
 roster.addEnemy();
 // roster.addEnemy();
@@ -71,13 +74,12 @@ roster.addEnemy();
 
 const dmg = roster.timeline.calcRotation([
   new AyakaBurst(),
-  new AyakaElemental(),
+  //new AyakaElemental(),
+  new AyakaDash(),
   new AyakaDash(),
   new AyakaA1(),
   new AyakaA2(),
-  new AyakaA3(),
-  new AyakaA4(),
-  new AyakaA5(),
+  new AyakaHoldAttack(),
 ]);
 
 console.log(dmg)

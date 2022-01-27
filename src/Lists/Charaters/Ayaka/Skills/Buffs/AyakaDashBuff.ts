@@ -1,8 +1,9 @@
-import Effect from "@/Effects/Effect";
+import OverridableEffect from "@/Effects/OverridableEffect";
 import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
+import Effect from "@/Effects/Effect";
 
-export default class AyakaDashBuff extends Effect<Character> {
+export default class AyakaDashBuff extends OverridableEffect<Character> {
   framesDuration: number = 5 * 60; //5sec
 
   protected applyEffect(character: Character): void {

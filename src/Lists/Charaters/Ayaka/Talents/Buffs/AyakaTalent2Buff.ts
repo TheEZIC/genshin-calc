@@ -1,8 +1,8 @@
-import Effect from "@/Effects/Effect";
+import OverridableEffect from "@/Effects/OverridableEffect";
 import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 
-export default class AyakaTalent2Buff extends Effect<Character> {
+export default class AyakaTalent2Buff extends OverridableEffect<Character> {
   framesDuration: number = 10 * 60; //10sec
 
   private talentCryDmgValue = new StatValue(18);

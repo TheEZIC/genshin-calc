@@ -1,6 +1,8 @@
 import {ISubscriber} from "@/Helpers/Listener";
 import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
+import {IEndStrategy} from "@/Effects/IEndStrategy";
+import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
 
 export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>> {
   public name = this.constructor.name;
@@ -11,21 +13,54 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   protected abstract applyEffect(entity: T): void;
   protected abstract removeEffect(entity: T): void;
 
-  public activate(entity: T): boolean {
+  protected endStrategy: IEndStrategy = new DurationEndStrategy(this);
+
+  protected checkExistence(entity: T): Effect<T> | undefined {
+    return entity.ongoingEffects.find(e => e.name === this.name);
+  }
+
+  private isStarted = false;
+  private isOnCountdown: boolean = false;
+  private framesAfterCountdown = 0;
+
+  public activate(entity: T): void {
+    //if (this.isOnCountdown) return false;
+    this.isStarted = true;
+    this.endStrategy.onStart();
+    entity.ongoingEffects.push(this);
     entity.onAnyEffectStarted.notifyAll({effect: this, entity});
     this.applyEffect(entity);
-
-    return true;
   }
 
-  public deactivate(entity: T): boolean {
+  public update(entity: T) {
+    if (this.isOnCountdown) {
+      this.framesAfterCountdown++;
+
+      if (this.framesAfterCountdown >= this.countdown) {
+        this.isOnCountdown = false;
+        this.framesAfterCountdown = 0;
+      }
+    }
+
+    if (this.isStarted) {
+      this.endStrategy.onUpdate();
+
+      if (this.endStrategy.shouldEnd()) {
+        this.deactivate(entity);
+      }
+    }
+  }
+
+  public deactivate(entity: T): void {
+    //if (!this.checkExistence(entity)) return false;
+    this.isStarted = false;
+    this.endStrategy.onEnd();
+    entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
     this.removeEffect(entity);
-
-    return true;
   }
 
+  //startEvent
   public runOnEvent(args: ISkillListenerArgs<T>) {
-    args.entity.ongoingEffects.push(this);
     this.activate(args.entity);
   }
 }

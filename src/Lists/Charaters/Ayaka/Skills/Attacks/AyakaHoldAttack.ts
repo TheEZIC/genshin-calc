@@ -3,7 +3,7 @@ import {IMultipleHitSkill} from "@/Skills/IMultipleHitSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import HoldAttackSkillStrategy from "@/Skills/SkillStrategy/HoldAttackSkillStrategy";
-import {ICalcDamageArgs} from "@/Skills/Skill";
+import {ICalcDamageArgs, IGetDamageArgs} from "@/Skills/Skill";
 import {SkillType} from "@/Skills/SkillType";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
@@ -22,7 +22,7 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  protected calcDamage({character, prevSkill}: ICalcDamageArgs): number {
+  protected override awakeLogic({character, prevSkill}: ICalcDamageArgs) {
     if (!prevSkill) {
       this.frames = 0;
       return 0;
@@ -42,7 +42,9 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
       this.frames = 0;
       return 0;
     }
+  }
 
+  protected calcDamage({character, prevSkill}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.MVs * atk;
 
