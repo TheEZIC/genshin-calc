@@ -2,7 +2,7 @@ import Skill from "@/Skills/Skill";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
 import {SkillType} from "@/Skills/SkillType";
-import {ISkillsItem} from "@/Roster/DamageCalculator";
+import {ISkillsItem} from "@/Roster/Roster";
 
 export default function calcRotationSkillDuration(
   skills: ISkillsItem[],

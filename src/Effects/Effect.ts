@@ -8,7 +8,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   public name = this.constructor.name;
 
   public abstract framesDuration: number;
-  public readonly countdown: number = 0;
+  public readonly countdownFrames: number = 0;
 
   protected abstract applyEffect(entity: T): void;
   protected abstract removeEffect(entity: T): void;
@@ -36,7 +36,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     if (this.isOnCountdown) {
       this.framesAfterCountdown++;
 
-      if (this.framesAfterCountdown >= this.countdown) {
+      if (this.framesAfterCountdown >= this.countdownFrames) {
         this.isOnCountdown = false;
         this.framesAfterCountdown = 0;
       }

@@ -77,6 +77,7 @@ const dmg = roster.timeline.calcRotation([
   new AyakaElemental(),
   new AyakaDash(),
   new AyakaDash(),
+  //new AyakaBurst(),
   new AyakaA1(),
   new AyakaA2(),
   new AyakaHoldAttack(),

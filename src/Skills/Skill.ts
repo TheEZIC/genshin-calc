@@ -1,10 +1,12 @@
 import Character from "@/Characters/Character";
 import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
-import SkillStrategy from "@/Skills/SkillStrategy";
+import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import lodash from "lodash";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
+import DamageCalculator from "@/Roster/DamageCalculator";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -22,8 +24,9 @@ export interface IGetDamageArgs {
 }
 
 export default abstract class Skill {
-  public abstract strategy: SkillStrategy<any>;
+  public abstract strategy: ISkillStrategy;
   public abstract frames: number;
+  public abstract countdownFrames: number;
 
   public abstract targetType: SkillTargetType;
   public abstract damageRegistrationType: SkillDamageRegistrationType;
@@ -104,31 +107,72 @@ export default abstract class Skill {
     return dmg;
   }
 
-  private isStarted = false;
-  private currentFrame = 0;
+  private _isStarted: boolean = false;
+  private currentFrame: number = 0;
+  private _isOnCountdown: boolean = false;
+  private framesAfterCountdown: number  = 0;
+
+  public get isStarted(): boolean {
+    return this._isStarted;
+  }
+
+  public get isOnCountdown(): boolean {
+    return this._isOnCountdown;
+  }
+
+  private set isOnCountdown(onCountdown: boolean) {
+    this._isOnCountdown = onCountdown;
+  }
 
   public start(character: Character): this {
-    if (this.isStarted) return this;
+    if (this.isStarted || this.isOnCountdown) return this;
+
+    //@ts-ignore
+    console.log(this.currentEnergy);
+
+    if (
+      isIBurstSKill(this)
+      && this.energyCost !== this.currentEnergy
+    ) return this;
+
     this.strategy.runStartListener(character);
     character.skillManager.onAnySkillStarted.notifyAll(this);
-    this.isStarted = true;
+    this._isStarted = true;
+    this._isOnCountdown = true;
+
+    if (isIBurstSKill(this)) {
+      this.currentEnergy = 0;
+    }
+
     return this;
   }
 
-  public update(character: Character) {
-    if (!this.isStarted) return;
-    this.currentFrame++;
+  public update(character: Character, damageCalculator?: DamageCalculator) {
+    if (this.isOnCountdown) {
+      this.framesAfterCountdown++;
 
-    if (this.currentFrame === this.frames) {
-      this.end(character);
+      if (this.framesAfterCountdown >= this.countdownFrames) {
+        this.isOnCountdown = false;
+        this.framesAfterCountdown = 0;
+      }
+    }
+
+    if (this.isStarted) {
+      this.currentFrame++;
+
+      if (this.currentFrame === this.frames) {
+        this.end(character);
+      } else {
+
+      }
     }
   }
 
   public end(character: Character): this {
-    if (!this.isStarted) return this;
+    if (!this._isStarted) return this;
     this.strategy.runEndListener(character);
     character.skillManager.onAnySkillEnded.notifyAll(this);
-    this.isStarted = false;
+    this._isStarted = false;
     this.isMVsMode = false;
     this.currentFrame = 0;
     return this;

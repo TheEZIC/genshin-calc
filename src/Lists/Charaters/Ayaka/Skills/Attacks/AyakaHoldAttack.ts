@@ -15,6 +15,7 @@ import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
   public strategy: SkillStrategy = new HoldAttackSkillStrategy(this);
   public frames: number = 0;
+  public countdownFrames: number = 0;
   public hits: number = 3;
 
   protected value: SkillValue = new SkillValue(55.13 * this.hits, (59.61 - 55.13) * this.hits);

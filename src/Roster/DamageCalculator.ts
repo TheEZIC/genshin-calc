@@ -60,11 +60,12 @@ export default class DamageCalculator {
       if (!skillItem) continue;
       const {character, skill} = skillItem;
       let currentSkillDmg = 0;
+
       skill.awake({
         character,
         skills: rotationSkills,
         currentSkillIndex: i,
-      })
+      });
       skill.start(character);
 
       const dmgArgs = {
@@ -76,7 +77,6 @@ export default class DamageCalculator {
       logger.push({
         stage: "before",
         name: skill.name,
-        skillDamage: currentSkillDmg,
         rotationDamage: rotationDmg,
         rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
@@ -105,6 +105,7 @@ export default class DamageCalculator {
         skill instanceof NormalSkill
         && skill.damageRegistrationType === SkillDamageRegistrationType.Snapshot
       ) {
+        ///...
       } else if (
         skill instanceof SummonSkill
         && skill.damageRegistrationType === SkillDamageRegistrationType.Adaptive
@@ -130,7 +131,6 @@ export default class DamageCalculator {
       logger.push({
         stage: "after",
         name: skill.name,
-        skillDamage: currentSkillDmg,
         rotationDamage: rotationDmg,
         rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),

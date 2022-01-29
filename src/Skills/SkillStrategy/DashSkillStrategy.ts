@@ -3,7 +3,7 @@ import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 import {IDashSkill} from "@/Skills/SkillTypes/IDashSkill";
 
-export default class DashSkillStrategy extends SkillStrategy<IDashSkill> {
+export default class DashSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Dash;
   protected override _hasInfusion = false;
 

@@ -6,6 +6,7 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 
 export default abstract class AyakaNormalAttack extends NormalSkill {
+  public countdownFrames: number = 0;
   public strategy: SkillStrategy = new NormalAttackSkillStrategy(this);
   public targetType: SkillTargetType = SkillTargetType.Single;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;

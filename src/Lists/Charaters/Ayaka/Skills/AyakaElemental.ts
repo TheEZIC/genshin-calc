@@ -9,6 +9,7 @@ import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType"
 
 export default class AyakaElemental extends NormalSkill {
   public strategy: SkillStrategy = new ElementalSkillStrategy(this);
+  countdownFrames: number = 10 * 60; //10 sec
 
   public frames: number = 56;
   protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);

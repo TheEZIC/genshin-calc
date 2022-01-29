@@ -1,9 +1,8 @@
 import SkillStrategy from "@/Skills/SkillStrategy";
 import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
-import {INormalAttackSkill} from "@/Skills/SkillTypes/INormalAttackSkill";
 
-export default class NormalAttackSkillStrategy extends SkillStrategy<INormalAttackSkill> {
+export default class NormalAttackSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.NormalAttack;
 
   protected override _hasInfusion = false;

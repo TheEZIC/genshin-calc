@@ -1,10 +1,19 @@
 import {SkillType} from "@/Skills/SkillType";
-import Skill from "@/Skills/Skill";
 import Character from "@/Characters/Character";
+import Skill from "@/Skills/Skill";
 
-export default abstract class SkillStrategy<T> {
+export interface ISkillStrategy {
+  type: SkillType;
+  hasInfusion: boolean;
+  runStartListener(character: Character): void;
+  runEndListener(character: Character): void;
+  changeInfusion(infusion: boolean): void;
+  modify(callback: (strategy: this) => void): this;
+}
+
+export default abstract class SkillStrategy implements ISkillStrategy {
   constructor(
-    protected skill: T,
+    protected skill: Skill,
   ) {
   }
 
@@ -23,7 +32,7 @@ export default abstract class SkillStrategy<T> {
     return this._hasInfusion;
   }
 
-  public changeInfusion(infusion: boolean) {
+  public changeInfusion(infusion: boolean): void {
     this._hasInfusion = infusion;
   }
 

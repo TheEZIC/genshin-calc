@@ -16,6 +16,7 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
     .modify((strategy) => strategy.hasInfusion = true);
 
   frames: number = 20;
+  countdownFrames: number = 0;
   protected value: SkillValue = new SkillValue(0, 0);
 
   targetType: SkillTargetType = SkillTargetType.AOE;
