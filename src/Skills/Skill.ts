@@ -22,7 +22,7 @@ export interface IGetDamageArgs {
 }
 
 export default abstract class Skill {
-  public abstract strategy: SkillStrategy;
+  public abstract strategy: SkillStrategy<any>;
   public abstract frames: number;
 
   public abstract targetType: SkillTargetType;

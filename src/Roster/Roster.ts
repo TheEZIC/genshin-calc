@@ -1,15 +1,22 @@
 import Character from "@/Characters/Character";``
 import DamageCalculator from "@/Roster/DamageCalculator";
 import Enemy from "@/Enemies/Enemy";
+import {VisionType} from "@/VisionType";
+import Skill from "@/Skills/Skill";
+
+export interface ISkillsItem {
+  character: Character;
+  skill: Skill;
+}
 
 export default class Roster {
   public static readonly MAX_CHARACTERS_COUNT = 4;
   private _characters: Character[] = [];
+  private _enemies: Enemy[] = [];
+
   private _index: number = 0;
 
   public timeline: DamageCalculator = new DamageCalculator(this);
-
-  private _enemies: Enemy[] = [];
 
   public get enemiesCount() {
     return this._enemies.length;
@@ -23,12 +30,24 @@ export default class Roster {
     this._enemies.slice(1);
   }
 
-  get characters() {
+  public get characters() {
     return this._characters;
   }
 
-  get currentCharacter() {
-    return this._characters[this._index];
+  public get charactersSkills(): ISkillsItem[] {
+    return this.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
+  }
+
+  public get activeCharacter() {
+    return this.characters[this._index];
+  }
+
+  public get inactiveCharacters() {
+    return this.characters.filter((c, i) => i !== this._index);
+  }
+
+  public findCharacterByVision(vision: VisionType) {
+    return this.characters.filter(c => c.vision === vision);
   }
 
   public addCharacter(character: Character) {

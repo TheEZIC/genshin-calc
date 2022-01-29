@@ -21,7 +21,7 @@ export default abstract class CharacterBaseStats {
   public readonly elementalMastery: CharacterAscendableBaseStat =
     new CharacterAscendableBaseStat(0);
   public readonly energyRecharge: CharacterAscendableBaseStat =
-    new CharacterAscendableBaseStat(0);
+    new CharacterAscendableBaseStat(100);
 
   public readonly critChance: CharacterAscendableBaseStat =
     new CharacterAscendableBaseStat(5);

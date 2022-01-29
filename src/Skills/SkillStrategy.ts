@@ -2,9 +2,9 @@ import {SkillType} from "@/Skills/SkillType";
 import Skill from "@/Skills/Skill";
 import Character from "@/Characters/Character";
 
-export default abstract class SkillStrategy {
+export default abstract class SkillStrategy<T> {
   constructor(
-    protected skill: Skill,
+    protected skill: T,
   ) {
   }
 

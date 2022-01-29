@@ -1,8 +1,9 @@
 import SkillStrategy from "@/Skills/SkillStrategy";
 import Character from "@/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
+import {IElementalSkill} from "@/Skills/SkillTypes/IElementalSkill";
 
-export default class ElementalSkillStrategy extends SkillStrategy {
+export default class ElementalSkillStrategy extends SkillStrategy<IElementalSkill> {
   type: SkillType = SkillType.Elemental;
 
   protected override _hasInfusion = false;

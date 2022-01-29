@@ -7,11 +7,6 @@ import NormalSkill from "@/Skills/NormalSkill";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
 
-export interface ISkillsItem {
-  character: Character;
-  skill: Skill;
-}
-
 export interface IOngoingSkill {
   startTime: number;
   skill: Skill;
@@ -60,7 +55,7 @@ export default class DamageCalculator {
 
     for (let i = 0; i < rotationSkills.length; i++) {
       const rotationSkill = rotationSkills[i];
-      const skillItem = this.charactersSkills.find((s) => s.skill.name === rotationSkill.name);
+      const skillItem = this.roster.charactersSkills.find((s) => s.skill.name === rotationSkill.name);
 
       if (!skillItem) continue;
       const {character, skill} = skillItem;
@@ -146,9 +141,5 @@ export default class DamageCalculator {
     console.table(logger)
     this.unsubscribeAllCharacters();
     return rotationDmg / (rotationFrames / 60);
-  }
-
-  private get charactersSkills(): ISkillsItem[] {
-    return this.roster.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
   }
 }

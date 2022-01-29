@@ -26,7 +26,7 @@ import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAtt
 const roster = new Roster();
 roster.addCharacter(new Ayaka());
 
-const char = roster.currentCharacter;
+const char = roster.activeCharacter;
 
 const plume = new ArtifactPlume()
   .setMainStat(new Stat(StatType.FlatATK, 300))
@@ -74,7 +74,7 @@ roster.addEnemy();
 
 const dmg = roster.timeline.calcRotation([
   new AyakaBurst(),
-  //new AyakaElemental(),
+  new AyakaElemental(),
   new AyakaDash(),
   new AyakaDash(),
   new AyakaA1(),
