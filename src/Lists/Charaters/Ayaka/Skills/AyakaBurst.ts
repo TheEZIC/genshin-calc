@@ -15,7 +15,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill {
   summonDurationFrames: number = 5 * 60;
 
   energyCost: number = 80;
-  currentEnergy = this.energyCost;
+  energyConsumed: number = 80;
 
   targetType: SkillTargetType = SkillTargetType.AOE;
   damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;

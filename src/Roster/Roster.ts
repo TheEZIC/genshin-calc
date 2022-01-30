@@ -46,6 +46,16 @@ export default class Roster {
     return this.characters.filter((c, i) => i !== this._index);
   }
 
+  public isInactive(character: Character): boolean {
+    const inactive = this.inactiveCharacters;
+    return Boolean(inactive.find(c => c.name === character.name));
+  }
+
+  public isActive(character: Character): boolean {
+    const active = this.activeCharacter;
+    return active.name === character.name;
+  }
+
   public findCharacterByVision(vision: VisionType) {
     return this.characters.filter(c => c.vision === vision);
   }

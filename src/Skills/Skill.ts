@@ -35,6 +35,8 @@ export default abstract class Skill {
 
   public effectManager: EffectManager<Character> | null = null;
 
+  protected readonly DEFAULT_ADD_ENERGY_FRAMES_DELAY: number = 100;
+
   public get name(): string {
     return this.constructor.name;
   }
@@ -89,6 +91,7 @@ export default abstract class Skill {
   }
 
   public getDamage(args: IGetDamageArgs): number {
+    if (!this.isStarted) return 0;
     this.isMVsMode = args.mvsCalcMode ?? false;
 
     const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
@@ -125,30 +128,32 @@ export default abstract class Skill {
     this._isOnCountdown = onCountdown;
   }
 
-  public start(character: Character): this {
-    if (this.isStarted || this.isOnCountdown) return this;
+  protected onStart(character: Character, damageCalculator: DamageCalculator): void {
+  }
 
-    //@ts-ignore
-    console.log(this.currentEnergy);
+  public start(character: Character, damageCalculator: DamageCalculator): this {
+    if (this.isStarted || this.isOnCountdown) return this;
 
     if (
       isIBurstSKill(this)
-      && this.energyCost !== this.currentEnergy
+      && this.energyCost >= character.energy
     ) return this;
 
     this.strategy.runStartListener(character);
     character.skillManager.onAnySkillStarted.notifyAll(this);
+    this.onStart(character, damageCalculator);
+
     this._isStarted = true;
     this._isOnCountdown = true;
 
     if (isIBurstSKill(this)) {
-      this.currentEnergy = 0;
+      character.consumeEnergy(this.energyConsumed);
     }
 
     return this;
   }
 
-  public update(character: Character) {
+  public update(character: Character, damageCalculator: DamageCalculator) {
     if (this.isOnCountdown) {
       this.framesAfterCountdown++;
 
@@ -162,18 +167,24 @@ export default abstract class Skill {
       this.currentFrame++;
 
       if (this.currentFrame === this.frames) {
-        this.end(character);
+        this.end(character, damageCalculator);
       }
     }
   }
 
-  public end(character: Character): this {
+  protected onEnd(character: Character, damageCalculator: DamageCalculator) {
+  }
+
+  public end(character: Character, damageCalculator: DamageCalculator): this {
     if (!this._isStarted) return this;
     this.strategy.runEndListener(character);
     character.skillManager.onAnySkillEnded.notifyAll(this);
+    this.onEnd(character, damageCalculator);
+
     this._isStarted = false;
     this.isMVsMode = false;
     this.currentFrame = 0;
+
     return this;
   }
 

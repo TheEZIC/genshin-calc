@@ -19,12 +19,11 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     return entity.ongoingEffects.find(e => e.name === this.name);
   }
 
-  private isStarted = false;
-  private isOnCountdown: boolean = false;
+  protected isStarted = false;
+  protected isOnCountdown: boolean = false;
   private framesAfterCountdown = 0;
 
   public activate(entity: T): void {
-    //if (this.isOnCountdown) return false;
     this.isStarted = true;
     this.endStrategy.onStart();
     entity.ongoingEffects.push(this);
@@ -52,7 +51,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   }
 
   public deactivate(entity: T): void {
-    //if (!this.checkExistence(entity)) return false;
+    //if nothing to remove
+    if (!this.checkExistence(entity)) return;
     this.isStarted = false;
     this.endStrategy.onEnd();
     entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);

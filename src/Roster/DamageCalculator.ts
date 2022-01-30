@@ -4,15 +4,26 @@ import ElementalReactionManager from "@/ElementalReactions/ElementalReactionMana
 import NormalSkill from "@/Skills/NormalSkill";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
+import Character from "@/Characters/Character";
 
 export interface IOngoingSkill {
   startTime: number;
   skill: Skill;
 }
 
+export interface IAction {
+  delay: number;
+  run: () => void;
+}
+
+interface IDelayedAction {
+  startAtFrame: number;
+  run: () => void;
+}
+
 export default class DamageCalculator {
   constructor(
-    private roster: Roster,
+    public roster: Roster,
   ) {
   }
 
@@ -41,19 +52,32 @@ export default class DamageCalculator {
     });
   }
 
-  private delayedActions = [];
+  private delayedActions: IDelayedAction[] = [];
 
-  public addDelayedAction() {
+  public addAction(newAction: IAction) {
+    const {run, delay} = newAction;
 
+    this.delayedActions.push({
+      startAtFrame: this.currentFrames + delay,
+      run,
+    })
   }
 
-  public calcRotation(rotationSkills: Skill[]): number {
-    let rotationDmg: number = 0
-    let currentFrames: number = 0;
-    let rotationFrames: number = 0;
-    this.subscribeAllCharacters();
+  private runDelayedActions() {
+    for (let action of this.delayedActions) {
+      if (this.currentFrames === action.startAtFrame) {
+        action.run();
+      }
+    }
+  }
 
+  private rotationDmg: number = 0
+  private currentFrames: number = 0;
+  private rotationFrames: number = 0;
+
+  public calcRotation(rotationSkills: Skill[]): number {
     const logger = [];
+    this.subscribeAllCharacters();
 
     for (let i = 0; i < rotationSkills.length; i++) {
       const rotationSkill = rotationSkills[i];
@@ -72,7 +96,7 @@ export default class DamageCalculator {
         skills: rotationSkills,
         currentSkillIndex: i,
       });
-      skill.start(character);
+      skill.start(character, this);
 
       const dmgArgs = {
         character,
@@ -83,9 +107,9 @@ export default class DamageCalculator {
       logger.push({
         stage: "before",
         name: skill.name,
-        rotationDamage: rotationDmg,
-        currentFrames,
-        rotationFrames,
+        rotationDamage: this.rotationDmg,
+        currentFrames: this.currentFrames,
+        rotationFrames: this.rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.name),
       })
@@ -97,16 +121,14 @@ export default class DamageCalculator {
         for (let frame = 0; frame < skill.frames; frame++) {
           //Calc parallel skills
           this.ongoingSkills.forEach(s => {
-            s.update(character);
+            s.update(character, this);
 
             if (s instanceof SummonSkill && s.damageRegistrationType === SkillDamageRegistrationType.Adaptive) {
-              rotationDmg += s.getDamage(dmgArgs);
+              this.rotationDmg += s.getDamage(dmgArgs);
             }
           });
 
-          currentFrames++;
-          skill.update(character);
-          character.ongoingEffects.forEach(e => e.update(character));
+          this.runDefaultSkill(skill, character);
           currentSkillDmg += skill.getDamage(dmgArgs);
         }
       } else if (
@@ -119,38 +141,47 @@ export default class DamageCalculator {
         && skill.damageRegistrationType === SkillDamageRegistrationType.Adaptive
       ) {
         for (let frame = 0; frame < skill.summonUsageFrames; frame++) {
-          currentFrames++;
-          skill.update(character);
-          character.ongoingEffects.forEach(e => e.update(character));
+          this.runDefaultSkill(skill, character);
         }
       } else if (
         skill instanceof SummonSkill
         && skill.damageRegistrationType === SkillDamageRegistrationType.Snapshot
       ) {
         for (let frame = 0; frame < skill.summonUsageFrames; frame++) {
-          currentFrames++;
-          skill.update(character);
-          character.ongoingEffects.forEach(e => e.update(character));
+          this.runDefaultSkill(skill, character);
         }
 
         currentSkillDmg += skill.getDamage({...dmgArgs, mvsCalcMode: true});
       }
 
-      rotationDmg += currentSkillDmg;
-      rotationFrames += skill.timelineDurationFrames;
+      this.rotationDmg += currentSkillDmg;
+      this.rotationFrames += skill.timelineDurationFrames;
       logger.push({
         stage: "after",
         name: skill.name,
-        rotationDamage: rotationDmg,
-        currentFrames,
-        rotationFrames,
+        rotationDamage: this.rotationDmg,
+        currentFrames: this.currentFrames,
+        rotationFrames: this.rotationDmg,
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.name),
       })
     }
 
-    console.table(logger)
+    console.table(logger);
     this.unsubscribeAllCharacters();
-    return rotationDmg / (rotationFrames / 60);
+    const avgDMG =  this.rotationDmg / (this.rotationFrames / 60);
+
+    this.rotationDmg = 0;
+    this.currentFrames = 0;
+    this.rotationFrames = 0;
+
+    return avgDMG;
+  }
+
+  private runDefaultSkill(skill: Skill, character: Character) {
+    this.currentFrames++;
+    skill.update(character, this);
+    this.runDelayedActions();
+    character.ongoingEffects.forEach(e => e.update(character));
   }
 }
