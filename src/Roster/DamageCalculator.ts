@@ -1,8 +1,6 @@
 import Skill from "@/Skills/Skill";
-import Character from "@/Characters/Character";
 import Roster from "@/Roster/Roster";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import CalculatorSkillSubscriber from "@/Roster/Subsrcribers/CalculatorSkillSubscriber";
 import NormalSkill from "@/Skills/NormalSkill";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
@@ -29,25 +27,29 @@ export default class DamageCalculator {
     this.ongoingSkills = this.ongoingSkills.filter(s => s.name !== skill.name);
   }
 
-  private readonly onSkillStartSubscriber = new CalculatorSkillSubscriber(this.onAnySKillStarted.bind(this));
-  private readonly onSkillEndSubscriber = new CalculatorSkillSubscriber(this.onAnySkillEnded.bind(this));
-
   private subscribeAllCharacters() {
     this.roster.characters.forEach(c => {
-      c.skillManager.onAnySkillStarted.subscribe(this.onSkillStartSubscriber);
-      c.skillManager.onAnySkillEnded.subscribe(this.onSkillEndSubscriber);
+      c.skillManager.onAnySkillStarted.subscribe(this.onAnySkillEnded.bind(this));
+      c.skillManager.onAnySkillEnded.subscribe(this.onAnySkillEnded.bind(this));
     });
   }
 
   private unsubscribeAllCharacters() {
     this.roster.characters.forEach(c => {
-      c.skillManager.onAnySkillStarted.unsubscribe(this.onSkillStartSubscriber);
-      c.skillManager.onAnySkillEnded.unsubscribe(this.onSkillEndSubscriber);
+      c.skillManager.onAnySkillStarted.unsubscribe(this.onAnySkillEnded.bind(this));
+      c.skillManager.onAnySkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
     });
+  }
+
+  private delayedActions = [];
+
+  public addDelayedAction() {
+
   }
 
   public calcRotation(rotationSkills: Skill[]): number {
     let rotationDmg: number = 0
+    let currentFrames: number = 0;
     let rotationFrames: number = 0;
     this.subscribeAllCharacters();
 
@@ -56,10 +58,14 @@ export default class DamageCalculator {
     for (let i = 0; i < rotationSkills.length; i++) {
       const rotationSkill = rotationSkills[i];
       const skillItem = this.roster.charactersSkills.find((s) => s.skill.name === rotationSkill.name);
+      let currentSkillDmg = 0;
 
       if (!skillItem) continue;
       const {character, skill} = skillItem;
-      let currentSkillDmg = 0;
+
+      if (skill.isOnCountdown) {
+        continue;
+      }
 
       skill.awake({
         character,
@@ -78,6 +84,7 @@ export default class DamageCalculator {
         stage: "before",
         name: skill.name,
         rotationDamage: rotationDmg,
+        currentFrames,
         rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.name),
@@ -93,10 +100,11 @@ export default class DamageCalculator {
             s.update(character);
 
             if (s instanceof SummonSkill && s.damageRegistrationType === SkillDamageRegistrationType.Adaptive) {
-              rotationDmg += s.getDamage(dmgArgs)
+              rotationDmg += s.getDamage(dmgArgs);
             }
           });
 
+          currentFrames++;
           skill.update(character);
           character.ongoingEffects.forEach(e => e.update(character));
           currentSkillDmg += skill.getDamage(dmgArgs);
@@ -111,6 +119,7 @@ export default class DamageCalculator {
         && skill.damageRegistrationType === SkillDamageRegistrationType.Adaptive
       ) {
         for (let frame = 0; frame < skill.summonUsageFrames; frame++) {
+          currentFrames++;
           skill.update(character);
           character.ongoingEffects.forEach(e => e.update(character));
         }
@@ -119,6 +128,7 @@ export default class DamageCalculator {
         && skill.damageRegistrationType === SkillDamageRegistrationType.Snapshot
       ) {
         for (let frame = 0; frame < skill.summonUsageFrames; frame++) {
+          currentFrames++;
           skill.update(character);
           character.ongoingEffects.forEach(e => e.update(character));
         }
@@ -132,6 +142,7 @@ export default class DamageCalculator {
         stage: "after",
         name: skill.name,
         rotationDamage: rotationDmg,
+        currentFrames,
         rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.name),

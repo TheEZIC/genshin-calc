@@ -109,8 +109,9 @@ export default abstract class Skill {
 
   private _isStarted: boolean = false;
   private currentFrame: number = 0;
+
   private _isOnCountdown: boolean = false;
-  private framesAfterCountdown: number  = 0;
+  private framesAfterCountdown: number = 0;
 
   public get isStarted(): boolean {
     return this._isStarted;
@@ -147,7 +148,7 @@ export default abstract class Skill {
     return this;
   }
 
-  public update(character: Character, damageCalculator?: DamageCalculator) {
+  public update(character: Character) {
     if (this.isOnCountdown) {
       this.framesAfterCountdown++;
 
@@ -162,8 +163,6 @@ export default abstract class Skill {
 
       if (this.currentFrame === this.frames) {
         this.end(character);
-      } else {
-
       }
     }
   }
