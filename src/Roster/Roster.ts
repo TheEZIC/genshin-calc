@@ -16,7 +16,7 @@ export default class Roster {
 
   private _index: number = 0;
 
-  public timeline: DamageCalculator = new DamageCalculator(this);
+  public damageCalculator: DamageCalculator = new DamageCalculator(this);
 
   public get enemiesCount() {
     return this._enemies.length;

@@ -69,15 +69,14 @@ roster.addEnemy();
 // roster.addEnemy();
 // roster.addEnemy();
 
-const dmg = roster.timeline.calcRotation([
+const dmg = roster.damageCalculator.calcRotation([
   new AyakaBurst(),
-  // new AyakaElemental(),
-  // new AyakaDash(),
-  // new AyakaDash(),
-  new AyakaBurst(),
-  // new AyakaA1(),
-  // new AyakaA2(),
-  // new AyakaHoldAttack(),
+  new AyakaElemental(),
+  new AyakaDash(),
+  new AyakaDash(),
+  new AyakaA1(),
+  new AyakaA2(),
+  new AyakaHoldAttack(),
 ]);
 
 console.log(dmg)

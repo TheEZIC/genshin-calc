@@ -161,7 +161,7 @@ export default class DamageCalculator {
         name: skill.name,
         rotationDamage: this.rotationDmg,
         currentFrames: this.currentFrames,
-        rotationFrames: this.rotationDmg,
+        rotationFrames: this.rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.name),
       })

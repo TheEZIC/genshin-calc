@@ -23,6 +23,10 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   protected isOnCountdown: boolean = false;
   private framesAfterCountdown = 0;
 
+  public get remainingCountdown(): number {
+    return this.framesDuration - this.framesAfterCountdown;
+  }
+
   public activate(entity: T): void {
     this.isStarted = true;
     this.endStrategy.onStart();
@@ -55,7 +59,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     if (!this.checkExistence(entity)) return;
     this.isStarted = false;
     this.endStrategy.onEnd();
-    entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
+    const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);
+    entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
     this.removeEffect(entity);
   }
 
