@@ -57,11 +57,14 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   public deactivate(entity: T): void {
     //if nothing to remove
     if (!this.checkExistence(entity)) return;
-    this.isStarted = false;
-    this.endStrategy.onEnd();
     const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);
-    entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
-    this.removeEffect(entity);
+
+    if (index > -1) {
+      this.isStarted = false;
+      this.endStrategy.onEnd();
+      entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
+      this.removeEffect(entity);
+    }
   }
 
   //startEvent

@@ -40,6 +40,8 @@ export default abstract class StackableEffect<T extends IWithOngoingEffects> ext
     if (this._currentStacks.length === 0) return;
 
     const index = this._currentStacks.map(e => e.name).indexOf(effect.name);
-    this._currentStacks = this._currentStacks.splice(index, 1);
+    if (index > -1) {
+      this._currentStacks = this._currentStacks.splice(index, 1);
+    }
   }
 }
