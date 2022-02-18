@@ -7,9 +7,13 @@ import lodash from "lodash";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import DamageCalculator from "@/Roster/DamageCalculator";
+import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
+import ICD from "@/Skills/ICD";
+import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 
 export interface ICalcDamageArgs {
   character: Character;
+  damageCalculator: DamageCalculator;
   prevSkill?: Skill;
   nextSkill?: Skill;
   prevSkills: Skill[];
@@ -18,6 +22,7 @@ export interface ICalcDamageArgs {
 
 export interface IGetDamageArgs {
   character: Character;
+  damageCalculator: DamageCalculator;
   skills: Skill[];
   currentSkillIndex: number;
   mvsCalcMode?: boolean;
@@ -30,6 +35,9 @@ export default abstract class Skill {
 
   public abstract targetType: SkillTargetType;
   public abstract damageRegistrationType: SkillDamageRegistrationType;
+
+  public ICD: ICD | null = null;
+  public ElementalStatus: ElementalStatus | null = null;
 
   protected abstract calcDamage(args: ICalcDamageArgs): number;
 
@@ -72,22 +80,42 @@ export default abstract class Skill {
   protected isMVsMode: boolean = false;
 
   private convertGetDamageToCalcDamageArgs(args: IGetDamageArgs) {
-    const {skills, currentSkillIndex, character, mvsCalcMode} = args;
+    const {skills, currentSkillIndex, character, damageCalculator, mvsCalcMode} = args;
 
     const prevSkill = skills[currentSkillIndex - 1] ?? null;
     const nextSkill = skills[currentSkillIndex + 1] ?? null;
     const prevSkills = skills.filter((s, i) => i < currentSkillIndex);
     const nextSkills = skills.filter((s, i) => i > currentSkillIndex);
 
-    return {character, prevSkill, nextSkill, prevSkills, nextSkills};
+    return {character, prevSkill, nextSkill, prevSkills, nextSkills, damageCalculator};
   }
 
-  protected awakeLogic(args: ICalcDamageArgs): void {
+  protected onAwake(args: ICalcDamageArgs): void {
   }
 
   public awake(args: IGetDamageArgs): void {
     const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
-    this.awakeLogic(calcArgs);
+    this.onAwake(calcArgs);
+  }
+
+  private onHit(calcArgs: ICalcDamageArgs) {
+    const dmg = this.calcDamage(calcArgs);
+
+    if (this.ElementalStatus && !this.ICD?.onCountdown) {
+      const {enemies} = calcArgs.damageCalculator.roster;
+
+      if (this.targetType === SkillTargetType.AOE) {
+        enemies[0].effectManager.addEffect(this.ElementalStatus);
+      } else {
+        for (let enemy of enemies) {
+          enemy.effectManager.addEffect(this.ElementalStatus);
+        }
+      }
+    }
+
+    this.ICD?.addHit();
+
+    return dmg
   }
 
   public getDamage(args: IGetDamageArgs): number {
@@ -103,7 +131,16 @@ export default abstract class Skill {
 
     const statValue = new StatValue(dmgBonus);
     character.calculatorStats.ATK.affixes.add(statValue);
-    const dmg = this.calcDamage(calcArgs);
+
+    let dmg: number = 0;
+
+    if (isIDOTSkill(this)) {
+      if (this.damageFrames.includes(this.currentFrame)) {
+        dmg = this.onHit(calcArgs);
+      }
+    } else {
+      dmg = this.onHit(calcArgs);
+    }
 
     character.calculatorStats.ATK.affixes.remove(statValue);
 
@@ -111,7 +148,7 @@ export default abstract class Skill {
   }
 
   private _isStarted: boolean = false;
-  private currentFrame: number = 0;
+  protected currentFrame: number = 0;
 
   private _isOnCountdown: boolean = false;
   private framesAfterCountdown: number = 0;
@@ -188,7 +225,14 @@ export default abstract class Skill {
     return this;
   }
 
-  public get clone(): this {
-    return lodash.clone(this);
+  protected createRepeatedFrames(everyFrames: number, count: number, offset: number = 0): number[] {
+    let temp: number[] = [];
+
+    for (let i = 0; i < count; i++) {
+      const frame = Math.ceil(everyFrames * i + offset);
+      temp.push(frame);
+    }
+
+    return temp;
   }
 }

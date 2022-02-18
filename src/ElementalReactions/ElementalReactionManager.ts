@@ -47,7 +47,8 @@ export default class ElementalReactionManager {
   private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction();
   private swirlReaction: SwirlReaction = new SwirlReaction();
 
-  public getReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus) {
+  //TODO: Remove status after reaction
+  public applyReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus) {
     const enemyStatus = enemy.ongoingEffects.find((e) => {
       return e instanceof ElementalStatus;
     });
@@ -58,11 +59,11 @@ export default class ElementalReactionManager {
     }
 
     if (enemyStatus instanceof GeoStatus || currentAttackStatus instanceof GeoStatus) {
-      return this.crystallizeReaction.calcBonusDamage(character, damage);
+      return this.crystallizeReaction.applyBonusDamage(character, damage);
     }
 
     if (enemyStatus instanceof AnemoStatus || currentAttackStatus instanceof AnemoStatus) {
-      return this.swirlReaction.calcBonusDamage(character, damage);
+      return this.swirlReaction.applyBonusDamage(character, damage);
     }
 
     const combination = this.elementalCombinations.find((c) => {
@@ -72,7 +73,7 @@ export default class ElementalReactionManager {
 
     if (combination) {
       const [,,reaction] = combination;
-      return reaction.calcBonusDamage(character, damage);
+      return reaction.applyBonusDamage(character, damage);
     }
 
     return damage;

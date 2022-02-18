@@ -6,16 +6,23 @@ import ElementalSkillStrategy from "@/Skills/SkillStrategy/ElementalSkillStrateg
 import {ICalcDamageArgs} from "@/Skills/Skill";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import ICD from "@/Skills/ICD";
+import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
+import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 export default class AyakaElemental extends NormalSkill {
   public strategy: SkillStrategy = new ElementalSkillStrategy(this);
-  countdownFrames: number = 10 * 60; //10 sec
-
-  public frames: number = 56;
-  protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);
-
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
+
+  public frames: number = 56;
+  public countdownFrames: number = 10 * 60; //10 sec
+
+  protected value: SkillValue = new SkillValue(239.2, 257.14 - 239.2);
+
+  public override ICD = new ICD(0, 0);
+  public override ElementalStatus = new CryoStatus(ElementalStatusDuration.B2);
 
   protected calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();

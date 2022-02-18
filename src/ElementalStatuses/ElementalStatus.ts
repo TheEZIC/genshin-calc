@@ -1,8 +1,8 @@
-import Effect from "@/Effects/Effect";
+import OverridableEffect from "@/Effects/OverridableEffect";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
 
-export default abstract class ElementalStatus extends Effect<IWithOngoingEffects> {
+export default abstract class ElementalStatus extends OverridableEffect<IWithOngoingEffects> {
   constructor(
     protected duration: ElementalStatusDuration,
   ) {

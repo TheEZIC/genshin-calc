@@ -23,7 +23,7 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  protected override awakeLogic({character, prevSkill}: ICalcDamageArgs) {
+  protected override onAwake({character, prevSkill}: ICalcDamageArgs) {
     if (!prevSkill) {
       this.frames = 0;
       return 0;

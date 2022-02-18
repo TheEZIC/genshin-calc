@@ -18,6 +18,10 @@ export default class Roster {
 
   public damageCalculator: DamageCalculator = new DamageCalculator(this);
 
+  public get enemies(): Enemy[] {
+    return this._enemies;
+  }
+
   public get enemiesCount() {
     return this._enemies.length;
   }
