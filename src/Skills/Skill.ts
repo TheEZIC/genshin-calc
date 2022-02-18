@@ -3,13 +3,13 @@ import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
 import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
-import lodash from "lodash";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
+import Enemy from "@/Enemies/Enemy";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -37,7 +37,7 @@ export default abstract class Skill {
   public abstract damageRegistrationType: SkillDamageRegistrationType;
 
   public ICD: ICD | null = null;
-  public ElementalStatus: ElementalStatus | null = null;
+  public elementalStatus: ElementalStatus | null = null;
 
   protected abstract calcDamage(args: ICalcDamageArgs): number;
 
@@ -99,23 +99,41 @@ export default abstract class Skill {
   }
 
   private onHit(calcArgs: ICalcDamageArgs) {
-    const dmg = this.calcDamage(calcArgs);
+    const {elementalReactionManager, roster} = calcArgs.damageCalculator;
+    const {enemies} = roster;
 
-    if (this.ElementalStatus && !this.ICD?.onCountdown) {
-      const {enemies} = calcArgs.damageCalculator.roster;
+    let dmg = this.calcDamage(calcArgs);
+    let totalDmg = 0;
 
-      if (this.targetType === SkillTargetType.AOE) {
-        enemies[0].effectManager.addEffect(this.ElementalStatus);
+    if (this.elementalStatus && !this.ICD?.onCountdown) {
+      const workWithReactions = (enemy: Enemy, tempDmg: number) => {
+        if (!this.elementalStatus) return tempDmg;
+        const hasStatus = enemy.ongoingEffects.find(e => e instanceof ElementalStatus);
+
+        if (!hasStatus) {
+          enemy.effectManager.addEffect(this.elementalStatus);
+        } else {
+          tempDmg += elementalReactionManager.applyReactionBonusDamage(calcArgs.character, enemy, dmg, this.elementalStatus)
+        }
+
+        return tempDmg;
+      }
+
+      if (this.targetType === SkillTargetType.Single) {
+        const enemy = enemies[0];
+        totalDmg = workWithReactions(enemy, dmg);
       } else {
         for (let enemy of enemies) {
-          enemy.effectManager.addEffect(this.ElementalStatus);
+          totalDmg += workWithReactions(enemy, dmg);
         }
       }
+    } else {
+      totalDmg = dmg;
     }
 
     this.ICD?.addHit();
 
-    return dmg
+    return totalDmg;
   }
 
   public getDamage(args: IGetDamageArgs): number {

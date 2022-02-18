@@ -48,7 +48,7 @@ export default class ElementalReactionManager {
   private swirlReaction: SwirlReaction = new SwirlReaction();
 
   //TODO: Remove status after reaction
-  public applyReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus) {
+  public applyReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus): number {
     const enemyStatus = enemy.ongoingEffects.find((e) => {
       return e instanceof ElementalStatus;
     });

@@ -28,7 +28,7 @@ export default class DamageCalculator {
   ) {
   }
 
-  private elementalReactionManager = new ElementalReactionManager();
+  public elementalReactionManager = new ElementalReactionManager();
   private ongoingSkills: Skill[] = [];
 
   private onAnySKillStarted(skill: Skill) {
@@ -154,26 +154,7 @@ export default class DamageCalculator {
         currentSkillDmg += skill.getDamage({...dmgArgs, mvsCalcMode: true});
       }
 
-      const {enemies} = this.roster;
-
-      if (skill.ElementalStatus) {
-        if (skill.targetType === SkillTargetType.Single) {
-          this.rotationDmg += this.elementalReactionManager.applyReactionBonusDamage(
-            character, enemies[0], currentSkillDmg, skill.ElementalStatus
-          );
-        } else {
-          for (let enemy of enemies) {
-            this.rotationDmg += this.elementalReactionManager.applyReactionBonusDamage(
-              character, enemy, currentSkillDmg, skill.ElementalStatus
-            );
-          }
-        }
-      } else {
-        this.rotationDmg += skill.targetType === SkillTargetType.Single
-          ? currentSkillDmg
-          : currentSkillDmg * enemies.length;
-      }
-
+      this.rotationDmg += currentSkillDmg;
       this.rotationFrames += skill.timelineDurationFrames;
 
       logger.push({
