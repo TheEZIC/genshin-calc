@@ -1,5 +1,5 @@
 import BaseStat from "@/BaseStats/BaseStat";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 import { WeaponBaseMainStat } from "./WeaponBaseMainStat";
 import { WeaponType } from "./WeaponType";

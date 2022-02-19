@@ -1,6 +1,6 @@
 import AscensionsIterator from "@/BaseStats/AscensionsIterator";
 import BaseStat from "@/BaseStats/BaseStat";
-import CharacterBaseStats from "@/Characters/CharacterBaseStats";
+import CharacterBaseStats from "@/Entities/Characters/CharacterBaseStats";
 
 export default class AyakaBaseStats extends CharacterBaseStats {
   readonly baseATK: BaseStat = new BaseStat(

@@ -1,4 +1,4 @@
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import Constellation from "@/Constellations/Constellation";
 import { SkillType } from "@/Skills/SkillType";
 

@@ -1,4 +1,4 @@
-import CharacterTalent from "@/Characters/CharacterTalent";
+import CharacterTalent from "@/Entities/Characters/CharacterTalent";
 import AyakaTalent2Buff from "@/Lists/Charaters/Ayaka/Talents/Buffs/AyakaTalent2Buff";
 
 export default class AyakaTalent2 extends CharacterTalent{

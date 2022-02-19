@@ -1,5 +1,5 @@
-import Character from "@/Characters/Character";
-import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
+import Character from "@/Entities/Characters/Character";
+import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
@@ -10,7 +10,6 @@ import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import SkillLvl from "@/Skills/SkillLvl";
-import {autoInjectable, container, inject} from "tsyringe";
 
 export interface ICalcDamageArgs {
   character: Character;

@@ -1,5 +1,5 @@
 import ArtifactSet from "@/Artifacts/ArtifactSet";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 export default class RetracingSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {

@@ -1,6 +1,6 @@
 import ArtifactSet from "@/Artifacts/ArtifactSet";
-import { StatValue } from "@/Characters/CalculatorStats/Types/StatValue";
-import Character from "@/Characters/Character";
+import { StatValue } from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import Character from "@/Entities/Characters/Character";
 
 export default class LavawalkerSet extends ArtifactSet {
   computeTwoPieceBonuses(character: Character): void {

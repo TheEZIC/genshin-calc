@@ -4,7 +4,7 @@ import ElementalReactionManager from "@/ElementalReactions/ElementalReactionMana
 import NormalSkill from "@/Skills/NormalSkill";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import {container, injectable, singleton} from "tsyringe";
 
 export interface IOngoingSkill {

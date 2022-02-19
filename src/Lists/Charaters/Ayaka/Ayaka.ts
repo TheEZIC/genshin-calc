@@ -1,5 +1,5 @@
-import Character from "@/Characters/Character";
-import CharacterBaseStats from "@/Characters/CharacterBaseStats";
+import Character from "@/Entities/Characters/Character";
+import CharacterBaseStats from "@/Entities/Characters/CharacterBaseStats";
 import BurstConstellation from "@/Constellations/BurstConstellation";
 import ConstellationsManager from "@/Constellations/ConstellationsManager";
 import ElementConstellation from "@/Constellations/ElementConstellation";
@@ -14,7 +14,7 @@ import AyakaA5 from "./Skills/Attacks/AyakaA5";
 import AyakaBurst from "./Skills/AyakaBurst";
 import AyakaElemental from "./Skills/AyakaElemental";
 import {VisionType} from "@/VisionType";
-import CharacterTalent from "@/Characters/CharacterTalent";
+import CharacterTalent from "@/Entities/Characters/CharacterTalent";
 import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
 import AyakaDash from "@/Lists/Charaters/Ayaka/Skills/AyakaDash";
 import AyakaTalent1 from "@/Lists/Charaters/Ayaka/Talents/AyakaTalent1";

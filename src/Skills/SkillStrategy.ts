@@ -1,5 +1,5 @@
 import {SkillType} from "@/Skills/SkillType";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import Skill from "@/Skills/Skill";
 
 export interface ISkillStrategy {

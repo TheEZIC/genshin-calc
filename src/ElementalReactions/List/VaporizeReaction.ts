@@ -1,5 +1,5 @@
 import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 export default class VaporizeReaction extends MultipliedElementalReaction {
   public multiplier: number = 1.5;

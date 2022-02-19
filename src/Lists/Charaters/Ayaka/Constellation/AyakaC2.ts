@@ -1,4 +1,4 @@
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import Constellation from "@/Constellations/Constellation";
 
 export default class AyakaC2 extends Constellation {

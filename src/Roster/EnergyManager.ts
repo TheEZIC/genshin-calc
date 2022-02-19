@@ -1,5 +1,5 @@
 import Roster from "@/Roster/Roster";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
 import {VisionType} from "@/VisionType";
 

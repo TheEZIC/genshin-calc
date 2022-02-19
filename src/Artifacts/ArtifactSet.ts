@@ -1,4 +1,4 @@
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 import IArtifactSetStrategy from "./ArtifactSetStrategy";
 import ArtifactsManager from "./ArtifactsManager";

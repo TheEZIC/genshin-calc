@@ -1,5 +1,5 @@
 import Listener from "@/Helpers/Listener";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import Effect from "@/Effects/Effect";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 

@@ -1,4 +1,4 @@
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import NormalSkill from "@/Skills/NormalSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";

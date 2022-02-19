@@ -1,7 +1,7 @@
 import OverridableEffect from "@/Effects/OverridableEffect";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
-import {StatValue} from "@/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 
 export default class AyakaTalent1Buff extends OverridableEffect<Character> {
   framesDuration: number = 5 * 60; //5sec

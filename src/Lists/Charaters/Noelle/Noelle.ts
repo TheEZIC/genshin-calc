@@ -1,5 +1,5 @@
-import Character from "@/Characters/Character";
-import CharacterBaseStats from "@/Characters/CharacterBaseStats";
+import Character from "@/Entities/Characters/Character";
+import CharacterBaseStats from "@/Entities/Characters/CharacterBaseStats";
 import ConstellationsManager from "@/Constellations/ConstellationsManager";
 import SkillsManager from "@/Skills/SkillsManager";
 

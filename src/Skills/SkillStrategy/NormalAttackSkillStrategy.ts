@@ -1,5 +1,5 @@
 import SkillStrategy from "@/Skills/SkillStrategy";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 
 export default class NormalAttackSkillStrategy extends SkillStrategy {

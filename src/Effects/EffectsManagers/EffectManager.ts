@@ -8,7 +8,7 @@ export default class EffectManager<T extends IWithOngoingEffects> {
   ) {
   }
 
-  public get effectsList() {
+  public get all() {
     return this.effects;
   }
 

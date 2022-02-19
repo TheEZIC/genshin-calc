@@ -1,4 +1,4 @@
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 import Weapon from "./Weapon";
 

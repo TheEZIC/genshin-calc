@@ -1,5 +1,5 @@
 import ElementalReaction from "@/ElementalReactions/ElementalReaction";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 
 export default class SwirlReaction extends ElementalReaction {
   applyBonusDamage(character: Character, damage: number): number {

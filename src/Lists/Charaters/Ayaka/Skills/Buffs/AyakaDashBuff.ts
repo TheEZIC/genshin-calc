@@ -1,5 +1,5 @@
 import OverridableEffect from "@/Effects/OverridableEffect";
-import Character from "@/Characters/Character";
+import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 import Effect from "@/Effects/Effect";
 

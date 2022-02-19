@@ -63,6 +63,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     if (index > -1) {
       this.isStarted = false;
       this.endStrategy.onEnd();
+      const deletedEffect = entity.ongoingEffects[index];
       entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
       this.removeEffect(entity);
     }

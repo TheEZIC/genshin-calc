@@ -1,9 +1,8 @@
-import Character from "@/Characters/Character";``
-import DamageCalculator from "@/Roster/DamageCalculator";
-import Enemy from "@/Enemies/Enemy";
+import Character from "@/Entities/Characters/Character";``
+import Enemy from "@/Entities/Enemies/Enemy";
 import {VisionType} from "@/VisionType";
 import Skill from "@/Skills/Skill";
-import {container, injectable, singleton} from "tsyringe";
+import {singleton} from "tsyringe";
 
 export interface ISkillsItem {
   character: Character;
