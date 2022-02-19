@@ -1,3 +1,7 @@
+import "reflect-metadata";
+import {container} from "tsyringe";
+
+import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import ArtifactCirclet from "@/Artifacts/Type/ArtifactCirclet";
 import ArtifactFlower from "@/Artifacts/Type/ArtifactFlower";
 import ArtifactGoblet from "@/Artifacts/Type/ArtifactGoblet";
@@ -6,9 +10,8 @@ import ArtifactSands from "@/Artifacts/Type/ArtifactSands";
 import Stat from "@/BaseStats/Stat";
 import { StatType } from "@/BaseStats/StatType";
 
-import Roster from "@/Roster/Roster";
 import "./paths";
-import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
+
 import TroupeSet from "@/Lists/ArtifactsSets/TroupeSet";
 import GladiatorSet from "@/Lists/ArtifactsSets/GladiatorSet";
 import WolfGravestoneWeapon from "@/Lists/Weapons/Claymores/WolfGravestoneWeapon";
@@ -20,7 +23,12 @@ import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import {SkillType} from "@/Skills/SkillType";
 import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
 
-const roster = new Roster();
+import Roster from "@/Roster/Roster";
+import DamageCalculator from "@/Roster/DamageCalculator";
+
+const roster = container.resolve(Roster);
+const damageCalculator = container.resolve(DamageCalculator);
+
 roster.addCharacter(new Ayaka());
 
 const char = roster.activeCharacter;
@@ -69,7 +77,7 @@ roster.addEnemy();
 // roster.addEnemy();
 // roster.addEnemy();
 
-const dmg = roster.damageCalculator.calcRotation([
+const dmg = damageCalculator.calcRotation([
   new AyakaBurst(),
   new AyakaElemental(),
   new AyakaDash(),

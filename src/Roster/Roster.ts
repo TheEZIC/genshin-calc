@@ -3,20 +3,20 @@ import DamageCalculator from "@/Roster/DamageCalculator";
 import Enemy from "@/Enemies/Enemy";
 import {VisionType} from "@/VisionType";
 import Skill from "@/Skills/Skill";
+import {container, injectable, singleton} from "tsyringe";
 
 export interface ISkillsItem {
   character: Character;
   skill: Skill;
 }
 
+@singleton()
 export default class Roster {
   public static readonly MAX_CHARACTERS_COUNT = 4;
   private _characters: Character[] = [];
   private _enemies: Enemy[] = [];
 
   private _index: number = 0;
-
-  public damageCalculator: DamageCalculator = new DamageCalculator(this);
 
   public get enemies(): Enemy[] {
     return this._enemies;

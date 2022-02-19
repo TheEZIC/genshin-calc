@@ -5,7 +5,7 @@ import NormalSkill from "@/Skills/NormalSkill";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
 import Character from "@/Characters/Character";
-import {SkillTargetType} from "@/Skills/SkillTargetType";
+import {container, injectable, singleton} from "tsyringe";
 
 export interface IOngoingSkill {
   startTime: number;
@@ -22,11 +22,9 @@ interface IDelayedAction {
   run: (damageCalculator: DamageCalculator) => void;
 }
 
+@singleton()
 export default class DamageCalculator {
-  constructor(
-    public roster: Roster,
-  ) {
-  }
+  public roster: Roster = container.resolve(Roster);
 
   public elementalReactionManager = new ElementalReactionManager();
   private ongoingSkills: Skill[] = [];
@@ -100,7 +98,7 @@ export default class DamageCalculator {
       }
 
       skill.awake(dmgArgs);
-      skill.start(character, this);
+      skill.start(character);
 
       logger.push({
         stage: "before",
@@ -121,7 +119,7 @@ export default class DamageCalculator {
 
           //Calc parallel skills
           this.ongoingSkills.forEach(s => {
-            s.update(character, this);
+            s.update(character);
 
             if (s instanceof SummonSkill && s.damageRegistrationType === SkillDamageRegistrationType.Adaptive) {
               this.rotationDmg += s.getDamage(dmgArgs);
@@ -181,7 +179,7 @@ export default class DamageCalculator {
 
   private runDefaultSkill(skill: Skill, character: Character) {
     this.currentFrames++;
-    skill.update(character, this);
+    skill.update(character);
     this.runDelayedActions();
     character.ongoingEffects.forEach(e => e.update(character));
   }

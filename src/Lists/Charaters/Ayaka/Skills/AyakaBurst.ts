@@ -11,6 +11,7 @@ import Character from "@/Characters/Character";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
 import ICD from "@/Skills/ICD";
+import {container} from "tsyringe";
 
 export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOTSkill {
   strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
@@ -45,8 +46,10 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
     return dmg;
   }
 
-  protected override onEnd(character: Character, damageCalculator: DamageCalculator) {
+  private damageCalculator: DamageCalculator = container.resolve(DamageCalculator);
+
+  protected override onEnd(character: Character) {
     const atk = character.calculatorStats.ATK.calc();
-    damageCalculator.rotationDmg += this.usageMVs * atk; //ayaka burst explode on end
+    this.damageCalculator.rotationDmg += this.usageMVs * atk; //ayaka burst explode on end
   }
 }
