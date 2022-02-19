@@ -5,8 +5,6 @@ import {SkillType} from "@/Skills/SkillType";
 export default class ElementalSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Elemental;
 
-  protected override _hasInfusion = false;
-
   runStartListener(character: Character): void {
     character.listeners.ElementalSkillStarted.notifyAll({entity: character});
   }
