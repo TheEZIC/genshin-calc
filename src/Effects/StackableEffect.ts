@@ -7,8 +7,9 @@ export default abstract class StackableEffect<T extends IWithOngoingEffects> ext
 
   protected abstract readonly maxStacks: number;
 
-  public override activate(entity: T) {
+  public override activate(entity: T): this {
     this.applyEffect(entity);
+    return this;
   }
 
   public override update(entity: T) {
@@ -19,8 +20,8 @@ export default abstract class StackableEffect<T extends IWithOngoingEffects> ext
     //Do nothing
   }
 
-  public override deactivate(entity: T) {
-    //Do nothing
+  public override deactivate(entity: T): this {
+    return this;
   }
 
   public addStack(entity: T, effect: Effect<T>): void {

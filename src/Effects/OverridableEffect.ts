@@ -2,7 +2,7 @@ import Effect from "@/Effects/Effect";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
 export default abstract class OverridableEffect<T extends IWithOngoingEffects> extends Effect<T>{
-  public override activate(entity: T): void {
+  public override activate(entity: T): this {
     const exist = this.checkExistence(entity);
 
     if (exist) {
@@ -10,6 +10,6 @@ export default abstract class OverridableEffect<T extends IWithOngoingEffects> e
       exist.deactivate(entity);
     }
 
-    super.activate(entity);
+    return super.activate(entity);
   }
 }

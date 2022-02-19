@@ -9,13 +9,13 @@ export default abstract class EffectStack<T extends IWithOngoingEffects> extends
     super();
   }
 
-  override activate(entity: T) {
+  override activate(entity: T): this {
     this.stackable.addStack(entity, this);
-    super.activate(entity);
+    return super.activate(entity);
   }
 
-  override deactivate(entity: T) {
+  override deactivate(entity: T): this {
     this.stackable.removeStack(entity, this);
-    super.deactivate(entity);
+    return super.deactivate(entity);
   }
 }

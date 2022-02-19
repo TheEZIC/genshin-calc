@@ -27,12 +27,13 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     return this.framesDuration - this.framesAfterCountdown;
   }
 
-  public activate(entity: T): void {
+  public activate(entity: T): this {
     this.isStarted = true;
     this.endStrategy.onStart();
     entity.ongoingEffects.push(this);
     entity.onAnyEffectStarted.notifyAll({effect: this, entity});
     this.applyEffect(entity);
+    return this;
   }
 
   public update(entity: T) {
@@ -54,9 +55,9 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
   }
 
-  public deactivate(entity: T): void {
+  public deactivate(entity: T): this {
     //if nothing to remove
-    if (!this.checkExistence(entity)) return;
+    if (!this.checkExistence(entity)) return this;
     const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);
 
     if (index > -1) {
@@ -65,6 +66,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
       entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
       this.removeEffect(entity);
     }
+
+    return this;
   }
 
   //startEvent

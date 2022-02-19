@@ -6,12 +6,12 @@ export default class ElementConstellation extends Constellation {
   public applyEffect(character: Character): void {
     character.skillManager
       .getSkillByType(SkillType.Elemental)
-      ?.addAdditionalLvl(3);
+      ?.lvl.addAdditional(3);
   }
 
   public removeEffect(character: Character): void {
     character.skillManager
       .getSkillByType(SkillType.Elemental)
-      ?.removeAdditionalLvl(3);
+      ?.lvl.removeAdditional(3);
   }
 }

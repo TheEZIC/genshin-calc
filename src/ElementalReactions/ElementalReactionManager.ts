@@ -19,6 +19,7 @@ import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
+import Skill from "@/Skills/Skill";
 
 type ElementalCombination = [
   first: Constructor<ElementalStatus>,
@@ -48,27 +49,28 @@ export default class ElementalReactionManager {
   private swirlReaction: SwirlReaction = new SwirlReaction();
 
   //TODO: Remove status after reaction
-  public applyReactionBonusDamage(character: Character, enemy: Enemy, damage: number, currentAttackStatus: ElementalStatus): number {
-    const enemyStatus = enemy.ongoingEffects.find((e) => {
-      return e instanceof ElementalStatus;
-    });
+  public applyReaction(character: Character, enemy: Enemy, skill: Skill, damage: number): number {
+    if (!skill.elementalStatus)
+      return damage;
+
+    const enemyStatus = enemy.ongoingEffects.find((e) => e instanceof ElementalStatus);
 
     if (!enemyStatus) {
-      enemy.effectManager.addEffect(currentAttackStatus);
+      enemy.effectManager.addEffect(skill.elementalStatus);
       return damage;
     }
 
-    if (enemyStatus instanceof GeoStatus || currentAttackStatus instanceof GeoStatus) {
+    if (enemyStatus instanceof GeoStatus || skill.elementalStatus instanceof GeoStatus) {
       return this.crystallizeReaction.applyBonusDamage(character, damage);
     }
 
-    if (enemyStatus instanceof AnemoStatus || currentAttackStatus instanceof AnemoStatus) {
+    if (enemyStatus instanceof AnemoStatus || skill.elementalStatus instanceof AnemoStatus) {
       return this.swirlReaction.applyBonusDamage(character, damage);
     }
 
     const combination = this.elementalCombinations.find((c) => {
       const [first, second] = c;
-      return enemyStatus instanceof first && currentAttackStatus instanceof second;
+      return enemyStatus instanceof first && skill.elementalStatus instanceof second;
     });
 
     if (combination) {

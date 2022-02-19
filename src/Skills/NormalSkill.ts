@@ -5,7 +5,7 @@ export default abstract class NormalSkill extends Skill {
   protected abstract value: SkillValue;
 
   public get dmg(): number {
-    return this.value.getValueAtLvl(this.lvl);
+    return this.value.getValueAtLvl(this.lvl.current);
   }
 
   public get MVs(): number {

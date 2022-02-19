@@ -1,5 +1,5 @@
 import NormalSkill from "@/Skills/NormalSkill";
-import {IMultipleHitSkill} from "@/Skills/IMultipleHitSkill";
+import {IMultipleHitSkill} from "@/Skills/SkillInterfaces/IMultipleHitSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import HoldAttackSkillStrategy from "@/Skills/SkillStrategy/HoldAttackSkillStrategy";

@@ -1,6 +1,6 @@
 import AyakaNormalAttack from "./AyakaNormalAttack";
 import SkillValue from "@/Skills/SkillValue";
-import {IMultipleHitSkill} from "@/Skills/IMultipleHitSkill";
+import {IMultipleHitSkill} from "@/Skills/SkillInterfaces/IMultipleHitSkill";
 
 export default class AyakaA4 extends AyakaNormalAttack implements IMultipleHitSkill {
   frames: number = 98;

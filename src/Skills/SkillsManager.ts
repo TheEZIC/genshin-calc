@@ -27,7 +27,7 @@ export default class SkillsManager {
   public changeLvl(lvl: number, skillType: SkillType) {
     this.skills
       .filter((s) => s.strategy.type === skillType)
-      .forEach((s) => s.changeLvl(lvl));
+      .forEach((s) => s.lvl.current = lvl);
   }
 
   public getSkillByType(skillType: SkillType): Skill | undefined {

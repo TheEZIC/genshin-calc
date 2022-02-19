@@ -9,7 +9,7 @@ import DamageCalculator from "@/Roster/DamageCalculator";
 import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import Enemy from "@/Enemies/Enemy";
+import SkillLvl from "@/Skills/SkillLvl";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -38,10 +38,9 @@ export default abstract class Skill {
 
   public ICD: ICD | null = null;
   public elementalStatus: ElementalStatus | null = null;
-
-  protected abstract calcDamage(args: ICalcDamageArgs): number;
-
   public effectManager: EffectManager<Character> | null = null;
+
+  public lvl: SkillLvl = new SkillLvl(this);
 
   protected readonly DEFAULT_ADD_ENERGY_FRAMES_DELAY: number = 100;
 
@@ -49,32 +48,8 @@ export default abstract class Skill {
     return this.constructor.name;
   }
 
-  protected currentLvl = 1;
-  private additionalLvls: number[] = [];
-
-  public addAdditionalLvl(additionalLvl: number) {
-    this.additionalLvls.push(additionalLvl);
-  }
-
-  public removeAdditionalLvl(additionalLvl: number) {
-    this.additionalLvls.filter((l) => l !== additionalLvl);
-  }
-
-  private get sumOfAdditionalLvls() {
-    return this.additionalLvls.reduce((a, b) => a + b, 0);
-  }
-
-  public get lvl(): number {
-    return this.currentLvl + this.sumOfAdditionalLvls;
-  }
-
   public get timelineDurationFrames(): number {
     return this.frames;
-  }
-
-  public changeLvl(lvl: number): this {
-    this.currentLvl = lvl;
-    return this;
   }
 
   protected isMVsMode: boolean = false;
@@ -98,43 +73,7 @@ export default abstract class Skill {
     this.onAwake(calcArgs);
   }
 
-  private onHit(calcArgs: ICalcDamageArgs) {
-    const {elementalReactionManager, roster} = calcArgs.damageCalculator;
-    const {enemies} = roster;
-
-    let dmg = this.calcDamage(calcArgs);
-    let totalDmg = 0;
-
-    if (this.elementalStatus && !this.ICD?.onCountdown) {
-      const workWithReactions = (enemy: Enemy, tempDmg: number) => {
-        if (!this.elementalStatus) return tempDmg;
-        const hasStatus = enemy.ongoingEffects.find(e => e instanceof ElementalStatus);
-
-        if (!hasStatus) {
-          enemy.effectManager.addEffect(this.elementalStatus);
-        } else {
-          tempDmg += elementalReactionManager.applyReactionBonusDamage(calcArgs.character, enemy, dmg, this.elementalStatus)
-        }
-
-        return tempDmg;
-      }
-
-      if (this.targetType === SkillTargetType.Single) {
-        const enemy = enemies[0];
-        totalDmg = workWithReactions(enemy, dmg);
-      } else {
-        for (let enemy of enemies) {
-          totalDmg += workWithReactions(enemy, dmg);
-        }
-      }
-    } else {
-      totalDmg = dmg;
-    }
-
-    this.ICD?.addHit();
-
-    return totalDmg;
-  }
+  protected abstract calcDamage(args: ICalcDamageArgs): number;
 
   public getDamage(args: IGetDamageArgs): number {
     if (!this.isStarted) return 0;
@@ -163,6 +102,33 @@ export default abstract class Skill {
     character.calculatorStats.ATK.affixes.remove(statValue);
 
     return dmg;
+  }
+
+  private onHit(calcArgs: ICalcDamageArgs) {
+    const {elementalReactionManager, roster} = calcArgs.damageCalculator;
+    const {enemies} = roster;
+
+    let dmg = this.calcDamage(calcArgs);
+    let totalDmg = 0;
+
+    if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
+      if (this.targetType === SkillTargetType.Single) {
+        const enemy = enemies[0];
+        dmg += elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg);
+        totalDmg = dmg;
+      } else {
+        for (let enemy of enemies) {
+          let tempDmg = elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg)
+          totalDmg += tempDmg;
+        }
+      }
+    } else {
+      totalDmg = dmg;
+    }
+
+    this.ICD?.addHit();
+
+    return totalDmg;
   }
 
   private _isStarted: boolean = false;
