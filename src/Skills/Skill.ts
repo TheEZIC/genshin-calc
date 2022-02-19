@@ -95,7 +95,7 @@ export default abstract class Skill {
 
   private onHit(args: IGetDamageArgs) {
     const {elementalReactionManager, roster} = args.damageCalculator;
-    const {enemies} = roster;
+    const {entities} = roster;
 
     const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
 
@@ -104,11 +104,11 @@ export default abstract class Skill {
 
     if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
       if (this.targetType === SkillTargetType.Single) {
-        const enemy = enemies[0];
+        const enemy = entities[0];
         dmg += elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg);
         totalDmg = dmg;
       } else {
-        for (let enemy of enemies) {
+        for (let enemy of entities) {
           let tempDmg = elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg)
           totalDmg += tempDmg;
         }
