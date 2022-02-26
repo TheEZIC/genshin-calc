@@ -38,7 +38,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   protected usageValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
 
   public override ICD = new ICD(3, 2.5 * 60);
-  public override elementalStatus = new CryoStatus(ElementalStatusDuration.A1);
+  public override elementalStatus = new CryoStatus("A1");
 
   public calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
