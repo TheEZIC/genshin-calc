@@ -9,7 +9,6 @@ import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import Character from "@/Entities/Characters/Character";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
-import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
 import ICD from "@/Skills/ICD";
 import {container} from "@/inversify.config";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";

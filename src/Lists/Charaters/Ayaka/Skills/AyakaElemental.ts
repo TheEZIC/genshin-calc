@@ -8,7 +8,6 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 export default class AyakaElemental extends NormalSkill {
