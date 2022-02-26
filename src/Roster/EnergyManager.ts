@@ -2,6 +2,7 @@ import Roster from "@/Roster/Roster";
 import Character from "@/Entities/Characters/Character";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
 import {VisionType} from "@/VisionType";
+import {injectable} from "inversify";
 
 export interface IEnergyParticles {
   type: VisionType | null;
@@ -9,6 +10,7 @@ export interface IEnergyParticles {
   count: number;
 }
 
+@injectable()
 export default class EnergyManager {
   constructor(
     private roster: Roster

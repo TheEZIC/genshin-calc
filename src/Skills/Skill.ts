@@ -59,6 +59,9 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public abstract calcDamage(args: ICalcDamageArgs): number;
 
+  private roster: Roster = container.get("Roster");
+  private elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
+
   public getDamage(args: IGetDamageArgs): number {
     if (!this.isStarted) return 0;
     this.isMVsMode = args.mvsCalcMode ?? false;
@@ -89,23 +92,21 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   }
 
   private onHit(args: IGetDamageArgs) {
-    const roster: Roster = container.get("Roster");
-    const elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
     const calcArgs = convertGetDamageToCalcDamageArgs(args);
 
     let dmg = this.calcDamage(calcArgs);
     let totalDmg = 0;
 
-    const entities = roster.entities;
+    const entities = this.roster.entities;
 
     if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
       if (this.targetType === SkillTargetType.Single) {
         const enemy = entities[0];
-        dmg += elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg);
+        dmg += this.elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg);
         totalDmg = dmg;
       } else {
         for (let enemy of entities) {
-          let tempDmg = elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg)
+          let tempDmg = this.elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg)
           totalDmg += tempDmg;
         }
       }
