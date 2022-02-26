@@ -24,7 +24,7 @@ export default class AyakaElemental extends NormalSkill {
   public override ICD = new ICD(0, 0);
   public override elementalStatus = new CryoStatus(ElementalStatusDuration.B2);
 
-  protected calcDamage({character}: ICalcDamageArgs): number {
+  calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     return this.MVs * atk;
   }

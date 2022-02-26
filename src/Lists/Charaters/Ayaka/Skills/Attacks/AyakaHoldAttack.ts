@@ -45,7 +45,7 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
     }
   }
 
-  protected calcDamage({character, prevSkill}: ICalcDamageArgs): number {
+  calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.MVs * atk;
 

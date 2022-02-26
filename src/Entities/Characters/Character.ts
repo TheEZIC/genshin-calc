@@ -6,14 +6,14 @@ import WeaponManager from "@/Weapons/WeaponManager";
 import CalculatorStats from "./CalculatorStats/CalculatorStats";
 import CharacterBaseStats from "./CharacterBaseStats";
 import {VisionType} from "@/VisionType";
-import SkillsListeners, {IAnySKillListenerArgs} from "@/Skills/SkillsListeners";
+import SkillsListeners from "@/Skills/SkillsListeners";
 import CharacterTalent from "@/Entities/Characters/CharacterTalent";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {SkillType} from "@/Skills/SkillType";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import Entity from "@/Entities/Entity";
 
-export default abstract class Character extends Entity<Character> implements IWithOngoingEffects {
+export default abstract class Character extends Entity implements IWithOngoingEffects {
   public name = this.constructor.name;
 
   public abstract vision: VisionType;

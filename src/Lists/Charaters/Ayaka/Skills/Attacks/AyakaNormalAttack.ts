@@ -11,7 +11,7 @@ export default abstract class AyakaNormalAttack extends NormalSkill {
   public targetType: SkillTargetType = SkillTargetType.Single;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  protected override calcDamage({character}: ICalcDamageArgs): number {
+  override calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     return this.MVs * atk;
   }

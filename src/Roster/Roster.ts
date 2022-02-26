@@ -2,19 +2,19 @@ import Character from "@/Entities/Characters/Character";``
 import Enemy from "@/Entities/Enemies/Enemy";
 import {VisionType} from "@/VisionType";
 import Skill from "@/Skills/Skill";
-import {singleton} from "tsyringe";
 import Entity from "@/Entities/Entity";
+import {injectable} from "inversify";
 
 export interface ISkillsItem {
   character: Character;
   skill: Skill;
 }
 
-@singleton()
+@injectable()
 export default class Roster {
   public static readonly MAX_CHARACTERS_COUNT = 4;
   private _characters: Character[] = [];
-  private _entities: Entity<any>[] = [];
+  private _entities: Entity[] = [];
 
   private _index: number = 0;
 

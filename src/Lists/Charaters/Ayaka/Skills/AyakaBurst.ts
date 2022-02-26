@@ -11,7 +11,8 @@ import Character from "@/Entities/Characters/Character";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import {ElementalStatusDuration} from "@/ElementalStatuses/ElementalStatusDurartion";
 import ICD from "@/Skills/ICD";
-import {container} from "tsyringe";
+import {container} from "@/inversify.config";
+import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 
 export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOTSkill {
   strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
@@ -39,17 +40,16 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   public override ICD = new ICD(3, 2.5 * 60);
   public override elementalStatus = new CryoStatus(ElementalStatusDuration.A1);
 
-  protected calcDamage({character}: ICalcDamageArgs): number {
+  public calcDamage({character}: ICalcDamageArgs): number {
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.durationMVs * atk * this.CUTTINGS_COUNT; //cutting dmg
 
     return dmg;
   }
 
-  private damageCalculator: DamageCalculator = container.resolve(DamageCalculator);
-
-  protected override onEnd(character: Character) {
+  public override onEnd({character}: ISkillBehaviorArgs) {
+    const damageCalculator: DamageCalculator = container.get("DamageCalculator");
     const atk = character.calculatorStats.ATK.calc();
-    this.damageCalculator.rotationDmg += this.usageMVs * atk; //ayaka burst explode on end
+    damageCalculator.rotationDmg += this.usageMVs * atk; //ayaka burst explode on end
   }
 }

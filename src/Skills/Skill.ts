@@ -4,12 +4,16 @@ import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
-import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
-import DamageCalculator from "@/Roster/DamageCalculator";
 import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import SkillLvl from "@/Skills/SkillLvl";
+import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
+import SkillBehavior, {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
+import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
+import Roster from "@/Roster/Roster";
+import {container} from "@/inversify.config";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -21,13 +25,12 @@ export interface ICalcDamageArgs {
 
 export interface IGetDamageArgs {
   character: Character;
-  damageCalculator: DamageCalculator;
   skills: Skill[];
   currentSkillIndex: number;
   mvsCalcMode?: boolean;
 }
 
-export default abstract class Skill {
+export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkillBehaviorArgs> {
   public abstract strategy: ISkillStrategy;
 
   public abstract frames: number;
@@ -46,29 +49,21 @@ export default abstract class Skill {
 
   public lvl: SkillLvl = new SkillLvl(this);
 
-  protected readonly DEFAULT_ADD_ENERGY_FRAMES_DELAY: number = 100;
+  protected readonly ADD_ENERGY_FRAMES_DELAY: number = 100;
 
   public get name(): string {
     return this.constructor.name;
   }
 
-  protected isMVsMode: boolean = false;
+  public isMVsMode: boolean = false;
 
-  protected onAwake(args: ICalcDamageArgs): void {
-  }
-
-  public awake(args: IGetDamageArgs): void {
-    const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
-    this.onAwake(calcArgs);
-  }
-
-  protected abstract calcDamage(args: ICalcDamageArgs): number;
+  public abstract calcDamage(args: ICalcDamageArgs): number;
 
   public getDamage(args: IGetDamageArgs): number {
     if (!this.isStarted) return 0;
     this.isMVsMode = args.mvsCalcMode ?? false;
 
-    const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
+    const calcArgs = convertGetDamageToCalcDamageArgs(args);
     const {character} = calcArgs;
 
     const dmgBonus = this.strategy.hasInfusion
@@ -94,22 +89,23 @@ export default abstract class Skill {
   }
 
   private onHit(args: IGetDamageArgs) {
-    const {elementalReactionManager, roster} = args.damageCalculator;
-    const {entities} = roster;
-
-    const calcArgs = this.convertGetDamageToCalcDamageArgs(args);
+    const roster: Roster = container.get("Roster");
+    const elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
+    const calcArgs = convertGetDamageToCalcDamageArgs(args);
 
     let dmg = this.calcDamage(calcArgs);
     let totalDmg = 0;
 
+    const entities = roster.entities;
+
     if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
       if (this.targetType === SkillTargetType.Single) {
         const enemy = entities[0];
-        dmg += elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg);
+        dmg += elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg);
         totalDmg = dmg;
       } else {
         for (let enemy of entities) {
-          let tempDmg = elementalReactionManager.applyReaction(calcArgs.character, enemy, this, dmg)
+          let tempDmg = elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg)
           totalDmg += tempDmg;
         }
       }
@@ -119,97 +115,44 @@ export default abstract class Skill {
 
     this.ICD?.addHit();
 
-    return totalDmg;
+    return totalDmg || dmg;
   }
 
-  private _isStarted: boolean = false;
-  protected currentFrame: number = 0;
+  private behavior: SkillBehavior = new SkillBehavior(this);
 
-  private _isOnCountdown: boolean = false;
-  private framesAfterCountdown: number = 0;
-
-  public get isStarted(): boolean {
-    return this._isStarted;
+  public get isStarted() {
+    return this.behavior.isStarted;
   }
 
-  public get isOnCountdown(): boolean {
-    return this._isOnCountdown;
+  public get isOnCountdown() {
+    return this.behavior.isOnCountdown;
   }
 
-  private set isOnCountdown(onCountdown: boolean) {
-    this._isOnCountdown = onCountdown;
+  public get currentFrame() {
+    return this.behavior.currentFrame;
   }
 
-  protected onStart(character: Character): void {
+  public start(args: ISkillBehaviorArgs): Skill {
+    return this.behavior.start(args);
   }
 
-  public start(character: Character): this {
-    if (this.isStarted || this.isOnCountdown) return this;
-
-    if (
-      isIBurstSKill(this)
-      && this.energyCost >= character.energy
-    ) return this;
-
-    this.strategy.runStartListener(character);
-    character.skillManager.onAnySkillStarted.notifyAll(this);
-    this.onStart(character);
-
-    this._isStarted = true;
-    this._isOnCountdown = true;
-
-    if (isIBurstSKill(this)) {
-      character.consumeEnergy(this.energyConsumed);
-    }
-
-    return this;
+  public update(args: ISkillBehaviorArgs): Skill {
+    return this.behavior.update(args);
   }
 
-  public update(character: Character) {
-    if (this.isOnCountdown) {
-      this.framesAfterCountdown++;
-
-      if (this.framesAfterCountdown >= this.countdownFrames) {
-        this.isOnCountdown = false;
-        this.framesAfterCountdown = 0;
-      }
-    }
-
-    if (this.isStarted) {
-      this.currentFrame++;
-
-      if (this.currentFrame === this.frames) {
-        this.end(character);
-      }
-    }
+  public end(args: ISkillBehaviorArgs): Skill {
+    return this.behavior.end(args);
   }
 
-  protected onEnd(character: Character) {
+  public awake(args: IGetDamageArgs): void {
+    const calcArgs = convertGetDamageToCalcDamageArgs(args);
+    this.onAwake(calcArgs);
   }
 
-  public end(character: Character): this {
-    if (!this._isStarted) return this;
-    this.strategy.runEndListener(character);
-    character.skillManager.onAnySkillEnded.notifyAll(this);
-    this.onEnd(character);
-
-    this._isStarted = false;
-    this.isMVsMode = false;
-    this.currentFrame = 0;
-
-    return this;
-  }
-
-  private convertGetDamageToCalcDamageArgs(args: IGetDamageArgs) {
-    const {skills, currentSkillIndex, character, damageCalculator, mvsCalcMode} = args;
-
-    const prevSkill = skills[currentSkillIndex - 1] ?? null;
-    const nextSkill = skills[currentSkillIndex + 1] ?? null;
-    const prevSkills = skills.filter((s, i) => i < currentSkillIndex);
-    const nextSkills = skills.filter((s, i) => i > currentSkillIndex);
-
-    return {character, prevSkill, nextSkill, prevSkills, nextSkills, damageCalculator};
-  }
+  public onStart(args: ISkillBehaviorArgs): void {}
+  public onUpdate(args: ISkillBehaviorArgs): void {}
+  public onEnd(args: ISkillBehaviorArgs): void {}
+  protected onAwake(args: ICalcDamageArgs): void {}
 
   protected createRepeatedFrames(everyFrames: number, count: number, offset: number = 0): number[] {
     let temp: number[] = [];
