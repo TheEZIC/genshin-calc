@@ -14,6 +14,7 @@ import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
 import Roster from "@/Roster/Roster";
 import {container} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import EnergyManager from "@/Roster/EnergyManager";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -59,8 +60,9 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public abstract calcDamage(args: ICalcDamageArgs): number;
 
-  private roster: Roster = container.get("Roster");
-  private elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
+  protected roster: Roster = container.get("Roster");
+  protected elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
+  protected energyManager: EnergyManager = container.get(EnergyManager);
 
   public getDamage(args: IGetDamageArgs): number {
     if (!this.isStarted) return 0;
