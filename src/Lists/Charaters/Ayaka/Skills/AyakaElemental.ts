@@ -1,4 +1,3 @@
-import Character from "@/Entities/Characters/Character";
 import NormalSkill from "@/Skills/NormalSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
@@ -7,7 +6,6 @@ import {ICalcDamageArgs} from "@/Skills/Skill";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
-import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 export default class AyakaElemental extends NormalSkill {

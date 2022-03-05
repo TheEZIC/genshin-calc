@@ -7,7 +7,7 @@ export default abstract class OverridableEffect<T extends IWithOngoingEffects> e
 
     if (exist) {
       entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
-      exist.deactivate(entity);
+      this.deactivate(entity);
     }
 
     return super.activate(entity);

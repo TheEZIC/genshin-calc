@@ -1,15 +1,19 @@
-import ElementalReaction from "@/ElementalReactions/ElementalReaction";
+import TransformativeElementalReaction from "@/ElementalReactions/TransformativeElementalReaction";
 import Character from "@/Entities/Characters/Character";
 import Skill from "@/Skills/Skill";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import {container} from "@/inversify.config";
 import Roster from "@/Roster/Roster";
 
-export default class SwirlReaction extends ElementalReaction {
+export default class SwirlReaction extends TransformativeElementalReaction {
+  public triggerMultiplier: number = 0.625;
+  protected baseMultiplier: number = 1.2;
+
+  private roster: Roster = container.get("Roster");
+
   private isAnyEntityHasElementalStatus(): boolean {
-    const roster: Roster = container.get("Roster");
     const anyEntityHasStatus: boolean = Boolean(
-      roster.entities.filter(entity => entity.ongoingEffects.find(e => e instanceof ElementalStatus)).length
+      this.roster.entities.filter(entity => entity.ongoingEffects.find(e => e instanceof ElementalStatus)).length
     );
 
     return anyEntityHasStatus;
@@ -18,7 +22,7 @@ export default class SwirlReaction extends ElementalReaction {
   }
 
   applyBonusDamage(character: Character, skill: Skill, damage: number): number {
-    //const {entities} = this.roster!!;
+    const {entities} = this.roster;
     let hasStatus = this.isAnyEntityHasElementalStatus();
 
     // while(hasStatus) {
@@ -29,8 +33,8 @@ export default class SwirlReaction extends ElementalReaction {
     //   hasStatus = this.isAnyEntityHasElementalStatus();
     // }
 
-    return damage
-      / character.calculatorStats.critChance.critEffect
-      * character.calculatorStats.elementalMastery.anemoAndElectroReactionBonus;
+    return this.baseMultiplier
+      * this.calcLvlMultiplier(character)
+      * (1 + (character.calculatorStats.elementalMastery.transformativeReactionBonus) / 100)
   }
 }

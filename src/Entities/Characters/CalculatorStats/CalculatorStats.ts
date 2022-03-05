@@ -25,6 +25,7 @@ import PyroDmgBonusStat from "./List/PyroDmgBonusStat";
 import PyroResistanceStat from "./List/PyroResistanceStat";
 import MainStat from "./Types/MainStat";
 import {VisionType} from "@/VisionType";
+import ReactionDmgBonusStat from "@/Entities/Characters/CalculatorStats/ReactionDmgBonusStat";
 
 export default class CalculatorStats {
   constructor(public character: Character) {}
@@ -48,9 +49,7 @@ export default class CalculatorStats {
   public readonly cryoDmgBonus = new CryoDmgBonusStat(this.character);
   public readonly geoDmgBonus = new GeoDmgBonusStat(this.character);
 
-  public readonly physicalResistance = new PhysicalResistanceStat(
-    this.character
-  );
+  public readonly physicalResistance = new PhysicalResistanceStat(this.character);
   public readonly pyroResistance = new PyroResistanceStat(this.character);
   public readonly hydroResistance = new HydroResistanceStat(this.character);
   public readonly anemoResistance = new AnemoResistanceStat(this.character);
@@ -58,6 +57,15 @@ export default class CalculatorStats {
   public readonly dendroResistance = new DendroResistanceStat(this.character);
   public readonly cryoResistance = new CryoResistanceStat(this.character);
   public readonly geoResistance = new GeoResistanceStat(this.character);
+
+  public readonly vaporizeReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly meltReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly electroChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly frozenChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly overloadedChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly superConductChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly swirlChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly crystallizeChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
 
   public getElementalDmgBonus(visionType: VisionType): number {
     switch (visionType) {

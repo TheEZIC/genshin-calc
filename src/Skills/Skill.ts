@@ -62,7 +62,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   protected roster: Roster = container.get("Roster");
   protected elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
-  protected energyManager: EnergyManager = container.get(EnergyManager);
+  protected energyManager: EnergyManager = container.get("EnergyManager");
 
   public getDamage(args: IGetDamageArgs): number {
     if (!this.isStarted) return 0;

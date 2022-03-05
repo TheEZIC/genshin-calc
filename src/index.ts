@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { parseDependencyTree, parseCircular, prettyCircular } from 'dpdm';
 
 import Roster from "@/Roster/Roster";
+import EnergyManager from "@/Roster/EnergyManager";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import {container} from "./inversify.config";
@@ -38,6 +39,7 @@ parseDependencyTree('./index', {
 const roster: Roster = container.get("Roster");
 const damageCalculator: DamageCalculator = container.get("DamageCalculator");
 const elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
+//const energyManager: EnergyManager = container.get("EnergyManager")
 
 class GenshinCalculator {
   private roster: Roster = roster;

@@ -8,21 +8,11 @@ export class DurationEndStrategy<T extends IWithOngoingEffects> implements IEndS
   ) {
   }
 
-  private currentFrame = 0;
-
-  onEnd(): void {
-    this.currentFrame = 0;
-  }
-
-  onStart(): void {
-    this.currentFrame = 0;
-  }
-
-  onUpdate() {
-    this.currentFrame++;
-  }
+  onEnd(): void {}
+  onStart(): void {}
+  onUpdate() {}
 
   shouldEnd(): boolean {
-    return this.currentFrame === this.effect.framesDuration;
+    return this.effect.currentFrame >= this.effect.framesDuration;
   }
 }

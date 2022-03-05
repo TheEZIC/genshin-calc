@@ -16,12 +16,12 @@ export default class ElementaryMasteryStat extends PureStat {
     );
   }
 
-  public get vaporizeAndMeltReactionBonus() {
+  public get multipliedReactionBonus() {
     const EM = this.calc();
     return 278 * (EM / (EM + 1400));
   }
 
-  public get anemoAndElectroReactionBonus() {
+  public get transformativeReactionBonus() {
     const EM = this.calc();
     return 1600 * (EM / (EM + 2000));
   }

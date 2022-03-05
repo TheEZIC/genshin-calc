@@ -3,8 +3,10 @@ import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {IEndStrategy} from "@/Effects/IEndStrategy";
 import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
+import {IPrototype} from "@/Helpers/IPrototype";
+import {cloneDeep} from "lodash";
 
-export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>> {
+export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
   public name = this.constructor.name;
 
   public abstract framesDuration: number;
@@ -21,7 +23,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
   protected isStarted = false;
   protected isOnCountdown: boolean = false;
-  private framesAfterCountdown = 0;
+  public currentFrame: number = 0;
+  public framesAfterCountdown = 0;
 
   public get remainingCountdown(): number {
     return this.framesDuration - this.framesAfterCountdown;
@@ -47,6 +50,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
 
     if (this.isStarted) {
+      this.currentFrame++;
       this.endStrategy.onUpdate();
 
       if (this.endStrategy.shouldEnd()) {
@@ -62,6 +66,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
     if (index > -1) {
       this.isStarted = false;
+      this.currentFrame = 0;
       this.endStrategy.onEnd();
       const deletedEffect = entity.ongoingEffects[index];
       entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
@@ -74,5 +79,20 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   //startEvent
   public runOnEvent(args: ISkillListenerArgs<T>) {
     this.activate(args.entity);
+  }
+
+  public reactivate(entity: T): this {
+    const exist = this.checkExistence(entity);
+
+    if (exist) {
+      entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
+      this.deactivate(entity);
+    }
+
+    return this.activate(entity);
+  }
+
+  public get clone(): this {
+    return cloneDeep(this);
   }
 }

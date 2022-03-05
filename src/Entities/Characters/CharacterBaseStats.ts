@@ -4,7 +4,7 @@ import Character from "./Character";
 import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
 
 export default abstract class CharacterBaseStats {
-  constructor(public character: Character) {}
+  constructor(private character: Character) {}
 
   public abstract readonly baseHP: BaseStat;
   public readonly percentHP: CharacterAscendableBaseStat =
@@ -62,11 +62,19 @@ export default abstract class CharacterBaseStats {
   public readonly geoResistance: CharacterAscendableBaseStat =
     new CharacterAscendableBaseStat(0);
 
+  private _lvl: number = 1;
+
+  public get lvl() {
+    return this._lvl;
+  }
+
   /**
    * Apply lvl to all character stats
    * @param {number} lvl - lvl of character
    * */
   public applyLvl(lvl: number): this {
+    this._lvl = lvl;
+
     if (lvl > 40) {
       this.character.talent1?.activate();
     } else {

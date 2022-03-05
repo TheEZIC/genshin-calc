@@ -9,9 +9,10 @@ export interface IOnReactionArgs {
 }
 
 export default abstract class ElementalReaction {
-  public onExecuteListener: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
-
+  public abstract triggerMultiplier: number;
   public abstract applyBonusDamage(character: Character, skill: Skill, damage: number): number;
+
+  public onExecuteListener: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
 
   public execute(character: Character, skill: Skill, damage: number) {
     this.onExecuteListener.notifyAll({reaction: this, character, skill});
