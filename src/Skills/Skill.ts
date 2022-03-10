@@ -15,6 +15,7 @@ import Roster from "@/Roster/Roster";
 import {container} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import EnergyManager from "@/Roster/EnergyManager";
+import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -104,11 +105,25 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
       if (this.targetType === SkillTargetType.Single) {
         const enemy = entities[0];
-        dmg += this.elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg);
+        const reactionArgs: IElementalReactionArgs = {
+          character: calcArgs.character,
+          damage: dmg,
+          elementalStatus: this.elementalStatus!!,
+          entity: enemy,
+        }
+
+        dmg += this.elementalReactionManager!!.applyReaction(reactionArgs);
         totalDmg = dmg;
       } else {
         for (let enemy of entities) {
-          let tempDmg = this.elementalReactionManager!!.applyReaction(calcArgs.character, enemy, this, dmg)
+          const reactionArgs: IElementalReactionArgs = {
+            character: calcArgs.character,
+            damage: dmg,
+            elementalStatus: this.elementalStatus!!,
+            entity: enemy,
+          }
+
+          let tempDmg = this.elementalReactionManager!!.applyReaction(reactionArgs);
           totalDmg += tempDmg;
         }
       }

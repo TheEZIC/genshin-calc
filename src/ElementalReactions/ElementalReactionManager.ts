@@ -1,5 +1,5 @@
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import ElementalReaction, {IOnReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import ElementalReaction, {IElementalReactionArgs, IOnReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import {Constructor} from "@/Helpers/Constructor";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
@@ -47,23 +47,23 @@ export default class ElementalReactionManager {
 
   private elementalCombinations: ElementalCombination[] = [
     //Amplifying Reactions
-    [PyroStatus, HydroStatus, new VaporizeReaction()],
-    [HydroStatus, PyroStatus, new ReverseVaporizeReaction()],
-    [CryoStatus, PyroStatus, new MeltReaction()],
-    [PyroStatus, CryoStatus, new ReverseMeltReaction()],
+    [PyroStatus, HydroStatus, new VaporizeReaction(this)],
+    [HydroStatus, PyroStatus, new ReverseVaporizeReaction(this)],
+    [CryoStatus, PyroStatus, new MeltReaction(this)],
+    [PyroStatus, CryoStatus, new ReverseMeltReaction(this)],
     //Transformative Reactions
-    [ElectroStatus, PyroStatus, new OverloadedReaction()],
-    [PyroStatus, ElectroStatus, new OverloadedReaction()],
-    [HydroStatus, ElectroStatus, new ElectroChargedReaction()],
-    [ElectroStatus, HydroStatus, new ElectroChargedReaction()],
-    [CryoStatus, HydroStatus, new FrozenReaction()],
-    [HydroStatus, CryoStatus, new FrozenReaction()],
-    [CryoStatus, ElectroStatus, new SuperConductReaction()],
-    [ElectroStatus, CryoStatus, new SuperConductReaction()],
+    [ElectroStatus, PyroStatus, new OverloadedReaction(this)],
+    [PyroStatus, ElectroStatus, new OverloadedReaction(this)],
+    [HydroStatus, ElectroStatus, new ElectroChargedReaction(this)],
+    [ElectroStatus, HydroStatus, new ElectroChargedReaction(this)],
+    [CryoStatus, HydroStatus, new FrozenReaction(this)],
+    [HydroStatus, CryoStatus, new FrozenReaction(this)],
+    [CryoStatus, ElectroStatus, new SuperConductReaction(this)],
+    [ElectroStatus, CryoStatus, new SuperConductReaction(this)],
   ];
 
-  private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction();
-  private swirlReaction: SwirlReaction = new SwirlReaction();
+  private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction(this);
+  private swirlReaction: SwirlReaction = new SwirlReaction(this);
 
   public getReaction(reactionConstructor: Constructor<ElementalReaction>) {
     if (this.crystallizeReaction instanceof reactionConstructor) {
@@ -78,63 +78,51 @@ export default class ElementalReactionManager {
   }
 
   //TODO: Remove status after reaction
-  public applyReaction(character: Character, entity: Entity<any>, skill: Skill, damage: number): number {
-    if (!skill.elementalStatus)
-      return damage;
-
-    const skillStatus = skill.elementalStatus as ElementalStatus;
+  public applyReaction(args: IElementalReactionArgs): number {
+    let {elementalStatus, entity, character, damage} = args;
     const enemyStatuses = entity.ongoingEffects.filter((e) => e instanceof ElementalStatus) as ElementalStatus[];
+
+    if (!elementalStatus) {
+      //TODO: physical reactions
+      return damage;
+    }
 
     //add status if it doesn't exists
     if (!enemyStatuses.length) {
-      this.addStatus(entity, skill);
+      this.addStatus(entity, elementalStatus);
       return damage;
     }
 
     for (let enemyStatus of enemyStatuses) {
       //override status if they're same
-      if (
-        enemyStatus.name === skillStatus.name
-        && enemyStatus.duration === skillStatus.duration
-      ) {
-        enemyStatus.reactivate(entity);
+      if (this.tryToOverrideStatus(elementalStatus, enemyStatus, entity)) {
         continue;
       }
 
       //override status if they're same but duration is different
-      if (
-        enemyStatus.name === skillStatus.name
-        && skillStatus.units > enemyStatus.units
-      ) {
-        const newDuration: string = enemyStatus.pureSpeed + Math.max(enemyStatus.units, skillStatus.units);
-        const newStatus = skillStatus.clone;
-        newStatus.duration = newDuration;
-
-        this.addStatus(entity, skill);
-
+      if (this.tryToRefillStatus(elementalStatus, enemyStatus, entity)) {
         continue;
       }
 
       //Reactions
 
-      if (enemyStatus instanceof GeoStatus || skillStatus instanceof GeoStatus) {
+      if (enemyStatus instanceof GeoStatus || elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
-        enemyStatus.currentFrame += this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedSpeed;
-        this.crystallizeReaction.applyBonusDamage(character, skill, damage);
+        enemyStatus.currentFrame += this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedDecay;
+        this.crystallizeReaction.applyBonusDamage(args);
         continue;
       }
 
-      if (enemyStatus instanceof AnemoStatus || skillStatus instanceof AnemoStatus) {
+      if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
-        enemyStatus.currentFrame += this.swirlReaction.triggerMultiplier * enemyStatus.parsedSpeed;
-        this.swirlReaction.applyBonusDamage(character, skill, damage);
+        enemyStatus.currentFrame += this.swirlReaction.triggerMultiplier * enemyStatus.parsedDecay;
+        this.swirlReaction.applyBonusDamage(args);
         continue;
       }
 
       const combination = this.elementalCombinations.find((c) => {
         const [first, second] = c;
-        this.removeStatus(entity, first);
-        return enemyStatus instanceof first && skillStatus instanceof second;
+        return enemyStatus instanceof first && elementalStatus instanceof second;
       });
 
       if (combination) {
@@ -142,16 +130,16 @@ export default class ElementalReactionManager {
 
         if (!(reaction instanceof ElectroChargedReaction)) {
           if (reaction instanceof MultipliedElementalReaction) {
-            enemyStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedSpeed;
-            damage += reaction.applyBonusDamage(character, skill, damage);
+            enemyStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
+            damage += reaction.applyBonusDamage(args);
           }
         } else {
-          this.addStatus(entity, skill);
+          this.addStatus(entity, elementalStatus);
 
           const remainingDuration = enemyStatus.framesDuration - enemyStatus.currentFrame;
-          const statusDecay = reaction.triggerMultiplier * enemyStatus.parsedSpeed + 1
+          const statusDecay = reaction.triggerMultiplier * enemyStatus.parsedDecay + 1
 
-          let ticksCount = (remainingDuration / 60) / (statusDecay);
+          let ticksCount = (remainingDuration / 60) / statusDecay;
 
           if (ticksCount % 1 * statusDecay > 0.5) {
             ticksCount++;
@@ -167,10 +155,10 @@ export default class ElementalReactionManager {
                 const hydroStatus = character.ongoingEffects.find(e => e instanceof HydroStatus);
 
                 if (electroStatus && hydroStatus) {
-                  electroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedSpeed;
-                  hydroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedSpeed;
+                  electroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
+                  hydroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
 
-                  damageCalculator.rotationDmg += reaction.applyBonusDamage(character, skill, damage);
+                  damageCalculator.rotationDmg += reaction.applyBonusDamage(args);
                 }
               }
             });
@@ -180,6 +168,35 @@ export default class ElementalReactionManager {
     }
 
     return damage;
+  }
+
+  private tryToOverrideStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
+    if (
+      enemyStatus.name === skillStatus.name
+      && enemyStatus.duration === skillStatus.duration
+    ) {
+      enemyStatus.reactivate(entity);
+      return true;
+    }
+
+    return false;
+  }
+
+  private tryToRefillStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
+    if (
+      enemyStatus.name === skillStatus.name
+      && skillStatus.units > enemyStatus.units
+    ) {
+      const newDuration: string = enemyStatus.pureDecay + Math.max(enemyStatus.units, skillStatus.units);
+      const newStatus = skillStatus.clone;
+      newStatus.duration = newDuration;
+
+      this.addStatus(entity, skillStatus);
+
+      return true;
+    }
+
+    return false;
   }
 
   private subscribeAllReactions() {
@@ -194,9 +211,9 @@ export default class ElementalReactionManager {
     }
   }
 
-  private addStatus(entity: Entity<any>, skill: Skill) {
+  private addStatus(entity: Entity<any>, elementalStatus: ElementalStatus) {
     if (entity instanceof Enemy) {
-      entity.effectManager.addEffect(skill.elementalStatus!!.activate(entity));
+      entity.effectManager.addEffect(elementalStatus.activate(entity));
     }
   }
 

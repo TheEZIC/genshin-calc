@@ -1,11 +1,9 @@
-import ElementalReaction from "@/ElementalReactions/ElementalReaction";
-import Character from "@/Entities/Characters/Character";
-import Skill from "@/Skills/Skill";
+import ElementalReaction, {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class CrystallizeReaction extends ElementalReaction {
   public triggerMultiplier: number = 0.625;
 
-  public applyBonusDamage(character: Character, skill: Skill, damage: number): number {
+  public applyBonusDamage(args: IElementalReactionArgs): number {
     return 0;
   }
 }
