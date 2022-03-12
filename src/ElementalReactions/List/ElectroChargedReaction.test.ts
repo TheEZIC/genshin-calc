@@ -21,21 +21,15 @@ describe(`${reactionName}Reaction`, () => {
   let roster: Roster = container.get("Roster");
   let damageCalculator: DamageCalculator = container.get("DamageCalculator");
   let manager: ElementalReactionManager = container.get("ElementalReactionManager");
-  let reaction = new ElectroChargedReaction(manager);
 
   let character = new Ayaka();
   let entity = new Enemy();
+  let reaction = new ElectroChargedReaction(manager);
   let elementalStatus = new ElectroStatus("C4");
+  let reactionArgs = {character, entity, elementalStatus, damage: 0};
 
   roster.addCharacter(character);
   roster.addEnemy(entity);
-
-  let reactionArgs = {
-    character,
-    entity,
-    elementalStatus,
-    damage: 0,
-  }
 
   test(`Expect ${reactionName} dmg`, () => {
     character.baseStats.applyLvl(40);
@@ -60,9 +54,6 @@ describe(`${reactionName}Reaction`, () => {
 
     expect(electroStatus).not.toBeUndefined();
     expect(hydroStatus).not.toBeUndefined();
-
-    expect(electroStatus?.currentFrame).not.toBeUndefined();
-    expect(hydroStatus?.currentFrame).not.toBeUndefined();
 
     //ticks count
     expect(damageCalculator.delayedActions.length).toBe(6); //one tick is instatility

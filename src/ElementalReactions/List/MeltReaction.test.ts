@@ -66,7 +66,6 @@ describe(`${reactionName}Reaction`, () => {
     const status = entity.getElementalStatus(CryoStatus);
 
     expect(status).not.toBeUndefined();
-    expect(status?.currentFrame).not.toBeUndefined();
     expect(status?.currentFrame).toBe(2850);
 
     //aura shouldn't exist anymore
@@ -83,7 +82,6 @@ describe(`${reactionName}Reaction`, () => {
     const status = entity.getElementalStatus(CryoStatus);
 
     expect(status).not.toBeUndefined();
-    expect(status?.currentFrame).not.toBeUndefined();
     expect(status?.currentFrame).toBe(638);
 
     //aura should exist

@@ -11,10 +11,10 @@ const reactionName = "Crystallize";
 
 describe(`${reactionName}Reaction`, () => {
   let manager: ElementalReactionManager = container.get("ElementalReactionManager");
-  let reaction = new CrystallizeReaction(manager);
 
   let character = new Ayaka();
   let entity = new Enemy();
+  let reaction = new CrystallizeReaction(manager);
   let elementalStatus = new GeoStatus("U1");
 
   let reactionArgs = {
@@ -35,7 +35,6 @@ describe(`${reactionName}Reaction`, () => {
     const status = entity.getElementalStatus(PyroStatus);
 
     expect(status).not.toBeUndefined();
-    expect(status?.currentFrame).not.toBeUndefined();
     expect(status?.currentFrame).toBe(356);
   });
 });
