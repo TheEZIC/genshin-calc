@@ -86,7 +86,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).not.toBeUndefined();
     expect(status?.currentFrame).toBe(638);
 
-    //aura should exist anymore
+    //aura should exist
     expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
   });
 });
