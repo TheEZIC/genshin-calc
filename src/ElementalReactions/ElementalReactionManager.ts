@@ -108,14 +108,14 @@ export default class ElementalReactionManager {
 
       if (enemyStatus instanceof GeoStatus || elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
-        enemyStatus.currentFrame += this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedDecay;
+        enemyStatus.currentFrame += Math.round(this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
         this.crystallizeReaction.applyBonusDamage(args);
         continue;
       }
 
       if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
-        enemyStatus.currentFrame += this.swirlReaction.triggerMultiplier * enemyStatus.parsedDecay;
+        enemyStatus.currentFrame += Math.round(this.swirlReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
         this.swirlReaction.applyBonusDamage(args);
         continue;
       }
@@ -130,14 +130,14 @@ export default class ElementalReactionManager {
 
         if (!(reaction instanceof ElectroChargedReaction)) {
           if (reaction instanceof MultipliedElementalReaction) {
-            enemyStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
+            enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
             damage += reaction.applyBonusDamage(args);
           }
         } else {
           this.addStatus(entity, elementalStatus);
 
           const remainingDuration = enemyStatus.framesDuration - enemyStatus.currentFrame;
-          const statusDecay = reaction.triggerMultiplier * enemyStatus.parsedDecay + 1
+          const statusDecay = reaction.triggerMultiplier * (enemyStatus.parsedDecay / 60) + 1
 
           let ticksCount = (remainingDuration / 60) / statusDecay;
 
@@ -151,12 +151,12 @@ export default class ElementalReactionManager {
             this.damageCalculator.addAction({
               delay: 60 * i,
               run: (damageCalculator) => {
-                const electroStatus = character.ongoingEffects.find(e => e instanceof ElectroStatus);
-                const hydroStatus = character.ongoingEffects.find(e => e instanceof HydroStatus);
+                const electroStatus = entity.ongoingEffects.find(e => e instanceof ElectroStatus) as ElectroStatus;
+                const hydroStatus = entity.ongoingEffects.find(e => e instanceof HydroStatus) as HydroStatus;
 
                 if (electroStatus && hydroStatus) {
-                  electroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
-                  hydroStatus.currentFrame += reaction.triggerMultiplier * enemyStatus.parsedDecay;
+                  electroStatus.currentFrame += reaction.triggerMultiplier * (electroStatus.parsedDecay);
+                  hydroStatus.currentFrame += reaction.triggerMultiplier * (hydroStatus.parsedDecay);
 
                   damageCalculator.rotationDmg += reaction.applyBonusDamage(args);
                 }
@@ -211,13 +211,13 @@ export default class ElementalReactionManager {
     }
   }
 
-  private addStatus(entity: Entity<any>, elementalStatus: ElementalStatus) {
+  public addStatus(entity: Entity<any>, elementalStatus: ElementalStatus) {
     if (entity instanceof Enemy) {
       entity.effectManager.addEffect(elementalStatus.activate(entity));
     }
   }
 
-  private removeStatus(entity: Entity<any>, status: Constructor<ElementalStatus>) {
+  public removeStatus(entity: Entity<any>, status: Constructor<ElementalStatus>) {
     entity.ongoingEffects.filter(e => !(e instanceof status));
   }
 }

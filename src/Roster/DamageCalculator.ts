@@ -50,23 +50,32 @@ export default class DamageCalculator {
     });
   }
 
-  private delayedActions: IDelayedAction[] = [];
+  private _delayedActions: IDelayedAction[] = [];
+
+  public get delayedActions() {
+    return this._delayedActions;
+  }
 
   public addAction(newAction: IAction) {
     const {run, delay} = newAction;
 
-    this.delayedActions.push({
+    if (newAction.delay === 0) {
+      newAction.run(this);
+      return;
+    }
+
+    this._delayedActions.push({
       startAtFrame: this.currentFrames + delay,
       run,
     })
   }
 
   private runDelayedActions() {
-    for (let action of this.delayedActions) {
-      if (this.currentFrames === action.startAtFrame) {
-        action.run(this);
-      }
-    }
+    this._delayedActions
+      .filter(a => this.currentFrames >= a.startAtFrame)
+      .forEach(a => a.run(this));
+
+    this._delayedActions = this._delayedActions.filter(a => this.currentFrames < a.startAtFrame);
   }
 
   public rotationDmg: number = 0
@@ -181,5 +190,28 @@ export default class DamageCalculator {
     skill.update({character});
     this.runDelayedActions();
     character.ongoingEffects.forEach(e => e.update(character));
+  }
+
+  public skip(frames: number) {
+    for (let i = 0; i < frames; i++) {
+      this.currentFrames++;
+      this.runDelayedActions();
+
+      for (let skill of this.ongoingSkills) {
+        const skillItem = this.roster!!.charactersSkills.find((s) => s.skill.name === skill.name);
+
+        if (skillItem) {
+          skill.update({character: skillItem.character});
+        }
+      }
+
+      for (let character of this.roster!!.characters) {
+        character.ongoingEffects.forEach(e => e.update(character));
+      }
+
+      for (let entity of this.roster!!.entities) {
+        entity.ongoingEffects.forEach(e => e.update(entity));
+      }
+    }
   }
 }

@@ -3,7 +3,7 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class MeltReaction extends MultipliedElementalReaction {
   public triggerMultiplier: number = 1.25 * 2;
-  protected damageMultiplier: number = 2;
+  public readonly damageMultiplier: number = 2;
 
   applyBonusDamage({character ,damage}: IElementalReactionArgs): number {
     return damage * this.damageMultiplier

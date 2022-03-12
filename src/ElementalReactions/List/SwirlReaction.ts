@@ -7,7 +7,7 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class SwirlReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 0.625;
-  protected baseMultiplier: number = 1.2;
+  public readonly baseMultiplier: number = 1.2;
 
   private roster: Roster = container.get("Roster");
 

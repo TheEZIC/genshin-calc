@@ -1,6 +1,4 @@
 import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
-import Character from "@/Entities/Characters/Character";
-import Skill from "@/Skills/Skill";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class ReverseVaporizeReaction extends MultipliedElementalReaction {

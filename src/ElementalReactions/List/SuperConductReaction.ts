@@ -3,7 +3,7 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class SuperConductReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 1.25;
-  protected baseMultiplier: number = 1;
+  public readonly baseMultiplier: number = 1;
 
   applyBonusDamage({character}: IElementalReactionArgs): number {
     return this.baseMultiplier

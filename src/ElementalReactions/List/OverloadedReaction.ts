@@ -3,7 +3,7 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class OverloadedReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 1.25;
-  protected baseMultiplier: number = 4;
+  public readonly baseMultiplier: number = 4;
 
   applyBonusDamage({character, damage}: IElementalReactionArgs): number {
     return damage

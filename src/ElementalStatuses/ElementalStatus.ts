@@ -35,10 +35,11 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
   }
 
   private get parsedDurationString(): {decay: string, units: number} {
-    const statusRegexp = /(?<decay>\D+)(\?<units>\d+)/gi;
+    const statusRegexp = /(?<decay>\D+)(?<units>\d+)/i;
 
     if (statusRegexp.test(this.duration)) {
-      const groups = statusRegexp.exec(this.duration)!!.groups!!;
+      const result = statusRegexp.exec(this.duration)!!;
+      const groups = result.groups!!;
       const decay: string = groups.decay;
       const units: number = Number(groups.units);
 

@@ -26,8 +26,8 @@ export default class Roster {
     return this._entities.length;
   }
 
-  public addEnemy() {
-    this._entities.push(new Enemy());
+  public addEnemy(enemy: Enemy) {
+    this._entities.push(enemy);
   }
 
   public removeEnemy() {
