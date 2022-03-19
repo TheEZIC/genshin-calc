@@ -1,6 +1,6 @@
-import {IGetDamageArgs} from "@/Skills/Skill";
+import {ICalcDamageArgs, IGetDamageArgs} from "@/Skills/Skill";
 
-export function convertGetDamageToCalcDamageArgs(args: IGetDamageArgs) {
+export function convertGetDamageToCalcDamageArgs(args: IGetDamageArgs): ICalcDamageArgs {
   const {skills, currentSkillIndex, character} = args;
 
   const prevSkill = skills[currentSkillIndex - 1] ?? null;
@@ -8,5 +8,5 @@ export function convertGetDamageToCalcDamageArgs(args: IGetDamageArgs) {
   const prevSkills = skills.filter((s, i) => i < currentSkillIndex);
   const nextSkills = skills.filter((s, i) => i > currentSkillIndex);
 
-  return {character, prevSkill, nextSkill, prevSkills, nextSkills};
+  return {character, prevSkill, nextSkill, prevSkills, nextSkills, value: 0};
 }

@@ -12,10 +12,12 @@ import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
 import SkillBehavior, {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
 import Roster from "@/Roster/Roster";
-import {container} from "@/inversify.config";
+import {container, ContainerBindings} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import EnergyManager from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import Entity from "@/Entities/Entity";
+import GlobalListeners from "@/Roster/GlobalListeners";
 
 export interface ICalcDamageArgs {
   character: Character;
@@ -23,6 +25,7 @@ export interface ICalcDamageArgs {
   nextSkill?: Skill;
   prevSkills: Skill[];
   nextSkills: Skill[];
+  value: number;
 }
 
 export interface IGetDamageArgs {
@@ -59,18 +62,22 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public isMVsMode: boolean = false;
 
-  public abstract calcDamage(args: ICalcDamageArgs): number;
+  public abstract onAction(args: ICalcDamageArgs): void;
 
-  protected roster: Roster = container.get("Roster");
-  protected elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
-  protected energyManager: EnergyManager = container.get("EnergyManager");
+  protected roster: Roster = container.get(ContainerBindings.Roster);
+  protected elementalReactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
+  protected energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager);
+  protected globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
 
-  public getDamage(args: IGetDamageArgs): number {
-    if (!this.isStarted) return 0;
+  public doAction(args: IGetDamageArgs): void {
+    if (!this.isStarted) return;
     this.isMVsMode = args.mvsCalcMode ?? false;
-
     const calcArgs = convertGetDamageToCalcDamageArgs(args);
-    const {character} = calcArgs;
+    this.onAction(calcArgs);
+  }
+
+  public doDamage(args: ICalcDamageArgs, damage: number) {
+    const {character} = args;
 
     const dmgBonus = this.strategy.hasInfusion
       ? character.calculatorStats.getElementalDmgBonus(character.vision)
@@ -83,57 +90,68 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
     if (isIDOTSkill(this)) {
       if (this.damageFrames.includes(this.currentFrame)) {
-        dmg = this.onHit(args);
+        dmg = this.onHit(args, damage);
       }
     } else {
-      dmg = this.onHit(args);
+      dmg = this.onHit(args, damage);
     }
 
     character.calculatorStats.ATK.affixes.remove(statValue);
-
-    return dmg;
+    this.globalListeners.onDamage.notifyAll({
+      character: args.character,
+      skill: this,
+      value: dmg,
+    });
   }
 
-  private onHit(args: IGetDamageArgs) {
-    const calcArgs = convertGetDamageToCalcDamageArgs(args);
-
-    let dmg = this.calcDamage(calcArgs);
+  private onHit(args: ICalcDamageArgs, damage: number) {
     let totalDmg = 0;
 
     const entities = this.roster.entities;
 
     if (this.strategy.hasInfusion && !this.ICD?.onCountdown) {
-      if (this.targetType === SkillTargetType.Single) {
-        const enemy = entities[0];
+      const applyReaction = (entity: Entity) => {
         const reactionArgs: IElementalReactionArgs = {
-          character: calcArgs.character,
-          damage: dmg,
+          character: args.character,
+          damage,
           elementalStatus: this.elementalStatus!!,
-          entity: enemy,
+          entity,
         }
 
-        dmg += this.elementalReactionManager!!.applyReaction(reactionArgs);
-        totalDmg = dmg;
+        let tempDmg = this.elementalReactionManager!!.applyReaction(reactionArgs);
+        totalDmg += tempDmg;
+      }
+
+      if (this.targetType === SkillTargetType.Single) {
+        const [enemy] = entities;
+        applyReaction(enemy);
       } else {
         for (let enemy of entities) {
-          const reactionArgs: IElementalReactionArgs = {
-            character: calcArgs.character,
-            damage: dmg,
-            elementalStatus: this.elementalStatus!!,
-            entity: enemy,
-          }
-
-          let tempDmg = this.elementalReactionManager!!.applyReaction(reactionArgs);
-          totalDmg += tempDmg;
+          applyReaction(enemy);
         }
       }
     } else {
-      totalDmg = dmg;
+      totalDmg = damage;
     }
 
     this.ICD?.addHit();
+    return totalDmg || damage;
+  }
 
-    return totalDmg || dmg;
+  public doHeal(args: ICalcDamageArgs, healValue: number) {
+    this.globalListeners.onHeal.notifyAll({
+      character: args.character,
+      skill: this,
+      value: healValue,
+    });
+  }
+
+  public createShield(args: ICalcDamageArgs, shieldDurability: number) {
+    this.globalListeners.onCreateShield.notifyAll({
+      character: args.character,
+      skill: this,
+      value: shieldDurability,
+    });
   }
 
   private behavior: SkillBehavior = new SkillBehavior(this);

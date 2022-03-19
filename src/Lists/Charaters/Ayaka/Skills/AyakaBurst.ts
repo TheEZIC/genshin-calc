@@ -38,16 +38,17 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   public override ICD = new ICD(3, 2.5 * 60);
   public override elementalStatus = new CryoStatus("A1");
 
-  public calcDamage({character}: ICalcDamageArgs): number {
+  public onAction(args: ICalcDamageArgs): void {
+    const {character} = args;
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.durationMVs * atk * this.CUTTINGS_COUNT; //cutting dmg
 
-    return dmg;
+    this.doDamage(args, dmg);
   }
 
   public override onEnd({character}: ISkillBehaviorArgs) {
     const damageCalculator: DamageCalculator = container.get("DamageCalculator");
     const atk = character.calculatorStats.ATK.calc();
-    damageCalculator.rotationDmg += this.usageMVs * atk; //ayaka burst explode on end
+    damageCalculator.rotationDamage += this.usageMVs * atk; //ayaka burst explode on end
   }
 }

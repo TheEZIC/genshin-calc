@@ -7,5 +7,5 @@ export interface ISkill {
   countdownFrames: number;
   targetType: SkillTargetType;
   damageRegistrationType: SkillDamageRegistrationType;
-  getDamage(args: IGetDamageArgs): number;
+  doAction(args: IGetDamageArgs): void;
 }

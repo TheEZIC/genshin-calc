@@ -26,7 +26,6 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   protected override onAwake({character, prevSkill}: ICalcDamageArgs) {
     if (!prevSkill) {
       this.frames = 0;
-      return 0;
     }
 
     const attackSkills = character.skillManager.getAllSkillsByType(SkillType.NormalAttack);
@@ -41,14 +40,14 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
       this.frames = 171 - (attackSkills.find((s) => s instanceof AyakaA4)?.frames ?? 0);
     } else {
       this.frames = 0;
-      return 0;
     }
   }
 
-  calcDamage({character}: ICalcDamageArgs): number {
+  onAction(args: ICalcDamageArgs): void {
+    const {character} = args;
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.MVs * atk;
 
-    return dmg;
+    this.doDamage(args, dmg);
   }
 }

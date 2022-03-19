@@ -24,7 +24,7 @@ import Entity from "@/Entities/Entity";
 import Listener from "@/Helpers/Listener";
 import {injectable} from "inversify";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import {container} from "@/inversify.config";
+import {container, ContainerBindings} from "@/inversify.config";
 import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
 
 type ElementalCombination = [
@@ -41,7 +41,7 @@ export default class ElementalReactionManager {
     this.subscribeAllReactions();
   }
 
-  private damageCalculator: DamageCalculator = container.get("DamageCalculator");
+  private damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
 
   public onAnyReaction: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
 
@@ -158,7 +158,7 @@ export default class ElementalReactionManager {
                   electroStatus.currentFrame += reaction.triggerMultiplier * (electroStatus.parsedDecay);
                   hydroStatus.currentFrame += reaction.triggerMultiplier * (hydroStatus.parsedDecay);
 
-                  damageCalculator.rotationDmg += reaction.applyBonusDamage(args);
+                  damageCalculator.rotationDamage += reaction.applyBonusDamage(args);
                 }
               }
             });

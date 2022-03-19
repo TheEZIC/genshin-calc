@@ -38,7 +38,7 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
     character.listeners.DashSkillEnded.unsubscribe(ayakaDashBuff);
   }
 
-  override calcDamage(args: ICalcDamageArgs): number {
+  override onAction(args: ICalcDamageArgs): number {
     return 0;
   }
 }

@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import { parseDependencyTree, parseCircular, prettyCircular } from 'dpdm';
 
 import Roster from "@/Roster/Roster";
 import EnergyManager from "@/Roster/EnergyManager";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import {container} from "./inversify.config";
+import {container, ContainerBindings} from "./inversify.config";
 
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import ArtifactCirclet from "@/Artifacts/Type/ArtifactCirclet";
@@ -28,18 +27,15 @@ import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import {SkillType} from "@/Skills/SkillType";
 import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
+import Enemy from "@/Entities/Enemies/Enemy";
+import CharactersFactory from "@/Entities/Characters/CharactersFactory";
 
-parseDependencyTree('./index', {
-  /* options, see below */
-}).then((tree) => {
-  const circulars = parseCircular(tree);
-  console.log(prettyCircular(circulars));
-});
+const roster: Roster = container.get(ContainerBindings.Roster);
+const damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
+const elementalReactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
+//const energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager)
 
-const roster: Roster = container.get("Roster");
-const damageCalculator: DamageCalculator = container.get("DamageCalculator");
-const elementalReactionManager: ElementalReactionManager = container.get("ElementalReactionManager");
-//const energyManager: EnergyManager = container.get("EnergyManager")
+const factory = new CharactersFactory();
 
 class GenshinCalculator {
   private roster: Roster = roster;
@@ -47,7 +43,7 @@ class GenshinCalculator {
   private elementalReactionManager: ElementalReactionManager = elementalReactionManager;
 
   public test() {
-    this.roster!!.addCharacter(new Ayaka());
+    factory.createByName("Ayaka");
 
     const char = this.roster.activeCharacter;
 
@@ -91,7 +87,7 @@ class GenshinCalculator {
     char.skillManager.changeLvl(10, SkillType.HoldAttack);
     char.skillManager.changeLvl(10, SkillType.Burst);
 
-    this.roster.addEnemy();
+    this.roster.addEnemy(new Enemy());
 // this.roster.addEnemy();
 // this.roster.addEnemy();
 
