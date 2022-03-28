@@ -1,11 +1,6 @@
 import PureStat from "./PureStat";
 
 export default abstract class CritStat extends PureStat {
-  /**
-   * Crit effect
-   * Crit chance / crit damage * 100;
-   * @return {number} - crit balance
-   * */
   get critBalance(): number {
     const critChance = this.character.calculatorStats.critChance.calc();
     const critDamage = this.character.calculatorStats.critDamage.calc();
@@ -13,14 +8,23 @@ export default abstract class CritStat extends PureStat {
     return (critChance / critDamage) * 100;
   }
 
-  /**
-   * Crit effect
-   * 1 + (critChance + critDamage) / 100
-   * @return {number} - crit effect
-   * */
+  get pureCritBalance(): number {
+    const critChance = this.character.calculatorStats.critChance.calcPure();
+    const critDamage = this.character.calculatorStats.critDamage.calcPure();
+
+    return (critChance / critDamage) * 100;
+  }
+
   get critEffect(): number {
     const critChance = this.character.calculatorStats.critChance.calc();
     const critDamage = this.character.calculatorStats.critDamage.calc();
+
+    return 1 + (critChance + critDamage) / 100;
+  }
+
+  get pureCritEffect(): number {
+    const critChance = this.character.calculatorStats.critChance.calcPure();
+    const critDamage = this.character.calculatorStats.critDamage.calcPure();
 
     return 1 + (critChance + critDamage) / 100;
   }

@@ -5,4 +5,8 @@ export default class ReactionDmgBonusStat extends PureStat {
   override calc(skillFilter?: SkillType): number {
     return this.additionalValues.getSum(skillFilter);
   }
+
+  override calcPure(): number {
+    return 0;
+  }
 }

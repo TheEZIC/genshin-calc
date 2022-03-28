@@ -2,9 +2,12 @@ import Skill from "@/Skills/Skill";
 import Character from "@/Entities/Characters/Character";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IBehavior} from "@/Behavior/IBehavior";
+import GlobalListeners from "@/Roster/GlobalListeners";
+import {container, ContainerBindings} from "@/inversify.config";
 
 export interface ISkillBehaviorArgs {
-  character: Character
+  character: Character;
+  hash: string;
 }
 
 export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArgs>{
@@ -13,11 +16,10 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
   ) {
   }
 
+  private globalListeners: GlobalListeners = container.get<GlobalListeners>(ContainerBindings.GlobalListeners);
+
   private _isStarted: boolean = false;
   public currentFrame: number = 0;
-
-  private _isOnCountdown: boolean = false;
-  private framesAfterCountdown: number = 0;
 
   public get isStarted(): boolean {
     return this._isStarted;
@@ -27,16 +29,8 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     this._isStarted = isStarted;
   }
 
-  public get isOnCountdown(): boolean {
-    return this._isOnCountdown;
-  }
-
-  private set isOnCountdown(onCountdown: boolean) {
-    this._isOnCountdown = onCountdown;
-  }
-
-  public start({character}: ISkillBehaviorArgs): Skill {
-    if (this.isStarted || this.isOnCountdown) return this.skill;
+  public start({character, hash}: ISkillBehaviorArgs): Skill {
+    if (this.isStarted || this.skill.countdown.isOnCountdown) return this.skill;
 
     if (
       isIBurstSKill(this)
@@ -44,11 +38,10 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     ) return this.skill;
 
     this.skill.strategy.runStartListener(character);
-    character.skillManager.onAnySkillStarted.notifyAll(this.skill);
-    this.skill.onStart({character});
+    this.globalListeners?.onAnySkillStarted.notifyAll({hash, skill: this.skill, character});
+    this.skill.onStart({character, hash});
 
     this.isStarted = true;
-    this.isOnCountdown = true;
 
     if (isIBurstSKill(this.skill)) {
       character.consumeEnergy(this.skill.energyConsumed);
@@ -57,13 +50,15 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     return this.skill;
   }
 
-  public update({character}: ISkillBehaviorArgs): Skill {
-    if (this.isOnCountdown) {
-      this.framesAfterCountdown++;
+  public update({character, hash}: ISkillBehaviorArgs): Skill {
+    const {countdown} = this.skill;
 
-      if (this.framesAfterCountdown >= this.skill.countdownFrames) {
-        this.isOnCountdown = false;
-        this.framesAfterCountdown = 0;
+    if (countdown.isOnCountdown) {
+      countdown.countdownFrames--;
+
+      if (countdown.countdownFrames <= 0) {
+        countdown.isOnCountdown = false;
+        countdown.countdownFrames = 0;
       }
     }
 
@@ -71,21 +66,20 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
       this.currentFrame++;
 
       if (this.currentFrame === this.skill.frames) {
-        this.end({character});
+        this.end({character, hash});
       }
     }
 
     return this.skill;
   }
 
-  public end({character}: ISkillBehaviorArgs): Skill {
+  public end({character, hash}: ISkillBehaviorArgs): Skill {
     if (!this.isStarted) return this.skill;
     this.skill.strategy.runEndListener(character);
-    character.skillManager.onAnySkillEnded.notifyAll(this.skill);
-    this.skill.onEnd({character});
+    this.globalListeners?.onAnySkillEnded.notifyAll({hash, skill: this.skill, character});
+    this.skill.onEnd({character, hash});
 
     this.isStarted = false;
-    this.skill.isMVsMode = false;
     this.currentFrame = 0;
 
     return this.skill;

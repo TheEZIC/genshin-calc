@@ -34,19 +34,30 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
     return units;
   }
 
+  private applyDurationRegexp(regexp: RegExp): {decay: string, units: number} {
+    const result = regexp.exec(this.duration.toUpperCase())!!;
+    const groups = result.groups!!;
+    const decay: string = groups.decay ?? "UNKNOWN";
+    const units: number = Number(groups.units);
+
+    return {decay, units};
+  }
+
   private get parsedDurationString(): {decay: string, units: number} {
-    const statusRegexp = /(?<decay>\D+)(?<units>\d+)/i;
+    const regexps = [
+      /(?<decay>\D+)(?<units>\d+)/i,
+      /(?<units>\d+)(?<decay>\D+)/i,
+      /U(?<units>\d+)/i,
+      /(?<units>\d+)U/i,
+    ];
 
-    if (statusRegexp.test(this.duration)) {
-      const result = statusRegexp.exec(this.duration)!!;
-      const groups = result.groups!!;
-      const decay: string = groups.decay;
-      const units: number = Number(groups.units);
-
-      return {decay, units};
-    } else {
-      return {decay: "UNKNOWN", units: 0};
+    for (let regexp of regexps) {
+      if (regexp.test(this.duration)) {
+        return this.applyDurationRegexp(regexp);
+      }
     }
+
+    return {decay: "UNKNOWN", units: 0};
   }
 
   private get parsedDuration(): {decay: number, units: number} {

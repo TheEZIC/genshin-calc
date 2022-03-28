@@ -1,9 +1,9 @@
 import "reflect-metadata";
 
 import Roster from "@/Roster/Roster";
-import EnergyManager from "@/Roster/EnergyManager";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import CombatLogger from "@/CombatLogger/CombatLogger";
 import {container, ContainerBindings} from "./inversify.config";
 
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
@@ -42,6 +42,8 @@ class GenshinCalculator {
   private damageCalculator: DamageCalculator = damageCalculator;
   private elementalReactionManager: ElementalReactionManager = elementalReactionManager;
 
+  public combatLogger = new CombatLogger();
+
   public test() {
     factory.createByName("Ayaka");
 
@@ -52,7 +54,7 @@ class GenshinCalculator {
       .addSubStat(new Stat(StatType.CritDamage, 35))
       .addSubStat(new Stat(StatType.CritChance, 8))
       .addSubStat(new Stat(StatType.PercentATK, 10))
-      .addSetBonus(new TroupeSet());
+      //.addSetBonus(new TroupeSet());
 
     const goblet = new ArtifactGoblet()
       .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
@@ -64,11 +66,11 @@ class GenshinCalculator {
 
     const circlet = new ArtifactCirclet()
       .setMainStat(new Stat(StatType.CritChance, 30))
-      .addSetBonus(new GladiatorSet());
+      //.addSetBonus(new GladiatorSet());
 
     const flower = new ArtifactFlower()
       .setMainStat(new Stat(StatType.FlatHP, 3000))
-      .addSetBonus(new GladiatorSet());
+      //.addSetBonus(new GladiatorSet());
 
     char.artifactsManager
       .add(plume)
@@ -101,7 +103,8 @@ class GenshinCalculator {
       new AyakaHoldAttack(),
     ]);
 
-    console.log(dmg)
+    console.log(dmg);
+    console.log(this.combatLogger.logs);
   }
 }
 

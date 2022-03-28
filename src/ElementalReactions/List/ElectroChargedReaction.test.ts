@@ -61,12 +61,12 @@ describe(`${reactionName}Reaction`, () => {
     expect(electroStatus?.currentFrame).toBe(102);
     expect(hydroStatus?.currentFrame).toBe(102);
 
-    damageCalculator.skip(30);
+    damageCalculator.skip(30, "hash");
 
     expect(electroStatus?.currentFrame).toBe(102 + 30);
     expect(hydroStatus?.currentFrame).toBe(102 + 30);
 
-    damageCalculator.skip(30);
+    damageCalculator.skip(30, "hash");
 
     expect(electroStatus?.currentFrame).toBe(102 * 2 + 60);
     expect(hydroStatus?.currentFrame).toBe(102 * 2+ 60);

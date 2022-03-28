@@ -128,12 +128,7 @@ export default class ElementalReactionManager {
       if (combination) {
         const [,,reaction] = combination;
 
-        if (!(reaction instanceof ElectroChargedReaction)) {
-          if (reaction instanceof MultipliedElementalReaction) {
-            enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
-            damage += reaction.applyBonusDamage(args);
-          }
-        } else {
+        if (reaction instanceof ElectroChargedReaction) {
           this.addStatus(entity, elementalStatus);
 
           const remainingDuration = enemyStatus.framesDuration - enemyStatus.currentFrame;
@@ -163,7 +158,12 @@ export default class ElementalReactionManager {
               }
             });
           }
+
+          return damage;
         }
+
+        enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
+        damage += reaction.applyBonusDamage(args);
       }
     }
 

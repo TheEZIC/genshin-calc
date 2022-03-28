@@ -7,6 +7,7 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
+import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 
 export default class AyakaElemental extends NormalSkill {
   public strategy: SkillStrategy = new ElementalSkillStrategy(this);
@@ -21,9 +22,15 @@ export default class AyakaElemental extends NormalSkill {
   public override ICD = new ICD(0, 0);
   public override elementalStatus = new CryoStatus("B2");
 
+  override onStart(args: ISkillBehaviorArgs) {
+    this.countdown.startCountdown();
+  }
+
   onAction(args: ICalcDamageArgs): void {
-    const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
-    this.doDamage(args, this.MVs * atk);
+    if (this.currentFrame === 1) {
+      const {character} = args;
+      const atk = character.calculatorStats.ATK.calc();
+      this.doDamage(args, this.dmg * atk);
+    }
   }
 }

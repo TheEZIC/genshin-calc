@@ -1,11 +1,9 @@
 import Skill from "@/Skills/Skill";
 import Roster from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
-import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SummonSkill from "@/Skills/SummonSkill";
-import Character from "@/Entities/Characters/Character";
 import {inject, injectable} from "inversify";
-import GlobalListeners, {IOnCharacterAction} from "@/Roster/GlobalListeners";
+import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
 
 export interface IOngoingSkill {
   startTime: number;
@@ -30,24 +28,24 @@ export default class DamageCalculator {
   @inject("GlobalListeners")
   protected globalListeners: GlobalListeners | null = null;
 
-  private ongoingSkills: Skill[] = [];
+  private ongoingSkills: IOnAnySkill[] = [];
 
-  private onAnySKillStarted(skill: Skill) {
-    this.ongoingSkills.push(skill);
+  private onAnySKillStarted(args: IOnAnySkill) {
+    this.ongoingSkills.push(args);
   }
 
-  private onAnySkillEnded(skill: Skill) {
-    this.ongoingSkills = this.ongoingSkills.filter(s => s.name !== skill.name);
+  private onAnySkillEnded(args: IOnAnySkill) {
+    this.ongoingSkills = this.ongoingSkills.filter(s => s.hash !== args.hash);
   }
 
-  private onDamage(args: IOnCharacterAction) {
+  private onDamage(args: IOnSkillAction) {
     this.rotationDamage += args.value;
   }
 
-  private onHeal(args: IOnCharacterAction) {
+  private onHeal(args: IOnSkillAction) {
   }
 
-  private onCreateShield(args: IOnCharacterAction) {
+  private onCreateShield(args: IOnSkillAction) {
   }
 
   private subscribeGlobals() {
@@ -64,15 +62,15 @@ export default class DamageCalculator {
 
   private subscribeAllCharacters() {
     this.roster?.characters.forEach(c => {
-      c.skillManager.onAnySkillStarted.subscribe(this.onAnySKillStarted.bind(this));
-      c.skillManager.onAnySkillEnded.subscribe(this.onAnySkillEnded.bind(this));
+      this.globalListeners?.onAnySkillStarted.subscribe(this.onAnySKillStarted.bind(this));
+      this.globalListeners?.onAnySkillEnded.subscribe(this.onAnySkillEnded.bind(this));
     });
   }
 
   private unsubscribeAllCharacters() {
     this.roster?.characters.forEach(c => {
-      c.skillManager.onAnySkillStarted.unsubscribe(this.onAnySKillStarted.bind(this));
-      c.skillManager.onAnySkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
+      this.globalListeners?.onAnySkillStarted.unsubscribe(this.onAnySKillStarted.bind(this));
+      this.globalListeners?.onAnySkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
     });
   }
 
@@ -93,7 +91,7 @@ export default class DamageCalculator {
     this._delayedActions.push({
       startAtFrame: this.currentFrames + delay,
       run,
-    })
+    });
   }
 
   private runDelayedActions() {
@@ -106,7 +104,13 @@ export default class DamageCalculator {
 
   public rotationDamage: number = 0
   private currentFrames: number = 0;
-  private rotationFrames: number = 0;
+
+  public get currentFrame(): number {
+    return this.currentFrames;
+  }
+
+  private rotationSkills: Skill[] = [];
+  private currentSkillIndex: number = 0;
 
   public calcRotation(rotationSkills: Skill[]): number {
     this.subscribeGlobals();
@@ -121,112 +125,85 @@ export default class DamageCalculator {
       if (!skillItem) continue;
       const {character, skill} = skillItem;
 
-      if (skill.isOnCountdown) {
+      if (skill.countdown.isOnCountdown) {
         continue;
       }
 
+      const hash = skill.name + i;
+      const behavior = {hash, character};
       const dmgArgs = {
         character,
         damageCalculator: this,
         skills: rotationSkills,
-        currentSkillIndex: i
-      }
+        currentSkillIndex: i,
+        behavior,
+      };
 
       skill.awake(dmgArgs);
-      skill.start({character});
+      skill.start(behavior);
 
       logger.push({
         stage: "before",
         name: skill.name,
         rotationDamage: this.rotationDamage,
         currentFrames: this.currentFrames,
-        rotationFrames: this.rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.name),
+        parallelSkills: this.ongoingSkills.map(s => s.skill.name),
       })
 
-      if (
-        skill instanceof NormalSkill
-        && skill.damageRegistrationType === SkillDamageRegistrationType.Adaptive
-      ) {
+      if (skill instanceof NormalSkill) {
         for (let frame = 0; frame < skill.frames; frame++) {
-          this.runDelayedActions();
-          this.roster?.charactersSkills.forEach(s => s.skill.ICD?.addFrame());
-
-          //Calc parallel skills
-          this.ongoingSkills.forEach(s => {
-            s.update({character});
-
-            if (s instanceof SummonSkill && s.damageRegistrationType === SkillDamageRegistrationType.Adaptive) {
-              s.doAction(dmgArgs);
-            }
-          });
-
-          this.runDefaultSkill(skill, character);
+          this.skip(1, hash);
           skill.doAction(dmgArgs);
         }
-      } else if (
-        skill instanceof NormalSkill
-        && skill.damageRegistrationType === SkillDamageRegistrationType.Snapshot
-      ) {
-        ///...
-      } else if (
-        skill instanceof SummonSkill
-        && skill.damageRegistrationType === SkillDamageRegistrationType.Adaptive
-      ) {
-        this.skip(skill.summonUsageFrames);
-      } else if (
-        skill instanceof SummonSkill
-        && skill.damageRegistrationType === SkillDamageRegistrationType.Snapshot
-      ) {
-        this.skip(skill.summonUsageFrames);
-        skill.doAction({...dmgArgs, mvsCalcMode: true});
+      } else if (skill instanceof SummonSkill) {
+        this.skip(skill.summonUsageFrames, hash);
       }
-
-      this.rotationFrames += skill.timelineDurationFrames;
 
       logger.push({
         stage: "after",
         name: skill.name,
         rotationDamage: this.rotationDamage,
         currentFrames: this.currentFrames,
-        rotationFrames: this.rotationFrames,
         buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.name),
-      })
+        parallelSkills: this.ongoingSkills.map(s => s.skill.name),
+      });
     }
 
     console.table(logger);
     this.unsubscribeGlobals();
     this.unsubscribeAllCharacters();
-    const avgDMG =  this.rotationDamage / (this.rotationFrames / 60);
+    const avgDMG =  this.rotationDamage / (this.currentFrames / 60);
 
-    console.log(avgDMG, this.rotationDamage, this.rotationFrames);
+    console.log(avgDMG, this.rotationDamage, this.currentFrames);
 
     this.rotationDamage = 0;
     this.currentFrames = 0;
-    this.rotationFrames = 0;
+    this.rotationSkills = [];
+    this.currentSkillIndex = 0;
 
     return avgDMG;
   }
 
-  private runDefaultSkill(skill: Skill, character: Character) {
-    this.currentFrames++;
-    skill.update({character});
-    this.runDelayedActions();
-    character.ongoingEffects.forEach(e => e.update(character));
-  }
-
-  public skip(frames: number) {
+  public skip(frames: number, hash: string) {
     for (let i = 0; i < frames; i++) {
       this.currentFrames++;
+      this.roster?.charactersSkills.forEach(s => s.skill.ICD?.addFrame());
       this.runDelayedActions();
 
-      for (let skill of this.ongoingSkills) {
-        const skillItem = this.roster!!.charactersSkills.find((s) => s.skill.name === skill.name);
-
+      for (let s of this.ongoingSkills) {
+        const skillItem = this.roster!!.charactersSkills.find((s) => s.skill.name === s.skill.name);
         if (skillItem) {
-          skill.update({character: skillItem.character});
+          const dmgArgs = {
+            character: s.character,
+            damageCalculator: this,
+            skills: this.rotationSkills,
+            currentSkillIndex: this.currentSkillIndex,
+            behavior: {character: s.character, hash},
+          };
+
+          s.skill.update({hash, character: skillItem.character});
+          s.skill.doAction(dmgArgs);
         }
       }
 

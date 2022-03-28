@@ -6,11 +6,10 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
-import DamageCalculator from "@/Roster/DamageCalculator";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import ICD from "@/Skills/ICD";
-import {container} from "@/inversify.config";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
+import SkillSnapshot from "@/Skills/SkillSnapshot";
 
 export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOTSkill {
   strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
@@ -38,17 +37,29 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   public override ICD = new ICD(3, 2.5 * 60);
   public override elementalStatus = new CryoStatus("A1");
 
-  public onAction(args: ICalcDamageArgs): void {
-    const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
-    const dmg = this.durationMVs * atk * this.CUTTINGS_COUNT; //cutting dmg
+  private skillAtkSnapshot: SkillSnapshot = new SkillSnapshot();
 
-    this.doDamage(args, dmg);
+  override onStart(args: ISkillBehaviorArgs) {
+    this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+    this.skillAtkSnapshot.addStat(args.hash + "HP", args.character.calculatorStats.HP);
+    this.countdown.startCountdown();
   }
 
-  public override onEnd({character}: ISkillBehaviorArgs) {
-    const damageCalculator: DamageCalculator = container.get("DamageCalculator");
-    const atk = character.calculatorStats.ATK.calc();
-    damageCalculator.rotationDamage += this.usageMVs * atk; //ayaka burst explode on end
+  public onAction(args: ICalcDamageArgs): void {
+    const {character, behavior} = args;
+    const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
+
+    if (this.damageFrames.includes(this.currentFrame)) {
+      const dmg = this.durationDmg * atk;
+      this.doDamage(args, dmg);
+    }
+  }
+
+  public override onEnd(args: ISkillBehaviorArgs) {
+    const {character} = args;
+    const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
+    const dmg = this.usageDmg * atk;
+    this.doDamage({character, value: 0, behavior: args}, dmg);
+    this.skillAtkSnapshot.remove(args.hash + "Atk");
   }
 }

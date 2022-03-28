@@ -1,0 +1,170 @@
+import "reflect-metadata";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import {container} from "@/inversify.config";
+import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
+import Enemy from "@/Entities/Enemies/Enemy";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
+import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
+import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
+
+const reactionName = "SuperConduct";
+
+describe(`${reactionName}Reaction`, () => {
+  let character = new Ayaka();
+  let entity = new Enemy();
+
+  beforeEach(() => {
+    character = new Ayaka();
+    entity = new Enemy();
+  });
+
+  let manager: ElementalReactionManager = container.get("ElementalReactionManager");
+  let reaction = new SuperConductReaction(manager);
+
+  test(`Expect ${reactionName} gauge 1`, () => {
+    let elementalStatus = new ElectroStatus("A1");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("A1"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(713);
+
+    //aura should exist
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 2`, () => {
+    let elementalStatus = new ElectroStatus("B2");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("A1"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(1425);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 3`, () => {
+    let elementalStatus = new ElectroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("A1"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(2850);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 4`, () => {
+    let elementalStatus = new ElectroStatus("A1");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(450);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 5`, () => {
+    let elementalStatus = new ElectroStatus("B2");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(900);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 6`, () => {
+    let elementalStatus = new ElectroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(1800);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 7`, () => {
+    let elementalStatus = new ElectroStatus("A1");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("C4"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(319);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 8`, () => {
+    let elementalStatus = new ElectroStatus("B2");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("C4"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(638);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+
+  test(`Expect ${reactionName} gauge 9`, () => {
+    let elementalStatus = new ElectroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("C4"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(1275);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+});

@@ -44,10 +44,10 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   }
 
   onAction(args: ICalcDamageArgs): void {
-    const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
-    const dmg = this.MVs * atk;
-
-    this.doDamage(args, dmg);
+    if (this.currentFrame === 1) {
+      const {character} = args;
+      const atk = character.calculatorStats.ATK.calc();
+      this.doDamage(args, this.dmg * atk);
+    }
   }
 }

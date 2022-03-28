@@ -14,17 +14,19 @@ import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
 import Roster from "@/Roster/Roster";
 import {container, ContainerBindings} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import EnergyManager from "@/Roster/EnergyManager";
+import EnergyManager, {IEnergyParticles} from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import Entity from "@/Entities/Entity";
 import GlobalListeners from "@/Roster/GlobalListeners";
+import SkillCountdown from "@/Skills/SkillCountdown";
 
 export interface ICalcDamageArgs {
   character: Character;
   prevSkill?: Skill;
   nextSkill?: Skill;
-  prevSkills: Skill[];
-  nextSkills: Skill[];
+  prevSkills?: Skill[];
+  nextSkills?: Skill[];
+  behavior: ISkillBehaviorArgs;
   value: number;
 }
 
@@ -33,6 +35,7 @@ export interface IGetDamageArgs {
   skills: Skill[];
   currentSkillIndex: number;
   mvsCalcMode?: boolean;
+  behavior: ISkillBehaviorArgs;
 }
 
 export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkillBehaviorArgs> {
@@ -54,31 +57,31 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public lvl: SkillLvl = new SkillLvl(this);
 
-  protected readonly ADD_ENERGY_FRAMES_DELAY: number = 100;
-
   public get name(): string {
     return this.constructor.name;
   }
-
-  public isMVsMode: boolean = false;
 
   public abstract onAction(args: ICalcDamageArgs): void;
 
   protected roster: Roster = container.get(ContainerBindings.Roster);
   protected elementalReactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
-  protected energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager);
   protected globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
+
+  private energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager);
+
+  protected addEnergy(particles: IEnergyParticles) {
+    this.energyManager.addEnergy(particles);
+  }
 
   public doAction(args: IGetDamageArgs): void {
     if (!this.isStarted) return;
-    this.isMVsMode = args.mvsCalcMode ?? false;
     const calcArgs = convertGetDamageToCalcDamageArgs(args);
+    const infusionBonus = this.applyInfusion(args.character);
     this.onAction(calcArgs);
+    this.removeInfusion(args.character, infusionBonus);
   }
 
-  public doDamage(args: ICalcDamageArgs, damage: number) {
-    const {character} = args;
-
+  private applyInfusion(character: Character): StatValue {
     const dmgBonus = this.strategy.hasInfusion
       ? character.calculatorStats.getElementalDmgBonus(character.vision)
       : character.calculatorStats.getPhysicalDmgBonus();
@@ -86,6 +89,14 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     const statValue = new StatValue(dmgBonus);
     character.calculatorStats.ATK.affixes.add(statValue);
 
+    return statValue;
+  }
+
+  private removeInfusion(character: Character, statValue: StatValue) {
+    character.calculatorStats.ATK.affixes.remove(statValue);
+  }
+
+  public doDamage(args: ICalcDamageArgs, damage: number) {
     let dmg: number = 0;
 
     if (isIDOTSkill(this)) {
@@ -96,7 +107,6 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
       dmg = this.onHit(args, damage);
     }
 
-    character.calculatorStats.ATK.affixes.remove(statValue);
     this.globalListeners.onDamage.notifyAll({
       character: args.character,
       skill: this,
@@ -154,14 +164,11 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     });
   }
 
-  private behavior: SkillBehavior = new SkillBehavior(this);
+  public behavior: SkillBehavior = new SkillBehavior(this);
+  public countdown: SkillCountdown = new SkillCountdown(this);
 
   public get isStarted() {
     return this.behavior.isStarted;
-  }
-
-  public get isOnCountdown() {
-    return this.behavior.isOnCountdown;
   }
 
   public get currentFrame() {

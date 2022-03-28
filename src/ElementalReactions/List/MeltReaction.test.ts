@@ -43,14 +43,13 @@ describe(`${reactionName}Reaction`, () => {
     let elementalStatus = new PyroStatus("A1");
     let reactionArgs = {character, entity, elementalStatus, damage: 1000};
 
-    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.addStatus(entity, new CryoStatus("A1"));
     manager.applyReaction(reactionArgs);
 
     const status = entity.getElementalStatus(CryoStatus);
 
     expect(status).not.toBeUndefined();
-    expect(status?.currentFrame).not.toBeUndefined();
-    expect(status?.currentFrame).toBe(900);
+    expect(status?.currentFrame).toBe(1425);
 
     //aura shouldn't exist anymore
     expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
@@ -73,6 +72,73 @@ describe(`${reactionName}Reaction`, () => {
   });
 
   test(`Expect ${reactionName} gauge 3`, () => {
+    let elementalStatus = new PyroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("A1"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(5700);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 4`, () => {
+    let elementalStatus = new PyroStatus("A1");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(900);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 5`, () => {
+    let elementalStatus = new PyroStatus("B2");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(1800);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 6`, () => {
+    let elementalStatus = new PyroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("B2"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(3600);
+
+    //aura shouldn't exist anymore
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 7`, () => {
     let elementalStatus = new PyroStatus("A1");
     let reactionArgs = {character, entity, elementalStatus, damage: 1000};
 
@@ -86,5 +152,37 @@ describe(`${reactionName}Reaction`, () => {
 
     //aura should exist
     expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 8`, () => {
+    let elementalStatus = new PyroStatus("B2");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("C4"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(1275);
+
+    //aura should exist
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+  });
+
+  test(`Expect ${reactionName} gauge 9`, () => {
+    let elementalStatus = new PyroStatus("C4");
+    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+
+    manager.addStatus(entity, new CryoStatus("C4"));
+    manager.applyReaction(reactionArgs);
+
+    const status = entity.getElementalStatus(CryoStatus);
+
+    expect(status).not.toBeUndefined();
+    expect(status?.currentFrame).toBe(2550);
+
+    //aura should exist
+    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
   });
 });

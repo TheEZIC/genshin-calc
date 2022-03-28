@@ -17,9 +17,6 @@ export default class SkillsManager {
     }
   }
 
-  public onAnySkillStarted: Listener<Skill> = new Listener<Skill>();
-  public onAnySkillEnded: Listener<Skill> = new Listener<Skill>();
-
   public get allSkills() {
     return this.skills;
   }

@@ -1,6 +1,7 @@
 import { StatType } from "@/BaseStats/StatType";
 import Character from "@/Entities/Characters/Character";
 import { SkillType } from "@/Skills/SkillType";
+import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default abstract class Stat {
   constructor(protected character: Character) {}
@@ -9,7 +10,8 @@ export default abstract class Stat {
    * Calc this stat value
    * @return {number} - calculated value
    * */
-  public abstract calc(skillFilter?: SkillType): number;
+  public abstract calc(skillFilter?: SkillType, tenses?: StatTense[]): number;
+  public abstract calcPure(): number;
 
   /**
    * Clear this stat

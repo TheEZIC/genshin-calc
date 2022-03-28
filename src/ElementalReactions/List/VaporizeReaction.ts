@@ -3,7 +3,7 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export default class VaporizeReaction extends MultipliedElementalReaction {
   public triggerMultiplier: number = 1.25 * 2;
-  public damageMultiplier: number = 1.5;
+  public damageMultiplier: number = 2;
 
   applyBonusDamage({character, damage}: IElementalReactionArgs): number {
     return damage * this.damageMultiplier
