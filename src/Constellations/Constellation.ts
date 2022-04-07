@@ -1,24 +1,28 @@
 import Character from "@/Entities/Characters/Character";
 
 export default abstract class Constellation {
-  private isActive = false;
+  private _isActive = false;
 
   public abstract applyEffect(character: Character): void;
   public abstract removeEffect(character: Character): void;
 
+  public get isActive() {
+    return this._isActive;
+  }
+
   public activate(character: Character): void {
-    if (!this.isActive) {
+    if (!this._isActive) {
       this.applyEffect(character);
     }
 
-    this.isActive = true;
+    this._isActive = true;
   }
 
   public deactivate(character: Character): void {
-    if (this.isActive) {
+    if (this._isActive) {
       this.removeEffect(character);
     }
 
-    this.isActive = false;
+    this._isActive = false;
   }
 }

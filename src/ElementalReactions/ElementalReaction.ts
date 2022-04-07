@@ -1,8 +1,8 @@
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import Character from "@/Entities/Characters/Character";
 import Listener from "@/Helpers/Listener";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import Entity from "@/Entities/Entity";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 
 export interface IOnReactionArgs {
   reaction: ElementalReaction;

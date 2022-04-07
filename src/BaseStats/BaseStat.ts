@@ -1,11 +1,15 @@
-import Ascension from "./Ascension";
-import AscensionsIterator from "./AscensionsIterator";
+import AscensionsIterator, {AscensionRange} from "./AscensionsIterator";
 
 export default class BaseStat {
-  constructor(protected ascensions: AscensionsIterator) {}
+  protected ascensions: AscensionsIterator;
+  protected currentValue: number;
+
+  constructor(protected ascensionRanges: AscensionRange[]) {
+    this.ascensions = new AscensionsIterator(ascensionRanges);
+    this.currentValue = this.ascensions.at(0)?.min ?? 0
+  }
 
   protected readonly maxLvl: number = 90;
-  protected currentValue = this.ascensions.at(0)?.min ?? 0;
 
   /**
    * Get current stat value

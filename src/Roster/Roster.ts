@@ -18,20 +18,44 @@ export default class Roster {
 
   private _index: number = 0;
 
-  public get entities(): Enemy[] {
+  public get entities(): Entity[] {
+    return this._entities;
+  }
+
+  public getEntity(entity: Entity) {
+    return this._entities.find(e => e.name === entity.name);
+  }
+
+  public addEntity(entity: Entity) {
+    this._entities.push(entity);
+  }
+
+  public removeEntity(entity: Entity) {
+    const index = this._entities.findIndex(e => e.name === entity.name);
+
+    if (index !== -1) {
+      this._entities.slice(index);
+    }
+  }
+
+  public removeAllEntities(entity: Entity) {
+    this._entities = this._entities.filter(e => e.name !== e.name);
+  }
+
+  public get enemies(): Enemy[] {
     return this._entities.filter(e => e instanceof Enemy) as Enemy[];
   }
 
   public get enemiesCount() {
-    return this._entities.length;
+    return this.enemies.length;
   }
 
   public addEnemy(enemy: Enemy) {
-    this._entities.push(enemy);
+    this.addEntity(enemy);
   }
 
-  public removeEnemy() {
-    this._entities.slice(1);
+  public removeEnemy(enemy: Enemy) {
+    this.removeEntity(enemy);
   }
 
   public get characters() {
@@ -40,6 +64,14 @@ export default class Roster {
 
   public get charactersSkills(): ISkillsItem[] {
     return this.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
+  }
+
+  public changeActiveCharacter(character: Character) {
+    const index = this.characters.findIndex(c => c.name === character.name);
+
+    if (index !== -1) {
+      this._index = index;
+    }
   }
 
   public get activeCharacter() {

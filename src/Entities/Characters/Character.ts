@@ -14,8 +14,6 @@ import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import Entity from "@/Entities/Entity";
 
 export default abstract class Character extends Entity implements IWithOngoingEffects {
-  public name = this.constructor.name;
-
   public abstract vision: VisionType;
 
   public talent1: CharacterTalent | null = null;

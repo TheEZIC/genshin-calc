@@ -50,7 +50,7 @@ export default class Listener<T = void> {
   }
 
   public notifyAll(args: T): void {
-    //const damageCalculator: DamageCalculator = container.get<DamageCalculator>(ContainerBindings.DamageCalculator);
+    const damageCalculator: DamageCalculator = container.get<DamageCalculator>(ContainerBindings.DamageCalculator);
 
     this.subscribers.forEach((s) =>
       typeof s === "object" ? s.runOnEvent(args) : s(args)
@@ -58,7 +58,7 @@ export default class Listener<T = void> {
 
     this.subscribersWithProxy.forEach(s => {
       const arg: ProxyEvent<T> = {
-        startFrame: 0,
+        startFrame: damageCalculator.currentFrame,
         args,
       }
 

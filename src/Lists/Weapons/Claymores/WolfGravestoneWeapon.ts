@@ -8,21 +8,19 @@ import { WeaponBaseMainStat } from "@/Weapons/WeaponBaseMainStat";
 import { WeaponPassiveValue } from "@/Weapons/WeaponPassiveValue";
 
 export default class WolfGravestoneWeapon extends Claymore {
-  baseATK: BaseStat = new BaseStat(
-    new AscensionsIterator([
-      [46, 122],
-      [153, 235],
-      [266, 308],
-      [340, 382],
-      [414, 457],
-      [488, 532],
-      [563, 608]
-    ])
-  );
+  baseATK: BaseStat = new BaseStat([
+    [46, 122],
+    [153, 235],
+    [266, 308],
+    [340, 382],
+    [414, 457],
+    [488, 532],
+    [563, 608]
+  ]);
 
   mainStat: WeaponBaseMainStat = new WeaponBaseMainStat(
     StatType.PercentATK,
-    new AscensionsIterator([
+    [
       [10.8, 19.1],
       [19.1, 27.8],
       [27.1, 32.2],
@@ -30,22 +28,22 @@ export default class WolfGravestoneWeapon extends Claymore {
       [36.5, 40.9],
       [40.9, 45.3],
       [45.3, 49.6]
-    ])
+    ]
   );
 
   private permanentATKPrefix = new WeaponPassiveValue(this, 20, 5);
 
   override applyPermanentPassives(character: Character): this {
-    character.calculatorStats.ATK.prefixes.add(
-      new StatValue(this.permanentATKPrefix.valueAtRefinement)
-    );
+    // character.calculatorStats.ATK.prefixes.add(
+    //   new StatValue(this.permanentATKPrefix.valueAtRefinement)
+    // );
     return super.applyPermanentPassives(character);
   }
 
   override removePermanentPassives(character: Character): this {
-    character.calculatorStats.ATK.prefixes.remove(
-      new StatValue(this.permanentATKPrefix.valueAtRefinement)
-    );
+    // character.calculatorStats.ATK.prefixes.remove(
+    //   new StatValue(this.permanentATKPrefix.valueAtRefinement)
+    // );
     return super.removePermanentPassives(character);
   }
 

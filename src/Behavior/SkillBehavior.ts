@@ -38,7 +38,7 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     ) return this.skill;
 
     this.skill.strategy.runStartListener(character);
-    this.globalListeners?.onAnySkillStarted.notifyAll({hash, skill: this.skill, character});
+    this.globalListeners?.onSkillStarted.notifyAll({hash, skill: this.skill, character});
     this.skill.onStart({character, hash});
 
     this.isStarted = true;
@@ -76,7 +76,7 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
   public end({character, hash}: ISkillBehaviorArgs): Skill {
     if (!this.isStarted) return this.skill;
     this.skill.strategy.runEndListener(character);
-    this.globalListeners?.onAnySkillEnded.notifyAll({hash, skill: this.skill, character});
+    this.globalListeners?.onSkillEnded.notifyAll({hash, skill: this.skill, character});
     this.skill.onEnd({character, hash});
 
     this.isStarted = false;

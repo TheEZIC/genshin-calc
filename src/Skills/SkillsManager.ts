@@ -1,8 +1,8 @@
+import Listener from "@/Helpers/Listener";
 import Character from "@/Entities/Characters/Character";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
 import {isIWithInitializedEffects} from "@/Effects/IWithEffects";
-import Listener from "@/Helpers/Listener";
 
 export default class SkillsManager {
   private skills: Skill[] = [];

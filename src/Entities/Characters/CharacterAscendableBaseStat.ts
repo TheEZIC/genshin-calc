@@ -3,7 +3,7 @@ import BaseStat from "@/BaseStats/BaseStat";
 
 export default class CharacterAscendableBaseStat extends BaseStat {
   constructor(private firstLvlValue: number, private ascendGain?: number) {
-    super(new AscensionsIterator([]));
+    super([]);
   }
 
   /**

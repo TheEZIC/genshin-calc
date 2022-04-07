@@ -13,9 +13,9 @@ export default class ICD {
   public get onCountdown(): boolean {
     let onCountdown = this._onCountdown;
 
-    if (!this._onCountdown) {
-      this._onCountdown = true;
-    }
+    // if (!this._onCountdown) {
+    //   this._onCountdown = true;
+    // }
 
     return onCountdown;
   }

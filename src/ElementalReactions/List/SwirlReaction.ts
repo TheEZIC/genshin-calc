@@ -16,13 +16,13 @@ export default class SwirlReaction extends TransformativeElementalReaction {
   }
 
   applyBonusDamage(args: IElementalReactionArgs): number {
-    const {entities} = this.roster;
+    const {enemies} = this.roster;
 
-    for (let entity1 of entities) {
+    for (let entity1 of enemies) {
       const entity1Status = this.getEntityStatus(entity1);
 
       if (entity1Status) {
-        for (let entity2 of entities) {
+        for (let entity2 of enemies) {
           const entity2Status = this.getEntityStatus(entity1);
 
           if (entity2Status) {

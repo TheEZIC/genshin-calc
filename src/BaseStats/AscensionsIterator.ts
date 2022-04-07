@@ -2,7 +2,7 @@ import Iterator from "@/Helpers/Iterator";
 
 import Ascension from "./Ascension";
 
-type AscensionRange = [min: number, max: number];
+export type AscensionRange = [min: number, max: number];
 
 export default class AscensionsIterator extends Iterator<Ascension> {
   constructor(ranges: AscensionRange[]) {

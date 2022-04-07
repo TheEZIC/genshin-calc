@@ -5,11 +5,6 @@ import SummonSkill from "@/Skills/SummonSkill";
 import {inject, injectable} from "inversify";
 import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
 
-export interface IOngoingSkill {
-  startTime: number;
-  skill: Skill;
-}
-
 export interface IAction {
   delay: number;
   run: (damageCalculator: DamageCalculator) => void;
@@ -52,25 +47,29 @@ export default class DamageCalculator {
     this.globalListeners?.onDamage.subscribe(this.onDamage.bind(this));
     this.globalListeners?.onHeal.subscribe(this.onHeal.bind(this));
     this.globalListeners?.onCreateShield.subscribe(this.onCreateShield.bind(this));
+
+    this.globalListeners?.onSkillStarted.subscribe(this.onAnySKillStarted.bind(this));
+    this.globalListeners?.onSkillEnded.subscribe(this.onAnySkillEnded.bind(this));
   }
 
   private unsubscribeGlobals() {
     this.globalListeners?.onDamage.unsubscribe(this.onDamage.bind(this));
     this.globalListeners?.onHeal.unsubscribe(this.onHeal.bind(this));
     this.globalListeners?.onCreateShield.unsubscribe(this.onCreateShield.bind(this));
+
+    this.globalListeners?.onSkillStarted.unsubscribe(this.onAnySKillStarted.bind(this));
+    this.globalListeners?.onSkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
   }
 
   private subscribeAllCharacters() {
     this.roster?.characters.forEach(c => {
-      this.globalListeners?.onAnySkillStarted.subscribe(this.onAnySKillStarted.bind(this));
-      this.globalListeners?.onAnySkillEnded.subscribe(this.onAnySkillEnded.bind(this));
+
     });
   }
 
   private unsubscribeAllCharacters() {
     this.roster?.characters.forEach(c => {
-      this.globalListeners?.onAnySkillStarted.unsubscribe(this.onAnySKillStarted.bind(this));
-      this.globalListeners?.onAnySkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
+
     });
   }
 
@@ -152,12 +151,11 @@ export default class DamageCalculator {
       })
 
       if (skill instanceof NormalSkill) {
-        for (let frame = 0; frame < skill.frames; frame++) {
-          this.skip(1, hash);
-          skill.doAction(dmgArgs);
-        }
+        this.skip(skill.frames);
       } else if (skill instanceof SummonSkill) {
-        this.skip(skill.summonUsageFrames, hash);
+        if (skill.skipUsageFrames) {
+          this.skip(skill.summonUsageFrames);
+        }
       }
 
       logger.push({
@@ -168,6 +166,14 @@ export default class DamageCalculator {
         buffs: character.ongoingEffects.map(e => e.name),
         parallelSkills: this.ongoingSkills.map(s => s.skill.name),
       });
+    }
+
+
+    const framesRemaining = Math.max(...this.ongoingSkills.map(s => s.skill.frames - s.skill.behavior.currentFrame));
+
+    if (framesRemaining !== 0) {
+      this.skip(framesRemaining);
+      this.currentFrames += framesRemaining;
     }
 
     console.table(logger);
@@ -185,24 +191,24 @@ export default class DamageCalculator {
     return avgDMG;
   }
 
-  public skip(frames: number, hash: string) {
+  public skip(frames: number) {
     for (let i = 0; i < frames; i++) {
       this.currentFrames++;
       this.roster?.charactersSkills.forEach(s => s.skill.ICD?.addFrame());
       this.runDelayedActions();
 
       for (let s of this.ongoingSkills) {
-        const skillItem = this.roster!!.charactersSkills.find((s) => s.skill.name === s.skill.name);
+        const skillItem = this.roster!!.charactersSkills.find((a) => a.skill.name === s.skill.name);
         if (skillItem) {
           const dmgArgs = {
             character: s.character,
             damageCalculator: this,
             skills: this.rotationSkills,
             currentSkillIndex: this.currentSkillIndex,
-            behavior: {character: s.character, hash},
+            behavior: {character: s.character, hash: s.hash},
           };
 
-          s.skill.update({hash, character: skillItem.character});
+          s.skill.update({hash: s.hash, character: skillItem.character});
           s.skill.doAction(dmgArgs);
         }
       }
@@ -211,7 +217,7 @@ export default class DamageCalculator {
         character.ongoingEffects.forEach(e => e.update(character));
       }
 
-      for (let entity of this.roster!!.entities) {
+      for (let entity of this.roster!!.enemies) {
         entity.ongoingEffects.forEach(e => e.update(entity));
       }
     }

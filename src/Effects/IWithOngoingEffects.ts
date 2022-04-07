@@ -1,5 +1,5 @@
-import Effect from "@/Effects/Effect";
 import Listener from "@/Helpers/Listener";
+import Effect from "@/Effects/Effect";
 import {IAnySKillListenerArgs} from "@/Skills/SkillsListeners";
 
 export interface IWithOngoingEffects {

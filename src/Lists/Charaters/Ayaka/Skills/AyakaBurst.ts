@@ -25,14 +25,17 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   private readonly CUTTINGS_COUNT = 19;
 
-  damageFrames: number[] = this.createRepeatedFrames(
-    this.summonDurationFrames / this.CUTTINGS_COUNT,
-    this.CUTTINGS_COUNT,
-    this.summonUsageFrames,
-  );
+  damageFrames: number[] = [
+    ...this.createRepeatedFrames(
+      this.summonDurationFrames / this.CUTTINGS_COUNT,
+      this.CUTTINGS_COUNT,
+      this.summonUsageFrames,
+    ),
+    395, //burst bloom frame
+  ];
 
-  protected summonValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
-  protected usageValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
+  protected summonValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
+  protected usageValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
 
   public override ICD = new ICD(3, 2.5 * 60);
   public override elementalStatus = new CryoStatus("A1");
@@ -41,15 +44,13 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   override onStart(args: ISkillBehaviorArgs) {
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
-    this.skillAtkSnapshot.addStat(args.hash + "HP", args.character.calculatorStats.HP);
     this.countdown.startCountdown();
   }
 
   public onAction(args: ICalcDamageArgs): void {
-    const {character, behavior} = args;
-    const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
-
     if (this.damageFrames.includes(this.currentFrame)) {
+      const {character, behavior} = args;
+      const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
       const dmg = this.durationDmg * atk;
       this.doDamage(args, dmg);
     }
@@ -59,7 +60,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
     const {character} = args;
     const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
     const dmg = this.usageDmg * atk;
-    this.doDamage({character, value: 0, behavior: args}, dmg);
-    this.skillAtkSnapshot.remove(args.hash + "Atk");
+    this.doDamage({character, value: dmg, behavior: args}, dmg);
+    this.skillAtkSnapshot.remove(args.hash);
   }
 }

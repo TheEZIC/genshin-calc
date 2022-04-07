@@ -3,6 +3,7 @@ import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Noelle from "@/Lists/Charaters/Noelle/Noelle";
 import {container, ContainerBindings} from "@/inversify.config";
 import Roster from "@/Roster/Roster";
+import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
 
 export default class CharactersFactory {
   private roster: Roster = container.get(ContainerBindings.Roster);
@@ -10,6 +11,7 @@ export default class CharactersFactory {
   private _characters: Character[] = [
     new Ayaka(),
     new Noelle(),
+    new Xiangling(),
   ];
 
   public getByName(name: string): Character | undefined {

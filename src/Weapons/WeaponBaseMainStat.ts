@@ -1,9 +1,9 @@
-import AscensionsIterator from "@/BaseStats/AscensionsIterator";
+import AscensionsIterator, {AscensionRange} from "@/BaseStats/AscensionsIterator";
 import BaseStat from "@/BaseStats/BaseStat";
 import { StatType } from "@/BaseStats/StatType";
 
 export class WeaponBaseMainStat extends BaseStat {
-  constructor(public type: StatType, ascensions: AscensionsIterator) {
+  constructor(public type: StatType, ascensions: AscensionRange[]) {
     super(ascensions);
   }
 

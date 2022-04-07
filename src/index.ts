@@ -29,6 +29,8 @@ import {SkillType} from "@/Skills/SkillType";
 import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
 import Enemy from "@/Entities/Enemies/Enemy";
 import CharactersFactory from "@/Entities/Characters/CharactersFactory";
+import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElemental";
+import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 
 const roster: Roster = container.get(ContainerBindings.Roster);
 const damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
@@ -45,9 +47,10 @@ class GenshinCalculator {
   public combatLogger = new CombatLogger();
 
   public test() {
-    factory.createByName("Ayaka");
+    const ayaka = factory.createByName("Ayaka")!!;
+    const xiangling = factory.createByName("Xiangling")!!;
 
-    const char = this.roster.activeCharacter;
+    this.roster.changeActiveCharacter(ayaka);
 
     const plume = new ArtifactPlume()
       .setMainStat(new Stat(StatType.FlatATK, 300))
@@ -66,41 +69,46 @@ class GenshinCalculator {
 
     const circlet = new ArtifactCirclet()
       .setMainStat(new Stat(StatType.CritChance, 30))
-      //.addSetBonus(new GladiatorSet());
+      .addSetBonus(new GladiatorSet());
 
     const flower = new ArtifactFlower()
       .setMainStat(new Stat(StatType.FlatHP, 3000))
-      //.addSetBonus(new GladiatorSet());
+      .addSetBonus(new GladiatorSet());
 
-    char.artifactsManager
+    ayaka.artifactsManager
       .add(plume)
       .add(goblet)
       .add(sands)
       .add(circlet)
       .add(flower);
 
-    char.baseStats.applyLvl(90);
-    char.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
-    char.weaponManager.changeRefinement(1);
+    ayaka.baseStats.applyLvl(90);
+    ayaka.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+    ayaka.weaponManager.changeRefinement(1);
 
-    char.constellationsManager.activateConstellation(3);
+    ayaka.constellationsManager.activateConstellation(3);
 
-    char.skillManager.changeLvl(10, SkillType.NormalAttack);
-    char.skillManager.changeLvl(10, SkillType.HoldAttack);
-    char.skillManager.changeLvl(10, SkillType.Burst);
+    ayaka.skillManager.changeLvl(10, SkillType.NormalAttack);
+    ayaka.skillManager.changeLvl(10, SkillType.HoldAttack);
+    ayaka.skillManager.changeLvl(10, SkillType.Burst);
+
+    xiangling.baseStats.applyLvl(90);
+    xiangling.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+    xiangling.skillManager.changeLvl(10, SkillType.Burst);
 
     this.roster.addEnemy(new Enemy());
 // this.roster.addEnemy();
 // this.roster.addEnemy();
 
     const dmg = this.damageCalculator.calcRotation([
-      new AyakaBurst(),
+      new XianglingElemental(),
+      // new XianglingBurst(),
+      // new AyakaBurst(),
       new AyakaElemental(),
-      new AyakaDash(),
-      new AyakaDash(),
-      new AyakaA1(),
-      new AyakaA2(),
-      new AyakaHoldAttack(),
+      // new AyakaDash(),
+      // new AyakaA1(),
+      // new AyakaA2(),
+      // new AyakaHoldAttack(),
     ]);
 
     console.log(dmg);

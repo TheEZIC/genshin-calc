@@ -1,3 +1,4 @@
+import Listener from "@/Helpers/Listener";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import ElementalReaction, {IElementalReactionArgs, IOnReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import {Constructor} from "@/Helpers/Constructor";
@@ -21,7 +22,6 @@ import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import Skill from "@/Skills/Skill";
 import Entity from "@/Entities/Entity";
-import Listener from "@/Helpers/Listener";
 import {injectable} from "inversify";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import {container, ContainerBindings} from "@/inversify.config";
@@ -163,14 +163,14 @@ export default class ElementalReactionManager {
         }
 
         enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
-        damage += reaction.applyBonusDamage(args);
+        damage += reaction.applyBonusDamage(args) - damage;
       }
     }
 
     return damage;
   }
 
-  private tryToOverrideStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
+  public tryToOverrideStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
     if (
       enemyStatus.name === skillStatus.name
       && enemyStatus.duration === skillStatus.duration
@@ -182,7 +182,7 @@ export default class ElementalReactionManager {
     return false;
   }
 
-  private tryToRefillStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
+  public tryToRefillStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
     if (
       enemyStatus.name === skillStatus.name
       && skillStatus.units > enemyStatus.units

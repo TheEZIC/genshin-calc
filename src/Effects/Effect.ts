@@ -3,8 +3,10 @@ import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {IEndStrategy} from "@/Effects/IEndStrategy";
 import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
+import GlobalListeners from "@/Roster/GlobalListeners";
+import {container, ContainerBindings} from "@/inversify.config";
 import {IPrototype} from "@/Helpers/IPrototype";
-import {cloneDeep} from "lodash";
+import {clone} from "lodash";
 
 export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
   public name = this.constructor.name;
@@ -16,6 +18,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   protected abstract removeEffect(entity: T): void;
 
   protected endStrategy: IEndStrategy = new DurationEndStrategy(this);
+
+  private globalListeners: GlobalListeners = container.get<GlobalListeners>(ContainerBindings.GlobalListeners);
 
   protected checkExistence(entity: T): Effect<T> | undefined {
     return entity.ongoingEffects.find(e => e.name === this.name);
@@ -30,11 +34,16 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     return this.framesDuration - this.framesAfterCountdown;
   }
 
-  public activate(entity: T): this {
+  public activate(entity: T, ignoreEvent: boolean = false): this {
     this.isStarted = true;
     this.endStrategy.onStart();
     entity.ongoingEffects.push(this);
-    entity.onAnyEffectStarted.notifyAll({effect: this, entity});
+
+    if (!ignoreEvent) {
+      entity.onAnyEffectStarted.notifyAll({effect: this, entity});
+      this.globalListeners.onEffectStarted.notifyAll({effect: this});
+    }
+
     this.applyEffect(entity);
     return this;
   }
@@ -59,7 +68,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
   }
 
-  public deactivate(entity: T): this {
+  public deactivate(entity: T,ignoreEvent: boolean = false): this {
     //if nothing to remove
     if (!this.checkExistence(entity)) return this;
     const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);
@@ -68,12 +77,29 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
       this.isStarted = false;
       this.currentFrame = 0;
       this.endStrategy.onEnd();
-      const deletedEffect = entity.ongoingEffects[index];
       entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
+
+      if (!ignoreEvent) {
+        entity.onAnyEffectEnded.notifyAll({effect: this, entity});
+        this.globalListeners.onEffectEnded.notifyAll({effect: this});
+      }
+
       this.removeEffect(entity);
     }
 
     return this;
+  }
+
+  public reactivate(entity: T): this {
+    const exist = this.checkExistence(entity);
+    this.globalListeners.onEffectReactivate.notifyAll({effect: this});
+
+    if (exist) {
+      entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
+      this.deactivate(entity, true);
+    }
+
+    return this.activate(entity, true);
   }
 
   //startEvent
@@ -81,18 +107,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     this.activate(args.entity);
   }
 
-  public reactivate(entity: T): this {
-    const exist = this.checkExistence(entity);
-
-    if (exist) {
-      entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
-      this.deactivate(entity);
-    }
-
-    return this.activate(entity);
-  }
-
   public get clone(): this {
-    return cloneDeep(this);
+    return clone(this);
   }
 }

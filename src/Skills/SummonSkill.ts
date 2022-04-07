@@ -5,6 +5,8 @@ export default abstract class SummonSkill extends NormalSkill {
   public abstract summonUsageFrames: number;
   public abstract summonDurationFrames: number;
 
+  public skipUsageFrames: boolean = true;
+
   private get usageFrames(): number {
     return this.summonUsageFrames;
   }
@@ -25,7 +27,7 @@ export default abstract class SummonSkill extends NormalSkill {
   protected abstract summonValue: SkillValue;
 
   public get usageDmg() {
-    return this.usageValue.getValueAtLvl(this.lvl.current) / 100;
+    return this.usageValue.getValue(this.lvl.current) / 100;
   }
 
   public get usageMVs(): number {
@@ -33,7 +35,7 @@ export default abstract class SummonSkill extends NormalSkill {
   }
 
   public get durationDmg(): number {
-    return this.summonValue.getValueAtLvl(this.lvl.current) / 100;
+    return this.summonValue.getValue(this.lvl.current) / 100;
   }
 
   public get durationMVs(): number {

@@ -6,10 +6,14 @@ import SkillEndedLogger from "@/CombatLogger/List/SkillEndedLogger";
 import DamageLogger from "@/CombatLogger/List/DamageLogger";
 import HealLogger from "@/CombatLogger/List/HealLogger";
 import CreateShieldLogger from "@/CombatLogger/List/CreateShieldLogger";
+import EffectStartedLogger from "@/CombatLogger/List/EffectStartedLogger";
+import EffectEndedLogger from "@/CombatLogger/List/EffectEndedLogger";
+import EffectReactivateLogger from "@/CombatLogger/List/EffectReactivateLogger";
 
 export default class CombatLogger {
   constructor() {
     this.subscribeSkillsEvents();
+    this.subscribeEffectsEvents();
     this.subscribeActionEvents();
   }
 
@@ -39,6 +43,9 @@ export default class CombatLogger {
   private loggers: LoggerItem<ILogItem, any>[] = [
     new SkillStartedLogger(this),
     new SkillEndedLogger(this),
+    new EffectStartedLogger(this),
+    new EffectReactivateLogger(this),
+    new EffectEndedLogger(this),
     new DamageLogger(this),
     new HealLogger(this),
     new CreateShieldLogger(this),
@@ -48,8 +55,18 @@ export default class CombatLogger {
     const startedLogger = this.getLoggerByType<SkillStartedLogger>(LoggerItemType.SkillStarted);
     const endedLogger = this.getLoggerByType<SkillEndedLogger>(LoggerItemType.SkillEnded);
 
-    this.globalListeners.onAnySkillStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
-    this.globalListeners.onAnySkillStarted.subscribeWithProxy(endedLogger.log.bind(endedLogger));
+    this.globalListeners.onSkillStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
+    this.globalListeners.onSkillEnded.subscribeWithProxy(endedLogger.log.bind(endedLogger));
+  }
+
+  private subscribeEffectsEvents() {
+    const startedLogger = this.getLoggerByType<EffectStartedLogger>(LoggerItemType.EffectStarted);
+    const reactivateLogger = this.getLoggerByType<EffectReactivateLogger>(LoggerItemType.EffectReactivate);
+    const endedLogger = this.getLoggerByType<EffectEndedLogger>(LoggerItemType.EffectEnded);
+
+    this.globalListeners.onEffectStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
+    this.globalListeners.onEffectReactivate.subscribeWithProxy(reactivateLogger.log.bind(reactivateLogger));
+    this.globalListeners.onEffectEnded.subscribeWithProxy(endedLogger.log.bind(endedLogger));
   }
 
   private subscribeActionEvents() {
