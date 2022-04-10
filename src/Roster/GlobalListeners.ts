@@ -3,12 +3,17 @@ import Listener from "@/Helpers/Listener";
 import Character from "@/Entities/Characters/Character";
 import Skill from "@/Skills/Skill";
 import Effect from "@/Effects/Effect";
+import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 
 export interface IOnSkillAction {
   character: Character;
   comment: string;
   skill: Skill;
   value: number;
+}
+
+export interface IOnSkillDamage extends IOnSkillAction {
+  elementalStatus?: ElementalStatus;
 }
 
 export interface IOnAnySkill {
@@ -23,7 +28,7 @@ export interface IOnAnyEffect {
 
 @injectable()
 export default class GlobalListeners {
-  public onDamage: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
+  public onDamage: Listener<IOnSkillDamage> = new Listener<IOnSkillDamage>();
   public onHeal: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
   public onCreateShield: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
 

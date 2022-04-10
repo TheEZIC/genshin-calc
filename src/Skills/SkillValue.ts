@@ -8,4 +8,8 @@ export default class SkillValue {
   public getDamage(lvl: number): number {
     return this.getValue(lvl) / 100;
   }
+
+  public getMVs(lvl: number, frames: number) {
+    return this.getValue(lvl) / frames;
+  }
 }

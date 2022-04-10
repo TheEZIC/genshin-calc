@@ -1,7 +1,7 @@
 import SkillValue from "@/Skills/SkillValue";
 import SummonSkill from "@/Skills/SummonSkill";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
-import {ICalcDamageArgs} from "@/Skills/Skill";
+import {ISkillActionArgs} from "@/Skills/Skill";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
@@ -34,11 +34,10 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
     395, //burst bloom frame
   ];
 
-  protected summonValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
-  protected usageValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
+  private cuttingValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
+  private sakuraBloomValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
 
   public override ICD = new ICD(3, 2.5 * 60);
-  public override elementalStatus = new CryoStatus("A1");
 
   private skillAtkSnapshot: SkillSnapshot = new SkillSnapshot();
 
@@ -47,20 +46,29 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
     this.countdown.startCountdown();
   }
 
-  public onAction(args: ICalcDamageArgs): void {
+  public onAction(args: ISkillActionArgs): void {
     if (this.damageFrames.includes(this.currentFrame)) {
       const {character, behavior} = args;
       const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
-      const dmg = this.durationDmg * atk;
-      this.doDamage(args, dmg);
+      const dmg = this.cuttingValue.getDamage(this.lvl.current) * atk;
+      this.doDamage({
+        ...args,
+        value: dmg,
+        elementalStatus: new CryoStatus("A1"),
+      }, "Ayaka burst cutting hit");
     }
   }
 
   public override onEnd(args: ISkillBehaviorArgs) {
     const {character} = args;
     const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
-    const dmg = this.usageDmg * atk;
-    this.doDamage({character, value: dmg, behavior: args}, dmg);
+    const dmg = this.sakuraBloomValue.getDamage(this.lvl.current) * atk;
+    this.doDamage({
+      character,
+      value: dmg,
+      behavior: args,
+      elementalStatus: new CryoStatus("A1"),
+    }, "Ayaka burst sakura bloom hit");
     this.skillAtkSnapshot.remove(args.hash);
   }
 }

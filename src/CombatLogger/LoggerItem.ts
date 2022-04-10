@@ -1,4 +1,5 @@
 import CombatLogger from "@/CombatLogger/CombatLogger";
+import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
 
 export interface ILogItem {
   message: string;
@@ -9,21 +10,6 @@ export interface IEndingLogItem extends ILogItem {
   type: LoggerItemType;
   endFrame: number;
   durationFrame: number;
-}
-
-export enum LoggerItemType {
-  SkillStarted,
-  SkillEnded,
-  EffectStarted,
-  EffectReactivate,
-  EffectEnded,
-  DoDamage,
-  DoHeal,
-  CreateShield,
-}
-
-interface IDefaultLogArgs {
-  message: string;
 }
 
 export default abstract class LoggerItem<T extends ILogItem, LogArgs> {
@@ -41,6 +27,6 @@ export default abstract class LoggerItem<T extends ILogItem, LogArgs> {
   public abstract onLog(args: LogArgs): T;
 
   public log(args: LogArgs): void {
-    this.combatLogger.addLog(this.onLog(args));
+    this.combatLogger.addLog(this.onLog(args), this.type);
   }
 }

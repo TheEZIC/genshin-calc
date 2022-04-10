@@ -1,5 +1,5 @@
 import {ISkill} from "@/Skills/SkillInterfaces/ISkill";
-import {ICalcDamageArgs} from "@/Skills/Skill";
+import {ISkillActionArgs} from "@/Skills/Skill";
 
 export interface IDOTSkill extends ISkill {
   damageFrames: number[];

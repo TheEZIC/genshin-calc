@@ -15,8 +15,25 @@ export default class SwirlReaction extends TransformativeElementalReaction {
     return entity.ongoingEffects.find(e => e instanceof ElementalStatus) as ElementalStatus | undefined;
   }
 
+  private calcSwirledElement(elementalStatus: ElementalStatus, anemoStatus: ElementalStatus) {
+    const framesAfter = elementalStatus.currentFrame;
+    const elementalUnitsRemaining = framesAfter / 60 / elementalStatus.parsedDecay;
+
+    const gaugesReaction = elementalUnitsRemaining >= 0.5 * anemoStatus.units
+      ? anemoStatus.units
+      : elementalUnitsRemaining;
+
+    const durationUnits = (2.5 * ((gaugesReaction - 0.04) * 1.25 + 1) + 7) / elementalStatus.parsedDecay;
+    const clone = elementalStatus.clone;
+    clone.duration = `${durationUnits}${elementalStatus.parsedDecay}`;
+    clone.currentFrame = 0;
+
+    return clone;
+  }
+
   applyBonusDamage(args: IElementalReactionArgs): number {
     const {enemies} = this.roster;
+    const anemoStaus = args.elementalStatus!!;
 
     for (let entity1 of enemies) {
       const entity1Status = this.getEntityStatus(entity1);
@@ -29,7 +46,7 @@ export default class SwirlReaction extends TransformativeElementalReaction {
             this.elementalReactionManager.applyReaction({
               ...args,
               entity: entity1,
-              elementalStatus: entity2Status,
+              elementalStatus: this.calcSwirledElement(entity2Status, anemoStaus),
             });
           }
         }

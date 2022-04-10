@@ -7,6 +7,7 @@ import Entity from "@/Entities/Entity";
 export interface IOnReactionArgs {
   reaction: ElementalReaction;
   character: Character;
+  damage: number;
 }
 
 export interface IElementalReactionArgs {
@@ -22,6 +23,10 @@ export default abstract class ElementalReaction {
   ) {
   }
 
+  public get name() {
+    return this.constructor.name;
+  }
+
   public abstract triggerMultiplier: number;
   public abstract applyBonusDamage(args: IElementalReactionArgs): number;
 
@@ -29,7 +34,9 @@ export default abstract class ElementalReaction {
 
   public execute(args: IElementalReactionArgs) {
     const {character} = args;
-    this.onExecuteListener.notifyAll({reaction: this, character});
-    this.applyBonusDamage(args);
+    const damage = this.applyBonusDamage(args);
+    this.onExecuteListener.notifyAll({reaction: this, character, damage});
+
+    return damage;
   }
 }

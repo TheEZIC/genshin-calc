@@ -1,6 +1,6 @@
-import {ICalcDamageArgs, IGetDamageArgs} from "@/Skills/Skill";
+import {ISkillActionArgs, IGetDamageArgs} from "@/Skills/Skill";
 
-export function convertGetDamageToCalcDamageArgs(args: IGetDamageArgs): ICalcDamageArgs {
+export function convertGetDamageToCalcDamageArgs(args: IGetDamageArgs): ISkillActionArgs {
   const {skills, currentSkillIndex, character, behavior} = args;
 
   const prevSkill = skills[currentSkillIndex - 1] ?? null;

@@ -15,17 +15,14 @@ import ElectroChargedReaction from "@/ElementalReactions/List/ElectroChargedReac
 import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
 import Enemy from "@/Entities/Enemies/Enemy";
-import Character from "@/Entities/Characters/Character";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
-import Skill from "@/Skills/Skill";
 import Entity from "@/Entities/Entity";
 import {injectable} from "inversify";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import {container, ContainerBindings} from "@/inversify.config";
-import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
 
 type ElementalCombination = [
   first: Constructor<ElementalStatus>,
@@ -74,7 +71,11 @@ export default class ElementalReactionManager {
       return this.swirlReaction;
     }
 
-    return this.elementalCombinations.find(c => c[2] instanceof reactionConstructor);
+    const combination = this.elementalCombinations.find(c => c[2] instanceof reactionConstructor);
+
+    if (combination) {
+      return combination[2];
+    }
   }
 
   //TODO: Remove status after reaction
@@ -109,14 +110,14 @@ export default class ElementalReactionManager {
       if (enemyStatus instanceof GeoStatus || elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
         enemyStatus.currentFrame += Math.round(this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
-        this.crystallizeReaction.applyBonusDamage(args);
+        this.crystallizeReaction.execute(args);
         continue;
       }
 
       if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
         enemyStatus.currentFrame += Math.round(this.swirlReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
-        this.swirlReaction.applyBonusDamage(args);
+        this.swirlReaction.execute(args);
         continue;
       }
 
@@ -153,7 +154,7 @@ export default class ElementalReactionManager {
                   electroStatus.currentFrame += reaction.triggerMultiplier * (electroStatus.parsedDecay);
                   hydroStatus.currentFrame += reaction.triggerMultiplier * (hydroStatus.parsedDecay);
 
-                  damageCalculator.rotationDamage += reaction.applyBonusDamage(args);
+                  damageCalculator.rotationDamage += reaction.execute(args);
                 }
               }
             });
@@ -163,7 +164,7 @@ export default class ElementalReactionManager {
         }
 
         enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
-        damage += reaction.applyBonusDamage(args) - damage;
+        damage += reaction.execute(args) - damage;
       }
     }
 

@@ -1,9 +1,10 @@
 import NormalSkill from "@/Skills/NormalSkill";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import NormalAttackSkillStrategy from "@/Skills/SkillStrategy/NormalAttackSkillStrategy";
-import {ICalcDamageArgs} from "@/Skills/Skill";
+import {ISkillActionArgs} from "@/Skills/Skill";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import SkillValue from "@/Skills/SkillValue";
 
 export default abstract class AyakaNormalAttack extends NormalSkill {
   public countdownFrames: number = 0;
@@ -11,11 +12,17 @@ export default abstract class AyakaNormalAttack extends NormalSkill {
   public targetType: SkillTargetType = SkillTargetType.Single;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  override onAction(args: ICalcDamageArgs): void {
+  protected abstract value: SkillValue;
+
+  override onAction(args: ISkillActionArgs): void {
     if (this.currentFrame === 1) {
       const {character} = args;
       const atk = character.calculatorStats.ATK.calc();
-      this.doDamage(args, this.dmg * atk);
+      const dmg = this.value.getDamage(this.lvl.current) * atk;
+      this.doDamage({
+        ...args,
+        value: dmg,
+      });
     }
   }
 }

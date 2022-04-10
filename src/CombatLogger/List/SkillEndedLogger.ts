@@ -1,5 +1,5 @@
 import SkillBehaviorLogger from "@/CombatLogger/Abstracts/SkillBehaviorLogger";
-import {LoggerItemType} from "@/CombatLogger/LoggerItem";
+import { LoggerItemType } from "../LoggerItemType";
 
 export default class SkillEndedLogger extends SkillBehaviorLogger {
   protected messageEvent: string = "ended";

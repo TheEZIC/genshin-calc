@@ -77,7 +77,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
       this.isStarted = false;
       this.currentFrame = 0;
       this.endStrategy.onEnd();
-      entity.ongoingEffects = entity.ongoingEffects.splice(index, 1);
+      entity.ongoingEffects.splice(index, 1);
 
       if (!ignoreEvent) {
         entity.onAnyEffectEnded.notifyAll({effect: this, entity});

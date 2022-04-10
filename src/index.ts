@@ -31,6 +31,7 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import CharactersFactory from "@/Entities/Characters/CharactersFactory";
 import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElemental";
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
+import {CombatLoggerEffectsCollection, CombatLoggerReactionsCollection} from "@/CombatLogger/LoggerItemTypeCollections";
 
 const roster: Roster = container.get(ContainerBindings.Roster);
 const damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
@@ -97,14 +98,13 @@ class GenshinCalculator {
     xiangling.skillManager.changeLvl(10, SkillType.Burst);
 
     this.roster.addEnemy(new Enemy());
-// this.roster.addEnemy();
-// this.roster.addEnemy();
 
     const dmg = this.damageCalculator.calcRotation([
-      new XianglingElemental(),
-      // new XianglingBurst(),
-      // new AyakaBurst(),
-      new AyakaElemental(),
+      // new XianglingElemental(),
+      //new XianglingBurst(),
+      new AyakaBurst(),
+      // new AyakaElemental(),
+      // new AyakaElemental(),
       // new AyakaDash(),
       // new AyakaA1(),
       // new AyakaA2(),
@@ -112,7 +112,10 @@ class GenshinCalculator {
     ]);
 
     console.log(dmg);
-    console.log(this.combatLogger.logs);
+    console.log(this.combatLogger.getFilteredLogs([
+      ...CombatLoggerEffectsCollection,
+      //...CombatLoggerReactionsCollection,
+    ]));
   }
 }
 

@@ -11,13 +11,11 @@ export default class ICD {
   private currentFrames: number = 0;
 
   public get onCountdown(): boolean {
-    let onCountdown = this._onCountdown;
+    return this._onCountdown;
+  }
 
-    // if (!this._onCountdown) {
-    //   this._onCountdown = true;
-    // }
-
-    return onCountdown;
+  public startCountdown() {
+    this._onCountdown = true;
   }
 
   public addHit() {
