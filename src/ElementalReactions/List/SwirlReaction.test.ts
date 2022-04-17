@@ -258,6 +258,6 @@ describe(`${reactionName}Reaction`, () => {
 
     expect(status2).not.toBeUndefined();
     expect(status2?.currentFrame).not.toBeUndefined();
-    expect(status2?.currentFrame).toBe(1568);
+    expect(status2?.currentFrame).toBe(701);
   });
 });

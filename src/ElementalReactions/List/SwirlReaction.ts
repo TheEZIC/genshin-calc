@@ -29,23 +29,21 @@ export default class SwirlReaction extends TransformativeElementalReaction {
   }
 
   applyBonusDamage(args: IElementalReactionArgs): number {
-    const {enemies} = this.roster;
+    const {entities} = this.roster;
     const anemoStatus = args.elementalStatus!!;
 
-    for (let entity1 of enemies) {
-      const entity1Status = this.getEntityStatus(entity1);
+    for (let i = 0; i < entities.length; i++) {
+      const entity1Status = this.getEntityStatus(entities[i]);
 
       if (entity1Status) {
-        for (let entity2 of enemies) {
-          const entity2Status = this.getEntityStatus(entity2);
-
-          if (entity1 === entity2 || entity1Status === entity2Status) {
+        for (let j = 0; j < entities.length; j++) {
+          if (i - j - 1 >= 0 || i === j) {
             continue;
           }
 
           this.elementalReactionManager.applyReaction({
             ...args,
-            entity: entity2,
+            entity: entities[j],
             elementalStatus: this.calcSwirledElement(entity1Status, anemoStatus),
           });
         }
