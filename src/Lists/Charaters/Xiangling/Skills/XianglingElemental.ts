@@ -7,7 +7,7 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import {ISkillActionArgs} from "@/Skills/Skill";
 import SkillValue from "@/Skills/SkillValue";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
-import SkillSnapshot from "@/Skills/SkillSnapshot";
+import StatSnapshot from "@/Skills/StatSnapshot";
 import {GoubaEntity} from "@/Lists/Charaters/Xiangling/Skills/GoubaEntity";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 
@@ -32,7 +32,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
 
   protected goubaValue: SkillValue = new SkillValue(111.28, 119.63 - 111.28);
 
-  private skillAtkSnapshot: SkillSnapshot = new SkillSnapshot();
+  private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
 
   private gouba = new GoubaEntity();
 
@@ -54,7 +54,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
       const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
       const dmg = this.goubaValue.getDamage(this.lvl.current) * atk;
 
-      const pyroA1 = new PyroStatus("A1");
+      const pyroA1 = new PyroStatus(1);
       const gouba = this.roster.getEntity(this.gouba)!!;
       const goubaStatus = gouba.ongoingEffects.find(e => e.name === pyroA1.name);
 

@@ -33,7 +33,7 @@ export default class AyakaElemental extends NormalSkill {
       this.doDamage({
         ...args,
         value: dmg,
-        elementalStatus: new CryoStatus("B2"),
+        elementalStatus: new CryoStatus(2),
       }, "Ayaka elemental hit");
     }
   }

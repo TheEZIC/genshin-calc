@@ -1,11 +1,19 @@
 import Effect from "@/Effects/Effect";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
+import ElementalReaction from "@/ElementalReactions/ElementalReaction";
 
 export default abstract class ElementalStatus extends Effect<IWithOngoingEffects> {
+  private _units: number;
+  private _framesDuration: number;
+  private _unitCapacity: number;
+
   constructor(
-    public duration: string,
+    units: number,
   ) {
     super();
+    this._units = units;
+    this._framesDuration = 150 * units + 420;
+    this._unitCapacity = this._framesDuration / this._units;
   }
 
   protected override applyEffect(entity: IWithOngoingEffects): void {
@@ -14,63 +22,43 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
   protected override removeEffect(entity: IWithOngoingEffects): void {
   }
 
-  public get framesDuration(): number {
-    const {decay, units} = this.parsedDuration;
-    return decay * units;
-  }
-
-  public get pureDecay(): string {
-    const {decay} = this.parsedDurationString;
-    return decay;
-  }
-
-  public get parsedDecay(): number {
-    const {decay} = this.parsedDurationString;
-    return this.parseDecaySymbol(decay);
-  }
-
   public get units(): number {
-    const {units} = this.parsedDurationString;
-    return units;
+    return this._units;
   }
 
-  private applyDurationRegexp(regexp: RegExp): {decay: string, units: number} {
-    const result = regexp.exec(this.duration.toUpperCase())!!;
-    const groups = result.groups!!;
-    const decay: string = groups.decay ?? "UNKNOWN";
-    const units: number = Number(groups.units);
-
-    return {decay, units};
+  public get remainingDuration() {
+    return this._framesDuration - this.currentFrame;
   }
 
-  private get parsedDurationString(): {decay: string, units: number} {
-    const regexps = [
-      /(?<decay>\D+)(?<units>\d+)/i,
-      /(?<units>\d+)(?<decay>\D+)/i,
-      /U(?<units>\d+)/i,
-      /(?<units>\d+)U/i,
-    ];
-
-    for (let regexp of regexps) {
-      if (regexp.test(this.duration)) {
-        return this.applyDurationRegexp(regexp);
-      }
-    }
-
-    return {decay: "UNKNOWN", units: 0};
+  public get framesDuration(): number {
+    return this._framesDuration;
   }
 
-  private get parsedDuration(): {decay: number, units: number} {
-    const {decay, units} = this.parsedDurationString;
-    return {decay: this.parseDecaySymbol(decay), units};
+  public react(element: ElementalStatus, reaction: ElementalReaction, ignoreUnits: boolean = false): void {
+    const units = !ignoreUnits ? element.units : 1;
+    const additionalFrames = reaction.triggerMultiplier * units * this.unitCapacity;
+    this.currentFrame += Math.round(additionalFrames);
   }
 
-  private parseDecaySymbol(speedSymbol: string): number {
-    switch (speedSymbol.toUpperCase()) {
-      case "A": return 9.5 * 60;
-      case "B": return 6 * 60;
-      case "C": return 4.25 * 60;
-      default: return 0;
-    }
+  public refill(element: ElementalStatus) {
+    this.changeFramesDuration(element.units * this.unitCapacity);
+  }
+
+  public get unitCapacity(): number {
+    return this._unitCapacity;
+  }
+
+  public recreate(units: number): this {
+    this._units = units;
+    this._framesDuration = 150 * units + 420;
+    this._unitCapacity = this._framesDuration / this._units;
+    this.currentFrame = 0;
+    this.isOnCountdown = false;
+
+    return this;
+  }
+
+  private changeFramesDuration(framesDuration: number): void {
+    this._framesDuration = framesDuration;
   }
 }

@@ -21,7 +21,7 @@ export default class DamageLogger extends LoggerItem<IDamageLoggerItem, ProxyEve
       message: `Skill ${skill.name} do ${value} damage`,
       startFrame,
       comment,
-      elementalStatus: `${elementalStatus?.name} ${elementalStatus?.duration}`,
+      elementalStatus: `${elementalStatus?.name} ${elementalStatus?.units}U`,
       characterName: character.name,
       skillName: skill.name,
     };

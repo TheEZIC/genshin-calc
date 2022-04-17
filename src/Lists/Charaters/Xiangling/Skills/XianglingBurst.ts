@@ -7,7 +7,7 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import {ISkillActionArgs} from "@/Skills/Skill";
 import SkillValue from "@/Skills/SkillValue";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
-import SkillSnapshot from "@/Skills/SkillSnapshot";
+import StatSnapshot from "@/Skills/StatSnapshot";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 
 export default class XianglingBurst extends SummonSkill implements IBurstSkill {
@@ -34,7 +34,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
     new SkillValue(109.6, 117.82 - 109.6),
   ];
 
-  private skillAtkSnapshot: SkillSnapshot = new SkillSnapshot();
+  private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
   private pyronadoFrames: number[] = [];
 
   protected override onAwake(args: ISkillActionArgs) {
@@ -69,7 +69,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
       this.doDamage({
         ...args,
         value: dmg,
-        elementalStatus: new PyroStatus("A1"),
+        elementalStatus: new PyroStatus(1),
       }, `Pyronado initial hit ${this.currentHit + 1}`);
 
       this.currentHit++;
@@ -85,7 +85,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
       this.doDamage({
         ...args,
         value: dmg,
-        elementalStatus: new PyroStatus("A1"),
+        elementalStatus: new PyroStatus(1),
       }, "Pyronado hit");
     }
   }

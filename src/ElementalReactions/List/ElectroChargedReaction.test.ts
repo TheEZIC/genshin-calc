@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import DamageCalculator from "@/Roster/DamageCalculator";
+import {container, ContainerBindings} from "@/inversify.config";
 import Roster from "@/Roster/Roster";
-import {container} from "@/inversify.config";
+import DamageCalculator from "@/Roster/DamageCalculator";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import ElectroChargedReaction from "@/ElementalReactions/List/ElectroChargedReaction";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
@@ -13,19 +13,19 @@ import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 const reactionName = "ElectroCharged";
 
 describe(`${reactionName}Reaction`, () => {
-  afterEach(() => {
-    container.rebind("Roster");
-    container.rebind("DamageCalculator");
+  afterAll(() => {
+    container.rebind(ContainerBindings.Roster);
+    container.rebind(ContainerBindings.DamageCalculator);
   });
 
-  let roster: Roster = container.get("Roster");
-  let damageCalculator: DamageCalculator = container.get("DamageCalculator");
-  let manager: ElementalReactionManager = container.get("ElementalReactionManager");
+  let roster: Roster = container.get(ContainerBindings.Roster);
+  let damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
+  let manager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
 
   let character = new Ayaka();
   let entity = new Enemy();
   let reaction = new ElectroChargedReaction(manager);
-  let elementalStatus = new ElectroStatus("C4");
+  let elementalStatus = new ElectroStatus(4);
   let reactionArgs = {character, entity, elementalStatus, damage: 0};
 
   roster.addCharacter(character);
@@ -33,20 +33,20 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} dmg`, () => {
     character.baseStats.applyLvl(40);
-    let expectedDmg = reaction.baseMultiplier * reaction.calcLvlMultiplier(character);
+    let expectedDmg = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
 
     expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(expectedDmg);
   });
 
   test(`Expect ${reactionName} dmg with MS`, () => {
     character.baseStats.applyLvl(40);
-    const dmgWithoutMS = reaction.baseMultiplier * reaction.calcLvlMultiplier(character);
+    const dmgWithoutMS = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
     expect(reaction.applyBonusDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
   });
 
   test(`Expect ${reactionName} gauge`, () => {
-    manager.addStatus(entity, new HydroStatus("C4"));
+    manager.addStatus(entity, new HydroStatus(4));
     manager.applyReaction(reactionArgs);
 
     const electroStatus = entity.getElementalStatus(ElectroStatus);

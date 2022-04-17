@@ -9,7 +9,7 @@ import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import ICD from "@/Skills/ICD";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
-import SkillSnapshot from "@/Skills/SkillSnapshot";
+import StatSnapshot from "@/Skills/StatSnapshot";
 
 export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOTSkill {
   strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
@@ -39,7 +39,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   public override ICD = new ICD(3, 2.5 * 60);
 
-  private skillAtkSnapshot: SkillSnapshot = new SkillSnapshot();
+  private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
 
   override onStart(args: ISkillBehaviorArgs) {
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
@@ -54,7 +54,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
       this.doDamage({
         ...args,
         value: dmg,
-        elementalStatus: new CryoStatus("A1"),
+        elementalStatus: new CryoStatus(1),
       }, "Ayaka burst cutting hit");
     }
   }
@@ -67,7 +67,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
       character,
       value: dmg,
       behavior: args,
-      elementalStatus: new CryoStatus("A1"),
+      elementalStatus: new CryoStatus(1),
     }, "Ayaka burst sakura bloom hit");
     this.skillAtkSnapshot.remove(args.hash);
   }

@@ -2,7 +2,7 @@ import ElementalReaction from "@/ElementalReactions/ElementalReaction";
 import Character from "@/Entities/Characters/Character";
 
 export default abstract class TransformativeElementalReaction extends ElementalReaction {
-  public readonly abstract baseMultiplier: number;
+  public readonly abstract baseDamageMultiplier: number;
 
   // protected calcLvlMultiplier(character: Character): number {
   //   const {lvl} = character.baseStats;

@@ -15,7 +15,7 @@ describe(`${reactionName}Reaction`, () => {
   let character = new Ayaka();
   let entity = new Enemy();
   let reaction = new CrystallizeReaction(manager);
-  let elementalStatus = new GeoStatus("U1");
+  let elementalStatus = new GeoStatus(1);
 
   let reactionArgs = {
     character,
@@ -29,7 +29,7 @@ describe(`${reactionName}Reaction`, () => {
   });
 
   test(`Expect ${reactionName} gauge`, () => {
-    manager.addStatus(entity, new PyroStatus("A1"));
+    manager.addStatus(entity, new PyroStatus(1));
     manager.applyReaction(reactionArgs);
 
     const status = entity.getElementalStatus(PyroStatus);

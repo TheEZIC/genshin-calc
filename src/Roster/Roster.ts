@@ -22,6 +22,10 @@ export default class Roster {
     return this._entities;
   }
 
+  public clearEntities() {
+    this._entities = [];
+  }
+
   public getEntity(entity: Entity) {
     return this._entities.find(e => e.name === entity.name);
   }

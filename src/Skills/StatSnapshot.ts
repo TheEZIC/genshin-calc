@@ -8,7 +8,7 @@ export interface ISkillSnapshotValues {
   presentDmg: number;
 }
 
-export default class SkillSnapshot extends Snapshot<ISkillSnapshotValues> {
+export default class StatSnapshot extends Snapshot<ISkillSnapshotValues> {
   addStat(hash: string, stat: Stat, filter?: SkillType) {
     const pureDmg = stat.calcPure();
     const presentDmg = stat.calc(filter, [StatTense.Present]);

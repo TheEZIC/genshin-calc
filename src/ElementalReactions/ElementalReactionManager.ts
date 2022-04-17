@@ -107,17 +107,17 @@ export default class ElementalReactionManager {
 
       //Reactions
 
-      if (enemyStatus instanceof GeoStatus || elementalStatus instanceof GeoStatus) {
+      if (elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
-        enemyStatus.currentFrame += Math.round(this.crystallizeReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
         this.crystallizeReaction.execute(args);
+        enemyStatus.react(elementalStatus, this.crystallizeReaction);
         continue;
       }
 
       if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
-        enemyStatus.currentFrame += Math.round(this.swirlReaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
         this.swirlReaction.execute(args);
+        enemyStatus.react(elementalStatus, this.swirlReaction);
         continue;
       }
 
@@ -132,16 +132,16 @@ export default class ElementalReactionManager {
         if (reaction instanceof ElectroChargedReaction) {
           this.addStatus(entity, elementalStatus);
 
-          const remainingDuration = enemyStatus.framesDuration - enemyStatus.currentFrame;
-          const statusDecay = reaction.triggerMultiplier * (enemyStatus.parsedDecay / 60) + 1
+          const {triggerMultiplier} = reaction;
+          const unitCapacity = Math.min(enemyStatus.unitCapacity, elementalStatus.unitCapacity);
+          const remainingDuration = Math.min(enemyStatus.remainingDuration, elementalStatus.remainingDuration);
+          const remainingDurationAfterFirstTick = remainingDuration - triggerMultiplier *  unitCapacity;
 
-          let ticksCount = (remainingDuration / 60) / statusDecay;
+          let ticksCount = Math.floor(remainingDurationAfterFirstTick  / (triggerMultiplier  * unitCapacity + 60)) + 1;
 
-          if (ticksCount % 1 * statusDecay > 0.5) {
+          if (remainingDurationAfterFirstTick % (triggerMultiplier  * unitCapacity + 60) > 30) {
             ticksCount++;
           }
-
-          ticksCount = Math.floor(ticksCount);
 
           for (let i = 0; i < ticksCount; i++) {
             this.damageCalculator.addAction({
@@ -151,8 +151,8 @@ export default class ElementalReactionManager {
                 const hydroStatus = entity.ongoingEffects.find(e => e instanceof HydroStatus) as HydroStatus;
 
                 if (electroStatus && hydroStatus) {
-                  electroStatus.currentFrame += reaction.triggerMultiplier * (electroStatus.parsedDecay);
-                  hydroStatus.currentFrame += reaction.triggerMultiplier * (hydroStatus.parsedDecay);
+                  electroStatus.react(electroStatus, reaction, true);
+                  hydroStatus.react(hydroStatus, reaction, true);
 
                   damageCalculator.rotationDamage += reaction.execute(args);
                 }
@@ -163,8 +163,8 @@ export default class ElementalReactionManager {
           return damage;
         }
 
-        enemyStatus.currentFrame += Math.round(reaction.triggerMultiplier * enemyStatus.parsedDecay * elementalStatus.units);
         damage += reaction.execute(args) - damage;
+        enemyStatus.react(elementalStatus, reaction);
       }
     }
 
@@ -174,7 +174,7 @@ export default class ElementalReactionManager {
   public tryToOverrideStatus(skillStatus: ElementalStatus, enemyStatus: ElementalStatus, entity: Entity): boolean {
     if (
       enemyStatus.name === skillStatus.name
-      && enemyStatus.duration === skillStatus.duration
+      && enemyStatus.units === skillStatus.units
     ) {
       enemyStatus.reactivate(entity);
       return true;
@@ -188,12 +188,7 @@ export default class ElementalReactionManager {
       enemyStatus.name === skillStatus.name
       && skillStatus.units > enemyStatus.units
     ) {
-      const newDuration: string = enemyStatus.pureDecay + Math.max(enemyStatus.units, skillStatus.units);
-      const newStatus = skillStatus.clone;
-      newStatus.duration = newDuration;
-
-      this.addStatus(entity, skillStatus);
-
+      enemyStatus.refill(skillStatus);
       return true;
     }
 
