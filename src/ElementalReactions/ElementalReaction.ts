@@ -12,7 +12,7 @@ export interface IOnReactionArgs {
 
 export interface IElementalReactionArgs {
   character: Character;
-  elementalStatus: ElementalStatus | null;
+  elementalStatus?: ElementalStatus;
   entity: Entity;
   damage: number;
 }

@@ -1,19 +1,15 @@
 import Character from "@/Entities/Characters/Character";
 import NormalSkill from "@/Skills/NormalSkill";
-import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import DashSkillStrategy from "@/Skills/SkillStrategy/DashSkillStrategy";
-import Effect from "@/Effects/Effect";
-import {IWithInitializedEffects} from "@/Effects/IWithEffects";
 import {ISkillActionArgs} from "@/Skills/Skill";
-import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import AyakaDashBuff from "@/Lists/Charaters/Ayaka/Skills/Buffs/AyakaDashBuff";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
-export default class AyakaDash extends NormalSkill implements IWithInitializedEffects<Character> {
+export default class AyakaDash extends NormalSkill {
   strategy: SkillStrategy = new DashSkillStrategy(this)
-    .modify((strategy) => strategy.hasInfusion = true);
 
   frames: number = 20;
   countdownFrames: number = 0;
@@ -21,23 +17,23 @@ export default class AyakaDash extends NormalSkill implements IWithInitializedEf
   targetType: SkillTargetType = SkillTargetType.AOE;
   damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  public effectsToInitialize: Effect<Character>[] = [
-    new AyakaDashBuff(),
-  ];
+  private dashBuff = new AyakaDashBuff();
 
-  public override effectManager = new EffectManager(this.effectsToInitialize);
-
-  public subscribeEffects(character: Character): void {
-    const [ayakaDashBuff] = this.effectsToInitialize;
-    character.listeners.DashSkillEnded.subscribe(ayakaDashBuff);
+  public override subscribeEffects(character: Character): void {
+    character.listeners.DashSkillEnded.subscribe(this.dashBuff);
   }
 
-  public unsubscribeEffects(character: Character): void {
-    const [ayakaDashBuff] = this.effectsToInitialize;
-    character.listeners.DashSkillEnded.unsubscribe(ayakaDashBuff);
+  public override unsubscribeEffects(character: Character): void {
+    character.listeners.DashSkillEnded.unsubscribe(this.dashBuff);
   }
 
-  override onAction(args: ISkillActionArgs): number {
-    return 0;
+  public onAction(args: ISkillActionArgs): void {
+    if (this.currentFrame === 1) {
+      this.doDamage({
+        ...args,
+        value: 0,
+        elementalStatus: new CryoStatus(1),
+      });
+    }
   }
 }

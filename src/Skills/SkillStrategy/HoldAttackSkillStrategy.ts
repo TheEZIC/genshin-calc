@@ -6,8 +6,6 @@ import {IHoldAttackSkill} from "@/Skills/SkillTypes/IHoldAttackSkill";
 export default class HoldAttackSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.HoldAttack;
 
-  protected override _hasInfusion = false;
-
   runStartListener(character: Character): void {
     character.listeners.HoldAttackStarted.notifyAll({entity: character});
   }

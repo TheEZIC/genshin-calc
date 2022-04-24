@@ -41,7 +41,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
     if (!ignoreEvent) {
       entity.onAnyEffectStarted.notifyAll({effect: this, entity});
-      this.globalListeners.onEffectStarted.notifyAll({effect: this});
+      this.globalListeners.onEffectStarted.notifyAll({effect: this, entity});
     }
 
     this.applyEffect(entity);
@@ -81,7 +81,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
       if (!ignoreEvent) {
         entity.onAnyEffectEnded.notifyAll({effect: this, entity});
-        this.globalListeners.onEffectEnded.notifyAll({effect: this});
+        this.globalListeners.onEffectEnded.notifyAll({effect: this, entity});
       }
 
       this.removeEffect(entity);
@@ -92,7 +92,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
   public reactivate(entity: T): this {
     const exist = this.checkExistence(entity);
-    this.globalListeners.onEffectReactivate.notifyAll({effect: this});
+    this.globalListeners.onEffectReactivate.notifyAll({effect: this, entity});
 
     if (exist) {
       entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);

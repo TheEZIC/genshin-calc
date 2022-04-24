@@ -14,8 +14,8 @@ import OverloadedReaction from "@/ElementalReactions/List/OverloadedReaction";
 import ElectroChargedReaction from "@/ElementalReactions/List/ElectroChargedReaction";
 import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
-import Enemy from "@/Entities/Enemies/Enemy";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
+import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
@@ -23,6 +23,7 @@ import Entity from "@/Entities/Entity";
 import {injectable} from "inversify";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import {container, ContainerBindings} from "@/inversify.config";
+import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
 
 type ElementalCombination = [
   first: Constructor<ElementalStatus>,
@@ -57,6 +58,15 @@ export default class ElementalReactionManager {
     [HydroStatus, CryoStatus, new FrozenReaction(this)],
     [CryoStatus, ElectroStatus, new SuperConductReaction(this)],
     [ElectroStatus, CryoStatus, new SuperConductReaction(this)],
+
+    //-Freeze Reactions
+
+    //Amplifying Reactions
+    [FreezeStatus, PyroStatus, new MeltReaction(this)],
+    [PyroStatus, FreezeStatus, new ReverseMeltReaction(this)],
+    //Transformative Reactions
+    [FreezeStatus, ElectroStatus, new SuperConductReaction(this)],
+    [ElectroStatus, FreezeStatus, new SuperConductReaction(this)],
   ];
 
   private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction(this);
@@ -163,8 +173,11 @@ export default class ElementalReactionManager {
           return damage;
         }
 
-        damage += reaction.execute(args) - damage;
+        const reactedDamage = reaction.execute(args);
         enemyStatus.react(elementalStatus, reaction);
+        damage += reaction instanceof MultipliedElementalReaction
+          ? reactedDamage - damage
+          : reactedDamage;
       }
     }
 
@@ -208,12 +221,15 @@ export default class ElementalReactionManager {
   }
 
   public addStatus(entity: Entity<any>, elementalStatus: ElementalStatus) {
-    if (entity instanceof Enemy) {
-      entity.effectManager.addEffect(elementalStatus.activate(entity));
-    }
+    elementalStatus.activate(entity);
   }
 
-  public removeStatus(entity: Entity<any>, status: Constructor<ElementalStatus>) {
-    entity.ongoingEffects.filter(e => !(e instanceof status));
+  public removeStatus(entity: Entity<any>, elementalStatus: Constructor<ElementalStatus>) {
+    const status = entity.ongoingEffects.find(o => o instanceof  elementalStatus);
+
+    if (status) {
+      status.deactivate(entity);
+      entity.ongoingEffects.filter(e => !(e instanceof elementalStatus));
+    }
   }
 }

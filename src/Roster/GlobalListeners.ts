@@ -4,6 +4,8 @@ import Character from "@/Entities/Characters/Character";
 import Skill from "@/Skills/Skill";
 import Effect from "@/Effects/Effect";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
+import Entity from "@/Entities/Entity";
+import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
 export interface IOnSkillAction {
   character: Character;
@@ -22,8 +24,9 @@ export interface IOnAnySkill {
   hash: string;
 }
 
-export interface IOnAnyEffect {
-  effect: Effect<any>;
+export interface IOnAnyEffect<T extends IWithOngoingEffects = any> {
+  entity: T;
+  effect: Effect<T>;
 }
 
 @injectable()

@@ -3,9 +3,9 @@ import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import ElementalReaction from "@/ElementalReactions/ElementalReaction";
 
 export default abstract class ElementalStatus extends Effect<IWithOngoingEffects> {
-  private _units: number;
-  private _framesDuration: number;
-  private _unitCapacity: number;
+  protected _units: number;
+  protected _framesDuration: number;
+  protected _unitCapacity: number;
 
   constructor(
     units: number,
@@ -28,6 +28,10 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
 
   public get remainingDuration() {
     return this._framesDuration - this.currentFrame;
+  }
+
+  public get remainingUnits() {
+    return this.remainingDuration / this.unitCapacity;
   }
 
   public get framesDuration(): number {

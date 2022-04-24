@@ -2,17 +2,13 @@ import Listener from "@/Helpers/Listener";
 import Character from "@/Entities/Characters/Character";
 import Skill from "./Skill";
 import { SkillType } from "./SkillType";
-import {isIWithInitializedEffects} from "@/Effects/IWithEffects";
 
 export default class SkillsManager {
   private skills: Skill[] = [];
 
   constructor(public character: Character, skills: Skill[]) {
     for (let skill of skills) {
-      if (isIWithInitializedEffects(skill)) {
-        skill.subscribeEffects(character);
-      }
-
+      skill.subscribeEffects(character);
       this.skills.push(skill);
     }
   }

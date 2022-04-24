@@ -1,17 +1,13 @@
 import BaseStat from "@/BaseStats/BaseStat";
 import Character from "@/Entities/Characters/Character";
-
 import { WeaponBaseMainStat } from "./WeaponBaseMainStat";
 import { WeaponType } from "./WeaponType";
 import WeaponManager from "@/Weapons/WeaponManager";
-import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 
 export default abstract class Weapon {
   public abstract type: WeaponType;
   public abstract baseATK: BaseStat;
   public abstract mainStat: WeaponBaseMainStat;
-
-  public effectManager: EffectManager<Character> | null = null;
 
   public isPassivesActivated = false;
 

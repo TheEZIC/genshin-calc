@@ -101,19 +101,19 @@ class GenshinCalculator {
 
     const dmg = this.damageCalculator.calcRotation([
       // new XianglingElemental(),
-      //new XianglingBurst(),
-      new AyakaBurst(),
+      // new XianglingBurst(),
+      // new AyakaBurst(),
       // new AyakaElemental(),
       // new AyakaElemental(),
-      // new AyakaDash(),
-      // new AyakaA1(),
+      new AyakaDash(),
+      new AyakaA1(),
       // new AyakaA2(),
       // new AyakaHoldAttack(),
     ]);
 
     console.log(dmg);
     console.log(this.combatLogger.getFilteredLogs([
-      ...CombatLoggerEffectsCollection,
+      //...CombatLoggerEffectsCollection,
       //...CombatLoggerReactionsCollection,
     ]));
   }

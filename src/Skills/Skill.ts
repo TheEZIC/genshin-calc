@@ -1,7 +1,6 @@
 import Character from "@/Entities/Characters/Character";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import {ISkillStrategy} from "@/Skills/SkillStrategy";
-import EffectManager from "@/Effects/EffectsManagers/EffectManager";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
@@ -20,6 +19,7 @@ import Entity from "@/Entities/Entity";
 import GlobalListeners from "@/Roster/GlobalListeners";
 import SkillCountdown from "@/Skills/SkillCountdown";
 import DamageCalculator from "@/Roster/DamageCalculator";
+import SkillInfusion from "@/Skills/SkillInfusion";
 
 export interface ISkillActionArgs {
   character: Character;
@@ -33,6 +33,7 @@ export interface ISkillActionArgs {
 
 export interface ISkillDamageArgs extends ISkillActionArgs{
   elementalStatus?: ElementalStatus;
+  hits?: number;
 }
 
 export interface IGetDamageArgs {
@@ -57,12 +58,17 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   public abstract damageRegistrationType: SkillDamageRegistrationType;
 
   public ICD: ICD | null = null;
-  public effectManager: EffectManager<Character> | null = null;
-
+  public infusion: SkillInfusion = new SkillInfusion();
   public lvl: SkillLvl = new SkillLvl(this);
 
   public get name(): string {
     return this.constructor.name;
+  }
+
+  public subscribeEffects(character: Character): void {
+  }
+
+  public unsubscribeEffects(character: Character): void {
   }
 
   public abstract onAction(args: ISkillActionArgs): void;
@@ -81,24 +87,9 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   public doAction(args: IGetDamageArgs): void {
     if (!this.isStarted) return;
     const calcArgs = convertGetDamageToCalcDamageArgs(args);
-    const infusionBonus = this.applyInfusion(args.character);
+    const infusionBonus = this.infusion.applyBonus(args.character);
     this.onAction(calcArgs);
-    this.removeInfusion(args.character, infusionBonus);
-  }
-
-  private applyInfusion(character: Character): StatValue {
-    const dmgBonus = this.strategy.hasInfusion
-      ? character.calculatorStats.getElementalDmgBonus(character.vision)
-      : character.calculatorStats.getPhysicalDmgBonus();
-
-    const statValue = new StatValue(dmgBonus);
-    character.calculatorStats.ATK.affixes.add(statValue);
-
-    return statValue;
-  }
-
-  private removeInfusion(character: Character, statValue: StatValue) {
-    character.calculatorStats.ATK.affixes.remove(statValue);
+    this.infusion.removeBonus(args.character, infusionBonus);
   }
 
   public doDamage(args: ISkillDamageArgs, comment: string = "") {
@@ -115,6 +106,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   private onHit(args: ISkillDamageArgs) {
     const damage = args.value;
+    const hits = args.hits ?? 1;
     let totalDmg = 0;
 
     const entities = this.roster.enemies;
@@ -146,7 +138,12 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
       totalDmg = damage;
     }
 
-    this.ICD?.addHit();
+    if (this.ICD) {
+      for (let i = 0; i < hits; i++) {
+        this.ICD.addHit();
+      }
+    }
+
     return totalDmg || damage;
   }
 
