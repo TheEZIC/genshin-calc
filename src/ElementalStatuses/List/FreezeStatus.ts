@@ -10,13 +10,14 @@ export default class FreezeStatus extends ElementalStatus {
     super(units);
     this._units = units;
     this._framesDuration = this.calcDuration(units);
-    this._unitCapacity = 0;
+    this._unitCapacity = this._framesDuration / this._units;
   }
 
   public override recreate(units: number): this {
     this._units = units;
     this._framesDuration = this.calcDuration(units);
-    this._unitCapacity = 0;
+    this._unitCapacity = this._framesDuration / this._units;
+
     this.currentFrame = 0;
     this.isOnCountdown = false;
 

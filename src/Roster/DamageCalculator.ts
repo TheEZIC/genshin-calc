@@ -4,6 +4,7 @@ import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
 import {inject, injectable} from "inversify";
 import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
+import {rebindAll} from "@/inversify.config";
 
 export interface IAction {
   delay: number;
@@ -33,6 +34,9 @@ export default class DamageCalculator {
     this.ongoingSkills = this.ongoingSkills.filter(s => s.hash !== args.hash);
   }
 
+  private onAnySKillStartedDelegate = this.onAnySKillStarted.bind(this);
+  private onAnySKillEndedDelegate = this.onAnySkillEnded.bind(this);
+
   private onDamage(args: IOnSkillAction) {
     this.rotationDamage += args.value;
   }
@@ -43,34 +47,26 @@ export default class DamageCalculator {
   private onCreateShield(args: IOnSkillAction) {
   }
 
-  private subscribeGlobals() {
-    this.globalListeners?.onDamage.subscribe(this.onDamage.bind(this));
-    this.globalListeners?.onHeal.subscribe(this.onHeal.bind(this));
-    this.globalListeners?.onCreateShield.subscribe(this.onCreateShield.bind(this));
+  private onDamageDelegate = this.onDamage.bind(this);
+  private onHealDelegate = this.onHeal.bind(this);
+  private onCreateShieldDelegate = this.onCreateShield.bind(this)
 
-    this.globalListeners?.onSkillStarted.subscribe(this.onAnySKillStarted.bind(this));
-    this.globalListeners?.onSkillEnded.subscribe(this.onAnySkillEnded.bind(this));
+  private subscribeGlobals() {
+    this.globalListeners?.onDamage.subscribe(this.onDamageDelegate);
+    this.globalListeners?.onHeal.subscribe(this.onHealDelegate);
+    this.globalListeners?.onCreateShield.subscribe(this.onCreateShieldDelegate);
+
+    this.globalListeners?.onSkillStarted.subscribe(this.onAnySKillStartedDelegate);
+    this.globalListeners?.onSkillEnded.subscribe(this.onAnySKillEndedDelegate);
   }
 
   private unsubscribeGlobals() {
-    this.globalListeners?.onDamage.unsubscribe(this.onDamage.bind(this));
-    this.globalListeners?.onHeal.unsubscribe(this.onHeal.bind(this));
-    this.globalListeners?.onCreateShield.unsubscribe(this.onCreateShield.bind(this));
+    this.globalListeners?.onDamage.unsubscribe(this.onDamageDelegate);
+    this.globalListeners?.onHeal.unsubscribe(this.onHealDelegate);
+    this.globalListeners?.onCreateShield.unsubscribe(this.onCreateShieldDelegate);
 
-    this.globalListeners?.onSkillStarted.unsubscribe(this.onAnySKillStarted.bind(this));
-    this.globalListeners?.onSkillEnded.unsubscribe(this.onAnySkillEnded.bind(this));
-  }
-
-  private subscribeAllCharacters() {
-    this.roster?.characters.forEach(c => {
-
-    });
-  }
-
-  private unsubscribeAllCharacters() {
-    this.roster?.characters.forEach(c => {
-
-    });
+    this.globalListeners?.onSkillStarted.unsubscribe(this.onAnySKillStartedDelegate);
+    this.globalListeners?.onSkillEnded.unsubscribe(this.onAnySKillEndedDelegate);
   }
 
   private _delayedActions: IDelayedAction[] = [];
@@ -113,7 +109,6 @@ export default class DamageCalculator {
 
   public calcRotation(rotationSkills: Skill[]): number {
     this.subscribeGlobals();
-    this.subscribeAllCharacters();
 
     const logger = [];
 
@@ -178,15 +173,11 @@ export default class DamageCalculator {
 
     console.table(logger);
     this.unsubscribeGlobals();
-    this.unsubscribeAllCharacters();
     const avgDMG =  this.rotationDamage / (this.currentFrames / 60);
 
     console.log(avgDMG, this.rotationDamage, this.currentFrames);
 
-    this.rotationDamage = 0;
-    this.currentFrames = 0;
-    this.rotationSkills = [];
-    this.currentSkillIndex = 0;
+    rebindAll();
 
     return avgDMG;
   }
@@ -221,5 +212,13 @@ export default class DamageCalculator {
         entity.ongoingEffects.forEach(e => e.update(entity));
       }
     }
+  }
+
+  public reset() {
+    this.rotationDamage = 0;
+    this.currentFrames = 0;
+    this.rotationSkills = [];
+    this.ongoingSkills = [];
+    this.currentSkillIndex = 0;
   }
 }

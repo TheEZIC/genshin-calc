@@ -32,6 +32,7 @@ import CharactersFactory from "@/Entities/Characters/CharactersFactory";
 import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElemental";
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 import {CombatLoggerEffectsCollection, CombatLoggerReactionsCollection} from "@/CombatLogger/LoggerItemTypeCollections";
+import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
 
 const roster: Roster = container.get(ContainerBindings.Roster);
 const damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
@@ -41,15 +42,18 @@ const elementalReactionManager: ElementalReactionManager = container.get(Contain
 const factory = new CharactersFactory();
 
 class GenshinCalculator {
-  private roster: Roster = roster;
-  private damageCalculator: DamageCalculator = damageCalculator;
-  private elementalReactionManager: ElementalReactionManager = elementalReactionManager;
+  public roster: Roster = roster;
+  public damageCalculator: DamageCalculator = damageCalculator;
+  public elementalReactionManager: ElementalReactionManager = elementalReactionManager;
 
   public combatLogger = new CombatLogger();
 
   public test() {
-    const ayaka = factory.createByName("Ayaka")!!;
-    const xiangling = factory.createByName("Xiangling")!!;
+    const ayaka = new Ayaka();
+    const xiangling = new Xiangling();
+
+    this.roster.addCharacter(ayaka);
+    this.roster.addCharacter(xiangling);
 
     this.roster.changeActiveCharacter(ayaka);
 
@@ -111,14 +115,16 @@ class GenshinCalculator {
       // new AyakaHoldAttack(),
     ]);
 
+    this.combatLogger.clear();
     console.log(dmg);
-    console.log(this.combatLogger.getFilteredLogs([
-      //...CombatLoggerEffectsCollection,
-      //...CombatLoggerReactionsCollection,
-    ]));
+    // console.log(this.combatLogger.getFilteredLogs([
+    //   //...CombatLoggerEffectsCollection,
+    //   //...CombatLoggerReactionsCollection,
+    // ]));
   }
 }
 
 new GenshinCalculator().test();
+new GenshinCalculator().test();
 
-export {roster, damageCalculator, elementalReactionManager};
+export {roster, damageCalculator, elementalReactionManager, GenshinCalculator};

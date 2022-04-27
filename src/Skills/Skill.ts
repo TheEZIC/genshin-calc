@@ -1,9 +1,7 @@
 import Character from "@/Entities/Characters/Character";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
-import {isIDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import ICD from "@/Skills/ICD";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import SkillLvl from "@/Skills/SkillLvl";
@@ -33,6 +31,8 @@ export interface ISkillActionArgs {
 
 export interface ISkillDamageArgs extends ISkillActionArgs{
   elementalStatus?: ElementalStatus;
+  blunt?: boolean;
+  multiplier?: number;
   hits?: number;
 }
 
@@ -75,7 +75,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   protected roster: Roster = container.get(ContainerBindings.Roster);
   protected damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
-  protected elementalReactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
+  protected reactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
   protected globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
 
   private energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager);
@@ -93,7 +93,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   }
 
   public doDamage(args: ISkillDamageArgs, comment: string = "") {
-    let dmg: number = this.onHit(args);
+    let dmg: number = this.hit(args);
 
     this.globalListeners.onDamage.notifyAll({
       character: args.character,
@@ -104,36 +104,30 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     });
   }
 
-  private onHit(args: ISkillDamageArgs) {
+  private hit(args: ISkillDamageArgs) {
     const damage = args.value;
+    const {elementalStatus} = args;
     const hits = args.hits ?? 1;
     let totalDmg = 0;
 
-    const entities = this.roster.enemies;
-    const {elementalStatus} = args;
+    const createArgs = (entity: Entity): IElementalReactionArgs => ({
+      character: args.character,
+      damage,
+      elementalStatus,
+      entity,
+    });
+
+    if (args.blunt) {
+      const applyShatter = (entity: Entity) =>
+        this.reactionManager.checkShatter(createArgs(entity), true);
+      this.doOnSkillType(applyShatter);
+    }
 
     if (elementalStatus && !this.ICD?.onCountdown) {
       this.ICD?.startCountdown();
-      const applyReaction = (entity: Entity) => {
-        const reactionArgs: IElementalReactionArgs = {
-          character: args.character,
-          damage,
-          elementalStatus,
-          entity,
-        }
-
-        let tempDmg = this.elementalReactionManager!!.applyReaction(reactionArgs);
-        totalDmg += tempDmg;
-      }
-
-      if (this.targetType === SkillTargetType.Single) {
-        const [enemy] = entities;
-        applyReaction(enemy);
-      } else {
-        for (let enemy of entities) {
-          applyReaction(enemy);
-        }
-      }
+      const applyReaction = (entity: Entity) =>
+        totalDmg += this.reactionManager.applyReaction(createArgs(entity));
+      this.doOnSkillType(applyReaction);
     } else {
       totalDmg = damage;
     }
@@ -145,6 +139,19 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     }
 
     return totalDmg || damage;
+  }
+
+  private doOnSkillType(action: (entity: Entity) => void) {
+    const {enemies} = this.roster;
+
+    if (this.targetType === SkillTargetType.Single) {
+      const [enemy] = enemies;
+      action(enemy);
+    } else if (this.targetType === SkillTargetType.AOE) {
+      for (let enemy of enemies) {
+        action(enemy);
+      }
+    }
   }
 
   public doHeal(args: ISkillActionArgs, comment: string = "") {

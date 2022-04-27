@@ -77,4 +77,8 @@ export default class EnergyManager {
     const characterERBonus = character.calculatorStats.energyRecharge.calc() / 100;
     return value * characterERBonus;
   }
+
+  public reset() {
+
+  }
 }

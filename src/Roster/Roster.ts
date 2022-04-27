@@ -108,4 +108,9 @@ export default class Roster {
   public removeCharacter(character: Character) {
     this._characters = this._characters.filter((c) => c.name !== character.name);
   }
+
+  public reset() {
+    this._entities = [];
+    this._characters = [];
+  }
 }

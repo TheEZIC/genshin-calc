@@ -61,7 +61,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
       if (!goubaStatus) {
         gouba.ongoingEffects.push(pyroA1);
       } else {
-        this.elementalReactionManager.tryToOverrideStatus(pyroA1, pyroA1, gouba);
+        this.reactionManager.tryToOverrideStatus(pyroA1, pyroA1, gouba);
       }
 
       this.doDamage({

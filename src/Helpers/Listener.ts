@@ -27,6 +27,7 @@ export default class Listener<T = void> {
     }
   }
 
+  //TODO: fix removements
   private removeFromList<T>(list: T[], subscriber: T) {
     const observerIndex = list.indexOf(subscriber);
     if (observerIndex === -1) return;

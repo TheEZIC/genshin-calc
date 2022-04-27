@@ -43,31 +43,35 @@ export default class ElementalReactionManager {
 
   public onAnyReaction: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
 
-  private elementalCombinations: ElementalCombination[] = [
-    //Amplifying Reactions
-    [PyroStatus, HydroStatus, new VaporizeReaction(this)],
-    [HydroStatus, PyroStatus, new ReverseVaporizeReaction(this)],
-    [CryoStatus, PyroStatus, new MeltReaction(this)],
-    [PyroStatus, CryoStatus, new ReverseMeltReaction(this)],
-    //Transformative Reactions
-    [ElectroStatus, PyroStatus, new OverloadedReaction(this)],
-    [PyroStatus, ElectroStatus, new OverloadedReaction(this)],
-    [HydroStatus, ElectroStatus, new ElectroChargedReaction(this)],
-    [ElectroStatus, HydroStatus, new ElectroChargedReaction(this)],
-    [CryoStatus, HydroStatus, new FrozenReaction(this)],
-    [HydroStatus, CryoStatus, new FrozenReaction(this)],
-    [CryoStatus, ElectroStatus, new SuperConductReaction(this)],
-    [ElectroStatus, CryoStatus, new SuperConductReaction(this)],
+  private elementalCombinations: ElementalCombination[] = this.initCombinations();
 
-    //-Freeze Reactions
+  private initCombinations(): ElementalCombination[] {
+    return [
+      //Amplifying Reactions
+      [PyroStatus, HydroStatus, new VaporizeReaction(this)],
+      [HydroStatus, PyroStatus, new ReverseVaporizeReaction(this)],
+      [CryoStatus, PyroStatus, new MeltReaction(this)],
+      [PyroStatus, CryoStatus, new ReverseMeltReaction(this)],
+      //Transformative Reactions
+      [ElectroStatus, PyroStatus, new OverloadedReaction(this)],
+      [PyroStatus, ElectroStatus, new OverloadedReaction(this)],
+      [HydroStatus, ElectroStatus, new ElectroChargedReaction(this)],
+      [ElectroStatus, HydroStatus, new ElectroChargedReaction(this)],
+      [CryoStatus, HydroStatus, new FrozenReaction(this)],
+      [HydroStatus, CryoStatus, new FrozenReaction(this)],
+      [CryoStatus, ElectroStatus, new SuperConductReaction(this)],
+      [ElectroStatus, CryoStatus, new SuperConductReaction(this)],
 
-    //Amplifying Reactions
-    [FreezeStatus, PyroStatus, new MeltReaction(this)],
-    [PyroStatus, FreezeStatus, new ReverseMeltReaction(this)],
-    //Transformative Reactions
-    [FreezeStatus, ElectroStatus, new SuperConductReaction(this)],
-    [ElectroStatus, FreezeStatus, new SuperConductReaction(this)],
-  ];
+      //-Freeze Reactions
+
+      //Amplifying Reactions
+      [FreezeStatus, PyroStatus, new MeltReaction(this)],
+      [PyroStatus, FreezeStatus, new ReverseMeltReaction(this)],
+      //Transformative Reactions
+      [FreezeStatus, ElectroStatus, new SuperConductReaction(this)],
+      [ElectroStatus, FreezeStatus, new SuperConductReaction(this)],
+    ];
+  }
 
   private crystallizeReaction: CrystallizeReaction = new CrystallizeReaction(this);
   private swirlReaction: SwirlReaction = new SwirlReaction(this);
@@ -88,10 +92,17 @@ export default class ElementalReactionManager {
     }
   }
 
+  //remove freeze status if blunt attack
+  public checkShatter(args: IElementalReactionArgs, blunt: boolean) {
+    if (!blunt) return;
+    args.entity.ongoingEffects = args.entity.ongoingEffects.filter((e) => !(e instanceof FreezeStatus));
+  }
+
   //TODO: Remove status after reaction
   public applyReaction(args: IElementalReactionArgs): number {
     let {elementalStatus, entity, character, damage} = args;
     const enemyStatuses = entity.ongoingEffects.filter((e) => e instanceof ElementalStatus) as ElementalStatus[];
+    const hasFreeze = enemyStatuses.find(s => s instanceof FreezeStatus);
 
     if (!elementalStatus) {
       //TODO: physical reactions
@@ -105,6 +116,7 @@ export default class ElementalReactionManager {
     }
 
     for (let enemyStatus of enemyStatuses) {
+      const ignoreReaction = hasFreeze && !(enemyStatus instanceof FreezeStatus);
       //override status if they're same
       if (this.tryToOverrideStatus(elementalStatus, enemyStatus, entity)) {
         continue;
@@ -119,14 +131,14 @@ export default class ElementalReactionManager {
 
       if (elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
-        this.crystallizeReaction.execute(args);
+        if (!ignoreReaction) this.crystallizeReaction.execute(args);
         enemyStatus.react(elementalStatus, this.crystallizeReaction);
         continue;
       }
 
       if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
-        this.swirlReaction.execute(args);
+        if (!ignoreReaction) this.swirlReaction.execute(args);
         enemyStatus.react(elementalStatus, this.swirlReaction);
         continue;
       }
@@ -173,7 +185,7 @@ export default class ElementalReactionManager {
           return damage;
         }
 
-        const reactedDamage = reaction.execute(args);
+        const reactedDamage = !ignoreReaction ? reaction.execute(args) : 0;
         enemyStatus.react(elementalStatus, reaction);
         damage += reaction instanceof MultipliedElementalReaction
           ? reactedDamage - damage
@@ -231,5 +243,9 @@ export default class ElementalReactionManager {
       status.deactivate(entity);
       entity.ongoingEffects.filter(e => !(e instanceof elementalStatus));
     }
+  }
+
+  public reset() {
+    this.elementalCombinations = this.initCombinations();
   }
 }

@@ -41,4 +41,8 @@ export default class GlobalListeners {
   public onEffectStarted: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectReactivate: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectEnded: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
+
+  public reset() {
+
+  }
 }

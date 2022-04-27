@@ -15,6 +15,10 @@ enum ContainerBindings {
   GlobalListeners = "GlobalListeners",
 }
 
+interface IReset {
+  reset: () => void;
+}
+
 const container = new Container();
 container.bind<Roster>(ContainerBindings.Roster).to(Roster).inSingletonScope();
 container.bind<DamageCalculator>(ContainerBindings.DamageCalculator).to(DamageCalculator).inSingletonScope();
@@ -26,7 +30,8 @@ const rebindAll = () => {
   const values = Object.values(ContainerBindings) as string[];
 
   for (let value of values) {
-    container.rebind(value);
+    const resatable = (container.get(value) as IReset);
+    resatable.reset();
   }
 }
 
