@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
+        "declaration": true,
+        "sourceMap": true,
         "module": "CommonJS",
         "strict": true,
         "outDir": "dist",
         "resolveJsonModule": true,
         "target": "ES2021",
         "skipLibCheck": true,
-        "sourceMap": true,
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
