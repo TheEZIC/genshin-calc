@@ -12,6 +12,10 @@
     "prettier:fix": "prettier --write \"**/*.{ts,js}\"",
     "ts:check": "tsc --noEmit | tee tsc.log"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheEZIC/genshin-calc.git"
+  },
   "keywords": [
     "\\"
   ],
