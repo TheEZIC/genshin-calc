@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import {container, rebindAll} from "@/inversify.config";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
@@ -18,7 +17,7 @@ describe(`${reactionName}Reaction`, () => {
     entity = new Enemy();
   });
 
-  let manager: ElementalReactionManager = container.get("ElementalReactionManager");
+  let manager: ElementalReactionManager = ElementalReactionManager.instance;
   let reaction = new SuperConductReaction(manager);
 
   test(`Expect ${reactionName} gauge 1`, () => {

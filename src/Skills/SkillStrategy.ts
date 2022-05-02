@@ -4,6 +4,7 @@ import Skill from "@/Skills/Skill";
 
 export interface ISkillStrategy {
   type: SkillType;
+  skillTypeName: string;
   runStartListener(character: Character): void;
   runEndListener(character: Character): void;
   modify(callback: (strategy: this) => void): this;
@@ -16,6 +17,7 @@ export default abstract class SkillStrategy implements ISkillStrategy {
   }
 
   public abstract type: SkillType;
+  public abstract skillTypeName: string;
 
   public abstract runStartListener(character: Character): void;
   public abstract runEndListener(character: Character): void;

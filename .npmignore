@@ -1,5 +1,6 @@
 .idea/
 .vscode/
 node_modules/
-dist/
+/dev
+/src
 tsc.log

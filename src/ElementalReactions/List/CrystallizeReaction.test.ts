@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import {container} from "@/inversify.config";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
@@ -10,7 +9,7 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 const reactionName = "Crystallize";
 
 describe(`${reactionName}Reaction`, () => {
-  let manager: ElementalReactionManager = container.get("ElementalReactionManager");
+  let manager: ElementalReactionManager = ElementalReactionManager.instance;
 
   let character = new Ayaka();
   let entity = new Enemy();

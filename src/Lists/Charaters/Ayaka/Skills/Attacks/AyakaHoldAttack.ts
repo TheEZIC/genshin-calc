@@ -13,6 +13,8 @@ import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 
 export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
+  public skillName: string = "Kamisato Art: Kabuki";
+
   public strategy: SkillStrategy = new HoldAttackSkillStrategy(this);
   public frames: number = 0;
   public countdownFrames: number = 0;

@@ -4,7 +4,6 @@ import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {IEndStrategy} from "@/Effects/IEndStrategy";
 import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
 import GlobalListeners from "@/Roster/GlobalListeners";
-import {container, ContainerBindings} from "@/inversify.config";
 import {IPrototype} from "@/Helpers/IPrototype";
 import {clone} from "lodash";
 
@@ -19,7 +18,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
 
   protected endStrategy: IEndStrategy = new DurationEndStrategy(this);
 
-  private globalListeners: GlobalListeners = container.get<GlobalListeners>(ContainerBindings.GlobalListeners);
+  private globalListeners: GlobalListeners = GlobalListeners.instance;
 
   protected checkExistence(entity: T): Effect<T> | undefined {
     return entity.ongoingEffects.find(e => e.name === this.name);

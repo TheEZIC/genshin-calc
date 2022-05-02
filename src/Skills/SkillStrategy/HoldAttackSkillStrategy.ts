@@ -5,6 +5,7 @@ import {IHoldAttackSkill} from "@/Skills/SkillTypes/IHoldAttackSkill";
 
 export default class HoldAttackSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.HoldAttack;
+  skillTypeName: string = "Charged attack";
 
   runStartListener(character: Character): void {
     character.listeners.HoldAttackStarted.notifyAll({entity: character});

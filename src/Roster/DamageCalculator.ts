@@ -2,9 +2,14 @@ import Skill from "@/Skills/Skill";
 import Roster from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
-import {inject, injectable} from "inversify";
 import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
-import {rebindAll} from "@/inversify.config";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import EnergyManager from "@/Roster/EnergyManager";
+
+export interface ICalcResult {
+  damage: number;
+  frames: number;
+}
 
 export interface IAction {
   delay: number;
@@ -16,13 +21,20 @@ interface IDelayedAction {
   run: (damageCalculator: DamageCalculator) => void;
 }
 
-@injectable()
 export default class DamageCalculator {
-  @inject("Roster")
-  protected roster: Roster | null = null;
+  private static _instance: DamageCalculator | null = null;
 
-  @inject("GlobalListeners")
-  protected globalListeners: GlobalListeners | null = null;
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new this();
+    }
+
+    return this._instance;
+  }
+
+  protected roster: Roster = Roster.instance;
+
+  protected globalListeners: GlobalListeners = GlobalListeners.instance;
 
   private ongoingSkills: IOnAnySkill[] = [];
 
@@ -107,7 +119,7 @@ export default class DamageCalculator {
   private rotationSkills: Skill[] = [];
   private currentSkillIndex: number = 0;
 
-  public calcRotation(rotationSkills: Skill[]): number {
+  public calcRotation(rotationSkills: Skill[]): ICalcResult {
     this.subscribeGlobals();
 
     const logger = [];
@@ -163,23 +175,24 @@ export default class DamageCalculator {
       });
     }
 
-
     const framesRemaining = Math.max(...this.ongoingSkills.map(s => s.skill.frames - s.skill.behavior.currentFrame));
 
-    if (framesRemaining !== 0) {
+    if (framesRemaining > 0) {
       this.skip(framesRemaining);
-      this.currentFrames += framesRemaining;
     }
 
-    console.table(logger);
+    const result = {
+      damage: this.rotationDamage,
+      frames: this.currentFrames,
+    };
+
     this.unsubscribeGlobals();
-    const avgDMG =  this.rotationDamage / (this.currentFrames / 60);
+    console.table(logger);
+    console.log(this.rotationDamage, this.currentFrames);
 
-    console.log(avgDMG, this.rotationDamage, this.currentFrames);
+    this.resetAll();
 
-    rebindAll();
-
-    return avgDMG;
+    return result;
   }
 
   public skip(frames: number) {
@@ -220,5 +233,13 @@ export default class DamageCalculator {
     this.rotationSkills = [];
     this.ongoingSkills = [];
     this.currentSkillIndex = 0;
+  }
+
+  private resetAll() {
+    Roster.instance.reset();
+    GlobalListeners.instance.reset();
+    ElementalReactionManager.instance.reset();
+    EnergyManager.instance.reset();
+    DamageCalculator.instance.reset();
   }
 }

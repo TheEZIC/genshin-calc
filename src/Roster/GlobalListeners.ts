@@ -1,10 +1,8 @@
-import {injectable} from "inversify";
 import Listener from "@/Helpers/Listener";
 import Character from "@/Entities/Characters/Character";
 import Skill from "@/Skills/Skill";
 import Effect from "@/Effects/Effect";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import Entity from "@/Entities/Entity";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 
 export interface IOnSkillAction {
@@ -28,9 +26,17 @@ export interface IOnAnyEffect<T extends IWithOngoingEffects = any> {
   entity: T;
   effect: Effect<T>;
 }
-
-@injectable()
 export default class GlobalListeners {
+  private static _instance: GlobalListeners | null = null;
+
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new this();
+    }
+
+    return this._instance;
+  }
+
   public onDamage: Listener<IOnSkillDamage> = new Listener<IOnSkillDamage>();
   public onHeal: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
   public onCreateShield: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();

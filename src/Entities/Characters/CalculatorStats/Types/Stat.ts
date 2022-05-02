@@ -2,9 +2,12 @@ import { StatType } from "@/BaseStats/StatType";
 import Character from "@/Entities/Characters/Character";
 import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import Listener from "@/Helpers/Listener";
 
 export default abstract class Stat {
   constructor(protected character: Character) {}
+
+  public onChange: Listener<number> = new Listener<number>();
 
   /**
    * Calc this stat value

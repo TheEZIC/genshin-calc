@@ -11,18 +11,20 @@ import StatSnapshot from "@/Skills/StatSnapshot";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 
 export default class XianglingBurst extends SummonSkill implements IBurstSkill {
-  strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
-  targetType: SkillTargetType = SkillTargetType.AOE;
-  damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
+  public skillName: string = "Pyronado";
+
+  public strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
+  public targetType: SkillTargetType = SkillTargetType.AOE;
+  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
 
   public override skipUsageFrames = false;
 
-  summonUsageFrames: number = 29;
-  summonDurationFrames: number = 0;
-  countdownFrames: number = 20 * 60; // 12 sec
+  public summonUsageFrames: number = 29;
+  public summonDurationFrames: number = 0;
+  public countdownFrames: number = 20 * 60; // 12 sec
 
-  energyConsumed: number = 80;
-  energyCost: number = 80;
+  public energyConsumed: number = 80;
+  public energyCost: number = 80;
 
   private currentHit = 0;
   private hitsFrames = [34, 50, 75];

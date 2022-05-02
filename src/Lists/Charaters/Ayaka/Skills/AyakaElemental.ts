@@ -10,6 +10,8 @@ import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 
 export default class AyakaElemental extends NormalSkill {
+  public skillName: string = "Kamisato Art: Hyouka";
+
   public strategy: SkillStrategy = new ElementalSkillStrategy(this);
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;

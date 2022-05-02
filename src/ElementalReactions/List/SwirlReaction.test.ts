@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import {container, ContainerBindings} from "@/inversify.config";
 import Roster from "@/Roster/Roster";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
@@ -16,11 +15,11 @@ const reactionName = "Swirl";
 
 describe(`${reactionName}Reaction`, () => {
   afterAll(() => {
-    container.rebind(ContainerBindings.Roster);
+    // container.rebind(ContainerBindings.Roster);
   });
 
-  let roster: Roster = container.get(ContainerBindings.Roster);
-  let manager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
+  let roster: Roster = Roster.instance;
+  let manager: ElementalReactionManager = ElementalReactionManager.instance;
 
   let character = new Ayaka();
   let entity1 = new Enemy();

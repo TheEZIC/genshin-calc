@@ -12,16 +12,18 @@ import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 
 export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOTSkill {
-  strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
-  targetType: SkillTargetType = SkillTargetType.AOE;
-  damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
+  public skillName: string = "Kamisato Art: Soumetsu";
 
-  energyCost: number = 80;
-  energyConsumed: number = 80;
+  public strategy: BurstSkillStrategy = new BurstSkillStrategy(this);
+  public targetType: SkillTargetType = SkillTargetType.AOE;
+  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
 
-  summonUsageFrames: number = 95;
-  summonDurationFrames: number = 5 * 60;
-  countdownFrames: number = 20 * 60; //20 sec
+  public energyCost: number = 80;
+  public energyConsumed: number = 80;
+
+  public summonUsageFrames: number = 95;
+  public summonDurationFrames: number = 5 * 60;
+  public countdownFrames: number = 20 * 60; //20 sec
 
   private readonly CUTTINGS_COUNT = 19;
 

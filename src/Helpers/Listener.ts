@@ -1,4 +1,3 @@
-import {container, ContainerBindings} from "@/inversify.config";
 import DamageCalculator from "@/Roster/DamageCalculator";
 
 export interface ISubscriber<SubscriberArgs = void> {
@@ -51,7 +50,7 @@ export default class Listener<T = void> {
   }
 
   public notifyAll(args: T): void {
-    const damageCalculator: DamageCalculator = container.get<DamageCalculator>(ContainerBindings.DamageCalculator);
+    const damageCalculator: DamageCalculator = DamageCalculator.instance;
 
     this.subscribers.forEach((s) =>
       typeof s === "object" ? s.runOnEvent(args) : s(args)

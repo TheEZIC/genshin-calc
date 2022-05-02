@@ -9,13 +9,15 @@ import AyakaDashBuff from "@/Lists/Charaters/Ayaka/Skills/Buffs/AyakaDashBuff";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 export default class AyakaDash extends NormalSkill {
-  strategy: SkillStrategy = new DashSkillStrategy(this)
+  public skillName: string = "Kamisato Art: Senho";
 
-  frames: number = 20;
-  countdownFrames: number = 0;
+  public strategy: SkillStrategy = new DashSkillStrategy(this)
 
-  targetType: SkillTargetType = SkillTargetType.AOE;
-  damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
+  public frames: number = 20;
+  public countdownFrames: number = 0;
+
+  public targetType: SkillTargetType = SkillTargetType.AOE;
+  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
   private dashBuff = new AyakaDashBuff();
 

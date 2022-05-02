@@ -4,6 +4,7 @@ import {SkillType} from "@/Skills/SkillType";
 
 export default class DashSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.Dash;
+  skillTypeName: string = "Dash";
 
   runStartListener(character: Character): void {
     character.listeners.DashSkillStarted.notifyAll({entity: character});

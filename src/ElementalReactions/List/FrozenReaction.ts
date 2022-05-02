@@ -1,7 +1,6 @@
 import ElementalReaction, {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
-import {container, ContainerBindings} from "@/inversify.config";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import Entity from "@/Entities/Entity";
@@ -14,8 +13,8 @@ interface IFrozenHistoryItem {
 }
 
 export default class FrozenReaction extends ElementalReaction {
-  private damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
-  private globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
+  private damageCalculator: DamageCalculator = DamageCalculator.instance;
+  private globalListeners: GlobalListeners = GlobalListeners.instance;
 
   constructor(elementalReactionManager: ElementalReactionManager) {
     super(elementalReactionManager);
@@ -67,7 +66,6 @@ export default class FrozenReaction extends ElementalReaction {
 
   private subscribeFreeze() {
     this.globalListeners.onEffectEnded.subscribe(e => {
-      console.log(e);
       if (e.effect instanceof FreezeStatus) {
         this.addHistoryFrame(e.entity);
       }

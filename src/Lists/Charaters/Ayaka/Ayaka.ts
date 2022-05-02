@@ -25,6 +25,10 @@ import AyakaC4 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC4";
 import AyakaC6 from "@/Lists/Charaters/Ayaka/Constellation/AyakaC6";
 
 export default class Ayaka extends Character {
+  public override get name() {
+    return "Ayaka";
+  }
+
   public vision: VisionType = VisionType.Cryo;
   public baseStats: CharacterBaseStats = new AyakaBaseStats(this);
 

@@ -1,5 +1,6 @@
 import CharacterBaseStats from "@/Entities/Characters/CharacterBaseStats";
 import BaseStat from "@/BaseStats/BaseStat";
+import CharacterAscendableBaseStat from "@/Entities/Characters/CharacterAscendableBaseStat";
 
 export default class XianglingBaseStats extends CharacterBaseStats {
   readonly baseATK: BaseStat = new BaseStat([
@@ -31,4 +32,7 @@ export default class XianglingBaseStats extends CharacterBaseStats {
     [8885, 9638],
     [10122, 10575],
   ]);
+
+  public override readonly elementalMastery =
+    new CharacterAscendableBaseStat(0, 24);
 }

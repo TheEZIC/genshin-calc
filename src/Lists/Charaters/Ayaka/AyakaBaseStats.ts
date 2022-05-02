@@ -1,5 +1,6 @@
 import BaseStat from "@/BaseStats/BaseStat";
 import CharacterBaseStats from "@/Entities/Characters/CharacterBaseStats";
+import CharacterAscendableBaseStat from "@/Entities/Characters/CharacterAscendableBaseStat";
 
 export default class AyakaBaseStats extends CharacterBaseStats {
   readonly baseATK: BaseStat = new BaseStat([
@@ -13,16 +14,25 @@ export default class AyakaBaseStats extends CharacterBaseStats {
   ]);
 
   readonly baseDEF: BaseStat = new BaseStat([
-
+    [61, 158],
+    [211, 315],
+    [352, 405],
+    [455, 509],
+    [546, 600],
+    [637, 692],
+    [729, 784]
   ]);
 
   readonly baseHP: BaseStat = new BaseStat( [
-    [1.001, 2.597],
-    [3.455, 5.170],
-    [5.779, 6.649],
-    [7.462, 8.341],
-    [8.951, 9.838],
-    [10.448, 11.345],
-    [11.954, 12.858]
+    [1001, 2597],
+    [3455, 5170],
+    [5779, 6649],
+    [7462, 8341],
+    [8951, 9838],
+    [10448, 11345],
+    [11954, 12858]
   ]);
+
+  public override readonly critDamage =
+    new CharacterAscendableBaseStat(50, 9.6);
 }

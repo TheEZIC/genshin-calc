@@ -12,17 +12,19 @@ import {GoubaEntity} from "@/Lists/Charaters/Xiangling/Skills/GoubaEntity";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 
 export default class XianglingElemental extends SummonSkill implements IDOTSkill {
-  strategy: ISkillStrategy = new ElementalSkillStrategy(this);
-  targetType: SkillTargetType = SkillTargetType.AOE;
-  damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
+  public skillName: string = "Gouba Attack";
 
-  summonUsageFrames: number = 18;
-  summonDurationFrames: number = 7 * 60; //7 sec
-  countdownFrames: number = 12 * 60; // 12 sec
+  public strategy: ISkillStrategy = new ElementalSkillStrategy(this);
+  public targetType: SkillTargetType = SkillTargetType.AOE;
+  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Snapshot;
+
+  public summonUsageFrames: number = 18;
+  public summonDurationFrames: number = 7 * 60; //7 sec
+  public countdownFrames: number = 12 * 60; // 12 sec
 
   private readonly GOUBA_HITS = 4;
 
-  damageFrames: number[] = [
+  public damageFrames: number[] = [
     ...this.createRepeatedFrames(
       this.summonDurationFrames / this.GOUBA_HITS,
       this.GOUBA_HITS,

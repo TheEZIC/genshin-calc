@@ -1,5 +1,4 @@
 import GlobalListeners from "@/Roster/GlobalListeners";
-import {container, ContainerBindings} from "@/inversify.config";
 import LoggerItem, {ILogItem} from "@/CombatLogger/LoggerItem";
 import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
 import SkillStartedLogger from "@/CombatLogger/List/SkillStartedLogger";
@@ -45,8 +44,8 @@ export default class CombatLogger {
     this.subscribeReactionEvents();
   }
 
-  private globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
-  private reactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
+  private globalListeners: GlobalListeners = GlobalListeners.instance;
+  private reactionManager: ElementalReactionManager = ElementalReactionManager.instance;
   private _logs: ICombatLogItem[] = [];
 
   public addLog(logItem: ILogItem, type: LoggerItemType) {

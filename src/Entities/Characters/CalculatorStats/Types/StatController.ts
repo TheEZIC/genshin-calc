@@ -1,5 +1,6 @@
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import {SkillType} from "@/Skills/SkillType";
+import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
 
 export enum StatTense {
   Pre,
@@ -13,15 +14,22 @@ interface IStatControllerItem {
 }
 
 export default class StatController {
+  constructor(
+    private stat: Stat,
+  ) {
+  }
+
   protected values: IStatControllerItem[] = [];
 
   public add(statValue: StatValue, tense: StatTense = StatTense.Present): this {
     this.values.push({stat: statValue, tense});
+    this.stat.onChange.notifyAll(this.stat.calc());
     return this;
   }
 
   public remove(statValue: StatValue): this {
     this.values = this.values.filter((p) => p.stat.value !== statValue.value);
+    this.stat.onChange.notifyAll(this.stat.calc());
     return this;
   }
 

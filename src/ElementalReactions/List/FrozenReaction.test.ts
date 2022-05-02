@@ -1,13 +1,9 @@
 import "reflect-metadata";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import {container, ContainerBindings} from "@/inversify.config";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
-import MeltReaction from "@/ElementalReactions/List/MeltReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
-import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import DamageCalculator from "@/Roster/DamageCalculator";
@@ -18,16 +14,16 @@ const reactionName = "Frozen";
 
 describe(`${reactionName}Reaction`, () => {
   afterAll(() => {
-    container.rebind(ContainerBindings.Roster);
-    container.rebind(ContainerBindings.DamageCalculator);
+    // container.rebind(ContainerBindings.Roster);
+    // container.rebind(ContainerBindings.DamageCalculator);
   });
 
   let character = new Ayaka();
   let entity = new Enemy();
 
-  let roster: Roster = container.get(ContainerBindings.Roster);
-  let damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
-  let manager: ElementalReactionManager = container.get("ElementalReactionManager");
+  let roster: Roster = Roster.instance;
+  let damageCalculator: DamageCalculator = DamageCalculator.instance;
+  let manager: ElementalReactionManager = ElementalReactionManager.instance;
 
   beforeEach(() => {
     character = new Ayaka();

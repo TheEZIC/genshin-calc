@@ -4,7 +4,6 @@ import Roster from "@/Roster/Roster";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import CombatLogger from "@/CombatLogger/CombatLogger";
-import {container, ContainerBindings} from "./inversify.config";
 
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import ArtifactCirclet from "@/Artifacts/Type/ArtifactCirclet";
@@ -14,8 +13,6 @@ import ArtifactPlume from "@/Artifacts/Type/ArtifactPlume";
 import ArtifactSands from "@/Artifacts/Type/ArtifactSands";
 import Stat from "@/BaseStats/Stat";
 import { StatType } from "@/BaseStats/StatType";
-
-import "./paths";
 
 import TroupeSet from "@/Lists/ArtifactsSets/TroupeSet";
 import GladiatorSet from "@/Lists/ArtifactsSets/GladiatorSet";
@@ -33,11 +30,13 @@ import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElem
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 import {CombatLoggerEffectsCollection, CombatLoggerReactionsCollection} from "@/CombatLogger/LoggerItemTypeCollections";
 import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
+import EnergyManager from "@/Roster/EnergyManager";
+import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 
-const roster: Roster = container.get(ContainerBindings.Roster);
-const damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
-const elementalReactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
-//const energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager)
+const roster: Roster = Roster.instance;
+const damageCalculator: DamageCalculator = DamageCalculator.instance;
+const elementalReactionManager: ElementalReactionManager = ElementalReactionManager.instance;
+const energyManager: EnergyManager = EnergyManager.instance;
 
 const factory = new CharactersFactory();
 
@@ -106,11 +105,12 @@ class GenshinCalculator {
     const dmg = this.damageCalculator.calcRotation([
       // new XianglingElemental(),
       // new XianglingBurst(),
-      // new AyakaBurst(),
-      // new AyakaElemental(),
-      // new AyakaElemental(),
-      new AyakaDash(),
+      new AyakaBurst(),
       new AyakaA1(),
+      // new AyakaElemental(),
+      // new AyakaElemental(),
+      // new AyakaDash(),
+      // new AyakaA1(),
       // new AyakaA2(),
       // new AyakaHoldAttack(),
     ]);

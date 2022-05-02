@@ -30,4 +30,8 @@ export default class SkillsManager {
   public getAllSkillsByType(skillType: SkillType): Skill[] {
     return this.skills.filter((s) => s.strategy.type === skillType);
   }
+
+  public getAllSkillsByTypes(skillTypes: SkillType[]): Skill[] {
+    return this.skills.filter((s) => skillTypes.includes(s.strategy.type));
+  }
 }

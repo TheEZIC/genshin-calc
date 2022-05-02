@@ -1,4 +1,3 @@
-import {container, ContainerBindings} from "@/inversify.config";
 import Roster from "@/Roster/Roster";
 import TransformativeElementalReaction from "@/ElementalReactions/TransformativeElementalReaction";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
@@ -9,7 +8,7 @@ export default class SwirlReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 0.625;
   public readonly baseDamageMultiplier: number = 1.2;
 
-  private roster: Roster = container.get(ContainerBindings.Roster);
+  private roster: Roster = Roster.instance;
 
   private getEntityStatus(entity: Entity): ElementalStatus | undefined {
     return entity.ongoingEffects.find(e => e instanceof ElementalStatus) as ElementalStatus | undefined;

@@ -1,5 +1,4 @@
 import Skill from "@/Skills/Skill";
-import {container, ContainerBindings} from "@/inversify.config";
 import DamageCalculator from "@/Roster/DamageCalculator";
 
 export default class SkillCountdown {
@@ -8,7 +7,7 @@ export default class SkillCountdown {
   ) {
   }
 
-  private damageCalculator: DamageCalculator = container.get<DamageCalculator>(ContainerBindings.DamageCalculator);
+  private damageCalculator: DamageCalculator = DamageCalculator.instance;
 
   private _isOnCountdown: boolean = false;
   public countdownFrames: number = 0;

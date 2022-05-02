@@ -20,9 +20,7 @@ import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import Entity from "@/Entities/Entity";
-import {injectable} from "inversify";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import {container, ContainerBindings} from "@/inversify.config";
 import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
 
 type ElementalCombination = [
@@ -32,14 +30,23 @@ type ElementalCombination = [
 ];
 
 
-@injectable()
 export default class ElementalReactionManager {
+  private static _instance: ElementalReactionManager | null = null;
+
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new this();
+    }
+
+    return this._instance;
+  }
+
   constructor(
   ) {
     this.subscribeAllReactions();
   }
 
-  private damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
+  private damageCalculator: DamageCalculator = DamageCalculator.instance;
 
   public onAnyReaction: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
 

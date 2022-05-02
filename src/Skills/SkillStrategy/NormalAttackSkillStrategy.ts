@@ -4,6 +4,7 @@ import {SkillType} from "@/Skills/SkillType";
 
 export default class NormalAttackSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.NormalAttack;
+  skillTypeName: string = "Normal attack";
 
   runStartListener(character: Character): void {
     character.listeners.NormalAttackStarted.notifyAll({entity: character});

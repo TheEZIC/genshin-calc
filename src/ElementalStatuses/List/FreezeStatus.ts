@@ -1,5 +1,4 @@
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import {container, ContainerBindings} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import Entity from "@/Entities/Entity";
@@ -24,8 +23,8 @@ export default class FreezeStatus extends ElementalStatus {
     return this;
   }
 
-  private manager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
-  private damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
+  private manager: ElementalReactionManager = ElementalReactionManager.instance;
+  private damageCalculator: DamageCalculator = DamageCalculator.instance;
 
   private get frozenReaction(): FrozenReaction {
     return this.manager.getReaction(FrozenReaction) as FrozenReaction;

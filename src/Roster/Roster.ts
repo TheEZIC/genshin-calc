@@ -3,15 +3,23 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import {VisionType} from "@/VisionType";
 import Skill from "@/Skills/Skill";
 import Entity from "@/Entities/Entity";
-import {injectable} from "inversify";
 
 export interface ISkillsItem {
   character: Character;
   skill: Skill;
 }
 
-@injectable()
 export default class Roster {
+  private static _instance: Roster | null = null;
+
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new this();
+    }
+
+    return this._instance;
+  }
+
   public static readonly MAX_CHARACTERS_COUNT = 4;
   private _characters: Character[] = [];
   private _entities: Entity[] = [];

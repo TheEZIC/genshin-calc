@@ -1,10 +1,8 @@
 {
     "compilerOptions": {
-        "declaration": true,
-        "sourceMap": true,
         "module": "CommonJS",
         "strict": true,
-        "outDir": "dist",
+        "outDir": "dev",
         "resolveJsonModule": true,
         "target": "ES2021",
         "skipLibCheck": true,

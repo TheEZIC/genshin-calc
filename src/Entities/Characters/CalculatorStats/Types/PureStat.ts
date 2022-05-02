@@ -5,7 +5,7 @@ import { StatValue } from "./StatValue";
 import StatController from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default abstract class PureStat extends Stat {
-  public readonly additionalValues: StatController = new StatController();
+  public readonly additionalValues: StatController = new StatController(this);
 
   /**
    * Remove all additional values

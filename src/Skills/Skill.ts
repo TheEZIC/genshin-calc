@@ -9,7 +9,6 @@ import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
 import SkillBehavior, {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
 import Roster from "@/Roster/Roster";
-import {container, ContainerBindings} from "@/inversify.config";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import EnergyManager, {IEnergyParticles} from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
@@ -61,8 +60,10 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   public infusion: SkillInfusion = new SkillInfusion();
   public lvl: SkillLvl = new SkillLvl(this);
 
+  public abstract skillName: string;
+
   public get name(): string {
-    return this.constructor.name;
+    return `${this.skillName} (${this.strategy.skillTypeName})`;
   }
 
   public subscribeEffects(character: Character): void {
@@ -73,12 +74,12 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public abstract onAction(args: ISkillActionArgs): void;
 
-  protected roster: Roster = container.get(ContainerBindings.Roster);
-  protected damageCalculator: DamageCalculator = container.get(ContainerBindings.DamageCalculator);
-  protected reactionManager: ElementalReactionManager = container.get(ContainerBindings.ElementalReactionManager);
-  protected globalListeners: GlobalListeners = container.get(ContainerBindings.GlobalListeners);
+  protected roster: Roster = Roster.instance;
+  protected damageCalculator: DamageCalculator = DamageCalculator.instance;
+  protected reactionManager: ElementalReactionManager = ElementalReactionManager.instance;
+  protected globalListeners: GlobalListeners = GlobalListeners.instance;
 
-  private energyManager: EnergyManager = container.get(ContainerBindings.EnergyManager);
+  private energyManager: EnergyManager = EnergyManager.instance;
 
   protected addEnergy(particles: IEnergyParticles) {
     this.energyManager.addEnergy(particles);

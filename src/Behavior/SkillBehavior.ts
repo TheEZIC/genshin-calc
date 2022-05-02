@@ -3,7 +3,6 @@ import Character from "@/Entities/Characters/Character";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IBehavior} from "@/Behavior/IBehavior";
 import GlobalListeners from "@/Roster/GlobalListeners";
-import {container, ContainerBindings} from "@/inversify.config";
 
 export interface ISkillBehaviorArgs {
   character: Character;
@@ -16,7 +15,7 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
   ) {
   }
 
-  private globalListeners: GlobalListeners = container.get<GlobalListeners>(ContainerBindings.GlobalListeners);
+  private globalListeners: GlobalListeners = GlobalListeners.instance;
 
   private _isStarted: boolean = false;
   public currentFrame: number = 0;
