@@ -11,10 +11,6 @@ export default class AtkStat extends MainStat {
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
     const critEffect = this.character.calculatorStats.critChance.critEffect;
 
-    const a = this.prefixes.getSum(skillFilter, tenses);
-    const b = this.additionalValues.getSum(skillFilter, tenses);
-    const c = this.affixes.getSum(skillFilter, tenses);
-
     return (
       (baseATK.value +
         (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *

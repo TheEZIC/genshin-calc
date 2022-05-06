@@ -3,6 +3,8 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import {VisionType} from "@/VisionType";
 import Skill from "@/Skills/Skill";
 import Entity from "@/Entities/Entity";
+import SingletonsManager from "@/Singletons/SingletonsManager";
+import CharactersFactory from "@/Factories/CharactersFactory";
 
 export interface ISkillsItem {
   character: Character;
@@ -15,6 +17,7 @@ export default class Roster {
   public static get instance() {
     if (!this._instance) {
       this._instance = new this();
+      SingletonsManager.addSingleton(this._instance);
     }
 
     return this._instance;
@@ -35,7 +38,7 @@ export default class Roster {
   }
 
   public getEntity(entity: Entity) {
-    return this._entities.find(e => e.name === entity.name);
+    return this._entities.find(e => e.title === entity.title);
   }
 
   public addEntity(entity: Entity) {
@@ -43,7 +46,7 @@ export default class Roster {
   }
 
   public removeEntity(entity: Entity) {
-    const index = this._entities.findIndex(e => e.name === entity.name);
+    const index = this._entities.findIndex(e => e.title === entity.title);
 
     if (index !== -1) {
       this._entities.slice(index);
@@ -51,7 +54,7 @@ export default class Roster {
   }
 
   public removeAllEntities(entity: Entity) {
-    this._entities = this._entities.filter(e => e.name !== e.name);
+    this._entities = this._entities.filter(e => e.title !== e.title);
   }
 
   public get enemies(): Enemy[] {
@@ -79,7 +82,7 @@ export default class Roster {
   }
 
   public changeActiveCharacter(character: Character) {
-    const index = this.characters.findIndex(c => c.name === character.name);
+    const index = this.characters.findIndex(c => c.title === character.title);
 
     if (index !== -1) {
       this._index = index;
@@ -96,12 +99,12 @@ export default class Roster {
 
   public isInactive(character: Character): boolean {
     const inactive = this.inactiveCharacters;
-    return Boolean(inactive.find(c => c.name === character.name));
+    return Boolean(inactive.find(c => c.title === character.title));
   }
 
   public isActive(character: Character): boolean {
     const active = this.activeCharacter;
-    return active.name === character.name;
+    return active.title === character.title;
   }
 
   public findCharacterByVision(vision: VisionType) {
@@ -114,11 +117,19 @@ export default class Roster {
   }
 
   public removeCharacter(character: Character) {
-    this._characters = this._characters.filter((c) => c.name !== character.name);
+    this._characters = this._characters.filter((c) => c.title !== character.title);
+  }
+
+  public clearCharacters() {
+    this._characters = [];
   }
 
   public reset() {
-    this._entities = [];
-    this._characters = [];
+    //this._entities = [];
+
+    // const charactersFactory = CharactersFactory.instance;
+    // const newCharacters = this._characters.map(c => charactersFactory.getByName(c.name)!.character);
+    //
+    // this._characters = newCharacters;
   }
 }

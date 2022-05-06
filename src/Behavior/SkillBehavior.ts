@@ -3,12 +3,15 @@ import Character from "@/Entities/Characters/Character";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IBehavior} from "@/Behavior/IBehavior";
 import GlobalListeners from "@/Roster/GlobalListeners";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
 export interface ISkillBehaviorArgs {
   character: Character;
   hash: string;
 }
 
+@RefreshableClass
 export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArgs>{
   constructor(
     private skill: Skill,
@@ -17,7 +20,10 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
 
   private globalListeners: GlobalListeners = GlobalListeners.instance;
 
+  @RefreshableProperty()
   private _isStarted: boolean = false;
+
+  @RefreshableProperty()
   public currentFrame: number = 0;
 
   public get isStarted(): boolean {

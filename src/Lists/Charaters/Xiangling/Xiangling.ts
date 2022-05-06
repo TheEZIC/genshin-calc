@@ -8,9 +8,7 @@ import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElem
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 
 export default class Xiangling extends Character {
-  public override get name() {
-    return "Xiangling";
-  }
+  public title: string = "Xiangling";
 
   vision: VisionType = VisionType.Pyro;
   baseStats: CharacterBaseStats = new XianglingBaseStats(this);

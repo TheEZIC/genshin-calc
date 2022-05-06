@@ -22,6 +22,7 @@ import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import Entity from "@/Entities/Entity";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 type ElementalCombination = [
   first: Constructor<ElementalStatus>,
@@ -36,6 +37,7 @@ export default class ElementalReactionManager {
   public static get instance() {
     if (!this._instance) {
       this._instance = new this();
+      SingletonsManager.addSingleton(this._instance);
     }
 
     return this._instance;

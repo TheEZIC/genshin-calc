@@ -15,10 +15,10 @@ export default abstract class SkillBehaviorLogger extends LoggerItem<ISkillBehav
     const {skill, character} = args.args;
 
     return {
-      message: `Skill ${skill.name} ${this.messageEvent}`,
+      message: `Skill ${skill.title} ${this.messageEvent}`,
       startFrame,
-      characterName: character.name,
-      skillName: skill.name
+      characterName: character.title,
+      skillName: skill.title
     };
   }
 }

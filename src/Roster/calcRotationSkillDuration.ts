@@ -10,7 +10,7 @@ export default function calcRotationSkillDuration(
   rotationSkill: Skill,
   rotationSkillIndex: number,
 ): number {
-  const skillItemIndex = skills.findIndex((s) => s.skill.name === rotationSkill.name);
+  const skillItemIndex = skills.findIndex((s) => s.skill.title === rotationSkill.title);
 
   if (skillItemIndex === -1) return 0;
 

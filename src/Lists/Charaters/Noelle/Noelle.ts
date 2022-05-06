@@ -7,9 +7,7 @@ import NoelleBaseStats from "./NoelleBaseStats";
 import {VisionType} from "@/VisionType";
 
 export default class Noelle extends Character {
-  public override get name() {
-    return "Noelle";
-  }
+  public title: string = "Noelle";
 
   public vision: VisionType = VisionType.Geo;
   public baseStats: CharacterBaseStats = new NoelleBaseStats(this);

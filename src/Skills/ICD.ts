@@ -1,3 +1,7 @@
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+
+@RefreshableClass
 export default class ICD {
   constructor(
     private hits: number,
@@ -5,9 +9,13 @@ export default class ICD {
   ) {
   }
 
+  @RefreshableProperty()
   private _onCountdown: boolean = false;
 
+  @RefreshableProperty()
   private currentHits: number = 0;
+
+  @RefreshableProperty()
   private currentFrames: number = 0;
 
   public get onCountdown(): boolean {

@@ -16,11 +16,11 @@ export default abstract class ActionLogger extends LoggerItem<IActionLoggerItem,
     const {skill, character, value, comment} = args.args;
 
     return {
-      message: `Skill ${skill.name} do ${value} ${this.messageEvent}`,
+      message: `Skill ${skill.title} do ${value} ${this.messageEvent}`,
       startFrame,
       comment,
-      characterName: character.name,
-      skillName: skill.name,
+      characterName: character.title,
+      skillName: skill.title,
     };
   }
 }

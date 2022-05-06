@@ -25,25 +25,24 @@ import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import {SkillType} from "@/Skills/SkillType";
 import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAttack";
 import Enemy from "@/Entities/Enemies/Enemy";
-import CharactersFactory from "@/Entities/Characters/CharactersFactory";
 import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElemental";
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 import {CombatLoggerEffectsCollection, CombatLoggerReactionsCollection} from "@/CombatLogger/LoggerItemTypeCollections";
 import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
 import EnergyManager from "@/Roster/EnergyManager";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
+import SingletonsManager from "@/Singletons/SingletonsManager";
+import CharactersFactory from "@/Factories/CharactersFactory";
 
-const roster: Roster = Roster.instance;
-const damageCalculator: DamageCalculator = DamageCalculator.instance;
-const elementalReactionManager: ElementalReactionManager = ElementalReactionManager.instance;
-const energyManager: EnergyManager = EnergyManager.instance;
-
-const factory = new CharactersFactory();
+const singletonManager = SingletonsManager.instance;
 
 class GenshinCalculator {
-  public roster: Roster = roster;
-  public damageCalculator: DamageCalculator = damageCalculator;
-  public elementalReactionManager: ElementalReactionManager = elementalReactionManager;
+  public characters: CharactersFactory = CharactersFactory.instance;
+
+  public roster: Roster = Roster.instance;
+  public damageCalculator: DamageCalculator = DamageCalculator.instance;
+  public elementalReactionManager: ElementalReactionManager = ElementalReactionManager.instance;
+  public energyManager: EnergyManager = EnergyManager.instance;
 
   public combatLogger = new CombatLogger();
 
@@ -56,38 +55,38 @@ class GenshinCalculator {
 
     this.roster.changeActiveCharacter(ayaka);
 
-    const plume = new ArtifactPlume()
-      .setMainStat(new Stat(StatType.FlatATK, 300))
-      .addSubStat(new Stat(StatType.CritDamage, 35))
-      .addSubStat(new Stat(StatType.CritChance, 8))
-      .addSubStat(new Stat(StatType.PercentATK, 10))
-      //.addSetBonus(new TroupeSet());
-
-    const goblet = new ArtifactGoblet()
-      .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
-      .addSetBonus(new TroupeSet());
-
-    const sands = new ArtifactSands()
-      .setMainStat(new Stat(StatType.PercentATK, 40))
-      .addSetBonus(new GladiatorSet());
-
-    const circlet = new ArtifactCirclet()
-      .setMainStat(new Stat(StatType.CritChance, 30))
-      .addSetBonus(new GladiatorSet());
-
-    const flower = new ArtifactFlower()
-      .setMainStat(new Stat(StatType.FlatHP, 3000))
-      .addSetBonus(new GladiatorSet());
-
-    ayaka.artifactsManager
-      .add(plume)
-      .add(goblet)
-      .add(sands)
-      .add(circlet)
-      .add(flower);
+    // const plume = new ArtifactPlume()
+    //   .setMainStat(new Stat(StatType.FlatATK, 300))
+    //   .addSubStat(new Stat(StatType.CritDamage, 35))
+    //   .addSubStat(new Stat(StatType.CritChance, 8))
+    //   .addSubStat(new Stat(StatType.PercentATK, 10))
+    //   //.addSetBonus(new TroupeSet());
+    //
+    // const goblet = new ArtifactGoblet()
+    //   .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
+    //   .addSetBonus(new TroupeSet());
+    //
+    // const sands = new ArtifactSands()
+    //   .setMainStat(new Stat(StatType.PercentATK, 40))
+    //   .addSetBonus(new GladiatorSet());
+    //
+    // const circlet = new ArtifactCirclet()
+    //   .setMainStat(new Stat(StatType.CritChance, 30))
+    //   .addSetBonus(new GladiatorSet());
+    //
+    // const flower = new ArtifactFlower()
+    //   .setMainStat(new Stat(StatType.FlatHP, 3000))
+    //   .addSetBonus(new GladiatorSet());
+    //
+    // ayaka.artifactsManager
+    //   .add(plume)
+    //   .add(goblet)
+    //   .add(sands)
+    //   .add(circlet)
+    //   .add(flower);
 
     ayaka.baseStats.applyLvl(90);
-    ayaka.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+    //ayaka.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
     ayaka.weaponManager.changeRefinement(1);
 
     ayaka.constellationsManager.activateConstellation(3);
@@ -97,34 +96,38 @@ class GenshinCalculator {
     ayaka.skillManager.changeLvl(10, SkillType.Burst);
 
     xiangling.baseStats.applyLvl(90);
-    xiangling.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+    //xiangling.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
     xiangling.skillManager.changeLvl(10, SkillType.Burst);
 
     this.roster.addEnemy(new Enemy());
 
-    const dmg = this.damageCalculator.calcRotation([
-      // new XianglingElemental(),
-      // new XianglingBurst(),
-      new AyakaBurst(),
-      new AyakaA1(),
-      // new AyakaElemental(),
-      // new AyakaElemental(),
-      // new AyakaDash(),
-      // new AyakaA1(),
-      // new AyakaA2(),
-      // new AyakaHoldAttack(),
-    ]);
+    const rotation = () => {
+      const dmg = this.damageCalculator.calcRotation([
+        new AyakaBurst(),
+        new AyakaElemental(),
+        new XianglingBurst(),
+        new XianglingElemental(),
+        new AyakaA1(),
+        new AyakaA2(),
+        new AyakaHoldAttack(),
+        new AyakaDash(),
+      ]);
 
-    this.combatLogger.clear();
-    console.log(dmg);
-    // console.log(this.combatLogger.getFilteredLogs([
-    //   //...CombatLoggerEffectsCollection,
-    //   //...CombatLoggerReactionsCollection,
-    // ]));
+      this.combatLogger.clear();
+      console.log(dmg);
+    }
+
+    rotation();
+    rotation();
+    rotation();
+    rotation();
+    rotation();
+    rotation();
+
+    this.roster.clearCharacters();
   }
 }
 
 new GenshinCalculator().test();
-new GenshinCalculator().test();
 
-export {roster, damageCalculator, elementalReactionManager, GenshinCalculator};
+export {GenshinCalculator};

@@ -4,6 +4,7 @@ import Skill from "@/Skills/Skill";
 import Effect from "@/Effects/Effect";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 export interface IOnSkillAction {
   character: Character;
@@ -32,6 +33,7 @@ export default class GlobalListeners {
   public static get instance() {
     if (!this._instance) {
       this._instance = new this();
+      SingletonsManager.addSingleton(this._instance);
     }
 
     return this._instance;

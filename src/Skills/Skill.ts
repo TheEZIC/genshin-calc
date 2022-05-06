@@ -62,8 +62,8 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
 
   public abstract skillName: string;
 
-  public get name(): string {
-    return `${this.skillName} (${this.strategy.skillTypeName})`;
+  public get title(): string {
+    return `${this.strategy.skillTypeName} (${this.skillName})`;
   }
 
   public subscribeEffects(character: Character): void {
@@ -118,11 +118,11 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
       entity,
     });
 
-    if (args.blunt) {
-      const applyShatter = (entity: Entity) =>
-        this.reactionManager.checkShatter(createArgs(entity), true);
-      this.doOnSkillType(applyShatter);
-    }
+    // if (args.blunt) {
+    //   const applyShatter = (entity: Entity) =>
+    //     this.reactionManager.checkShatter(createArgs(entity), true);
+    //   this.doOnSkillType(applyShatter);
+    // }
 
     if (elementalStatus && !this.ICD?.onCountdown) {
       this.ICD?.startCountdown();
@@ -142,15 +142,15 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     return totalDmg || damage;
   }
 
-  private doOnSkillType(action: (entity: Entity) => void) {
+  private doOnSkillType(action?: (entity: Entity) => void) {
     const {enemies} = this.roster;
 
     if (this.targetType === SkillTargetType.Single) {
       const [enemy] = enemies;
-      action(enemy);
+      action?.(enemy);
     } else if (this.targetType === SkillTargetType.AOE) {
       for (let enemy of enemies) {
-        action(enemy);
+        action?.(enemy);
       }
     }
   }

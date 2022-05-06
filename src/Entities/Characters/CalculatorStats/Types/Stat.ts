@@ -25,16 +25,6 @@ export default abstract class Stat {
   }
 
   /**
-   * Get value and clear all prefixes/affixes/additional
-   * @return {Stat} - this
-   * */
-  public get value() {
-    const result = this.calc();
-    this.clear();
-    return result;
-  }
-
-  /**
    * Get weapon value bonus by stat
    * @param {StatType} statType - stat type
    * @return {number} - value

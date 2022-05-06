@@ -1,6 +1,8 @@
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import {SkillType} from "@/Skills/SkillType";
 import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
 export enum StatTense {
   Pre,
@@ -13,15 +15,21 @@ interface IStatControllerItem {
   stat: StatValue;
 }
 
+@RefreshableClass
 export default class StatController {
   constructor(
     private stat: Stat,
   ) {
   }
 
+  @RefreshableProperty([])
   protected values: IStatControllerItem[] = [];
 
   public add(statValue: StatValue, tense: StatTense = StatTense.Present): this {
+    if (statValue.value !== 0) {
+      console.log(statValue.value, "stat value");
+    }
+
     this.values.push({stat: statValue, tense});
     this.stat.onChange.notifyAll(this.stat.calc());
     return this;

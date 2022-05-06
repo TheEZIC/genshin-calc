@@ -6,11 +6,16 @@ import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
 import GlobalListeners from "@/Roster/GlobalListeners";
 import {IPrototype} from "@/Helpers/IPrototype";
 import {clone} from "lodash";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
+@RefreshableClass
 export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
   public name = this.constructor.name;
 
   public abstract framesDuration: number;
+
+  @RefreshableProperty()
   public readonly countdownFrames: number = 0;
 
   protected abstract applyEffect(entity: T): void;
@@ -24,9 +29,16 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     return entity.ongoingEffects.find(e => e.name === this.name);
   }
 
+  @RefreshableProperty()
   protected isStarted = false;
+
+  @RefreshableProperty()
   protected isOnCountdown: boolean = false;
+
+  @RefreshableProperty()
   public currentFrame: number = 0;
+
+  @RefreshableProperty()
   public framesAfterCountdown = 0;
 
   public get remainingCountdown(): number {
@@ -67,7 +79,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
   }
 
-  public deactivate(entity: T,ignoreEvent: boolean = false): this {
+  public deactivate(entity: T, ignoreEvent: boolean = false): this {
     //if nothing to remove
     if (!this.checkExistence(entity)) return this;
     const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);

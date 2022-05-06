@@ -5,11 +5,12 @@ import Effect from "@/Effects/Effect";
 import {IAnySKillListenerArgs} from "@/Skills/SkillsListeners";
 import {Constructor} from "@/Helpers/Constructor";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
+//@RefreshableClass
 export default abstract class Entity<T extends IWithOngoingEffects = IWithOngoingEffects> implements IWithOngoingEffects {
-  public get name() {
-    return this.constructor.name;
-  }
+  public abstract title: string;
 
   public ongoingEffects: Effect<T>[] = [];
   public onAnyEffectStarted: Listener<IAnySKillListenerArgs<T>> = new Listener();

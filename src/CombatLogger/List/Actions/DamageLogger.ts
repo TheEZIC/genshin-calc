@@ -18,12 +18,12 @@ export default class DamageLogger extends LoggerItem<IDamageLoggerItem, ProxyEve
     const {skill, character, value, comment, elementalStatus} = args.args;
 
     return {
-      message: `Skill ${skill.name} do ${value} damage`,
+      message: `Skill ${skill.title} do ${value} damage`,
       startFrame,
       comment,
       elementalStatus: `${elementalStatus?.name} ${elementalStatus?.units}U`,
-      characterName: character.name,
-      skillName: skill.name,
+      characterName: character.title,
+      skillName: skill.title,
     };
   }
 }

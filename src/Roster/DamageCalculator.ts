@@ -3,8 +3,8 @@ import Roster from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
 import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import EnergyManager from "@/Roster/EnergyManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
+import RefreshManager from "@/Refresher/RefreshManager";
 
 export interface ICalcResult {
   damage: number;
@@ -27,6 +27,7 @@ export default class DamageCalculator {
   public static get instance() {
     if (!this._instance) {
       this._instance = new this();
+      SingletonsManager.addSingleton(this._instance);
     }
 
     return this._instance;
@@ -126,7 +127,7 @@ export default class DamageCalculator {
 
     for (let i = 0; i < rotationSkills.length; i++) {
       const rotationSkill = rotationSkills[i];
-      const skillItem = this.roster?.charactersSkills.find((s) => s.skill.name === rotationSkill.name);
+      const skillItem = this.roster?.charactersSkills.find((s) => s.skill.title === rotationSkill.title);
 
       if (!skillItem) continue;
       const {character, skill} = skillItem;
@@ -135,7 +136,7 @@ export default class DamageCalculator {
         continue;
       }
 
-      const hash = skill.name + i;
+      const hash = skill.title + i;
       const behavior = {hash, character};
       const dmgArgs = {
         character,
@@ -150,11 +151,11 @@ export default class DamageCalculator {
 
       logger.push({
         stage: "before",
-        name: skill.name,
+        name: skill.title,
         rotationDamage: this.rotationDamage,
         currentFrames: this.currentFrames,
         buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.skill.name),
+        parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
       })
 
       if (skill instanceof NormalSkill) {
@@ -167,11 +168,11 @@ export default class DamageCalculator {
 
       logger.push({
         stage: "after",
-        name: skill.name,
+        name: skill.title,
         rotationDamage: this.rotationDamage,
         currentFrames: this.currentFrames,
         buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.skill.name),
+        parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
       });
     }
 
@@ -190,7 +191,10 @@ export default class DamageCalculator {
     console.table(logger);
     console.log(this.rotationDamage, this.currentFrames);
 
-    this.resetAll();
+    SingletonsManager.resetAll();
+    RefreshManager.refreshAll();
+
+    this.afterCalc();
 
     return result;
   }
@@ -202,7 +206,7 @@ export default class DamageCalculator {
       this.runDelayedActions();
 
       for (let s of this.ongoingSkills) {
-        const skillItem = this.roster!!.charactersSkills.find((a) => a.skill.name === s.skill.name);
+        const skillItem = this.roster!!.charactersSkills.find((a) => a.skill.title === s.skill.title);
         if (skillItem) {
           const dmgArgs = {
             character: s.character,
@@ -227,19 +231,25 @@ export default class DamageCalculator {
     }
   }
 
+  public afterCalc() {
+    for (let entity of this.roster.entities) {
+      for (let effect of entity.ongoingEffects) {
+        effect.deactivate(entity);
+      }
+    }
+
+    for (let character of this.roster.characters) {
+      for (let effect of character.ongoingEffects) {
+        effect.deactivate(character);
+      }
+    }
+  }
+
   public reset() {
     this.rotationDamage = 0;
     this.currentFrames = 0;
     this.rotationSkills = [];
     this.ongoingSkills = [];
     this.currentSkillIndex = 0;
-  }
-
-  private resetAll() {
-    Roster.instance.reset();
-    GlobalListeners.instance.reset();
-    ElementalReactionManager.instance.reset();
-    EnergyManager.instance.reset();
-    DamageCalculator.instance.reset();
   }
 }

@@ -2,6 +2,7 @@ import Roster from "@/Roster/Roster";
 import Character from "@/Entities/Characters/Character";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
 import {VisionType} from "@/VisionType";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 export interface IEnergyParticles {
   type: VisionType | null;
@@ -15,6 +16,7 @@ export default class EnergyManager {
   public static get instance() {
     if (!this._instance) {
       this._instance = new this();
+      SingletonsManager.addSingleton(this._instance);
     }
 
     return this._instance;

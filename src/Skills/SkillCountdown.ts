@@ -1,6 +1,9 @@
 import Skill from "@/Skills/Skill";
 import DamageCalculator from "@/Roster/DamageCalculator";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
+@RefreshableClass
 export default class SkillCountdown {
   constructor(
     private skill: Skill,
@@ -9,9 +12,11 @@ export default class SkillCountdown {
 
   private damageCalculator: DamageCalculator = DamageCalculator.instance;
 
+  @RefreshableProperty()
   private _isOnCountdown: boolean = false;
-  public countdownFrames: number = 0;
 
+  @RefreshableProperty()
+  public countdownFrames: number = 0;
 
   public reduceCountdown(frames: number) {
     this.countdownFrames -= frames;

@@ -12,7 +12,10 @@ import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import {SkillType} from "@/Skills/SkillType";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import Entity from "@/Entities/Entity";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
+@RefreshableClass
 export default abstract class Character extends Entity implements IWithOngoingEffects {
   public abstract vision: VisionType;
 
@@ -30,6 +33,7 @@ export default abstract class Character extends Entity implements IWithOngoingEf
 
   public calculatorStats = new CalculatorStats(this);
 
+  @RefreshableProperty()
   private _currentEnergy: number = 90;
 
   public get energy() {
