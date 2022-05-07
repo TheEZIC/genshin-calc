@@ -49,7 +49,7 @@ export default class Roster {
     const index = this._entities.findIndex(e => e.title === entity.title);
 
     if (index !== -1) {
-      this._entities.slice(index);
+      this._entities = this._entities.filter((e, i) => i !== index);
     }
   }
 

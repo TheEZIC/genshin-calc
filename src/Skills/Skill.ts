@@ -94,6 +94,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   }
 
   public doDamage(args: ISkillDamageArgs, comment: string = "") {
+    const frame = DamageCalculator.instance.currentFrame;
     let dmg: number = this.hit(args);
 
     this.globalListeners.onDamage.notifyAll({

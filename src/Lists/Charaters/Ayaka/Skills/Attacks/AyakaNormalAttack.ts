@@ -18,7 +18,6 @@ export default abstract class AyakaNormalAttack extends NormalSkill {
     if (this.currentFrame === 1) {
       const {character} = args;
       const atk = character.calculatorStats.ATK.calc();
-      console.log(character.calculatorStats.ATK.additionalValues, "normal atk")
       const dmg = this.value.getDamage(this.lvl.current) * atk;
       this.doDamage({
         ...args,

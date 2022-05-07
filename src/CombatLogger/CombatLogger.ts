@@ -6,9 +6,9 @@ import SkillEndedLogger from "@/CombatLogger/List/SkillEndedLogger";
 import DamageLogger from "@/CombatLogger/List/Actions/DamageLogger";
 import HealLogger from "@/CombatLogger/List/Actions/HealLogger";
 import CreateShieldLogger from "@/CombatLogger/List/Actions/CreateShieldLogger";
-import EffectStartedLogger from "@/CombatLogger/List/EffectStartedLogger";
-import EffectEndedLogger from "@/CombatLogger/List/EffectEndedLogger";
-import EffectReactivateLogger from "@/CombatLogger/List/EffectReactivateLogger";
+import EffectStartedLogger from "@/CombatLogger/List/Effects/EffectStartedLogger";
+import EffectEndedLogger from "@/CombatLogger/List/Effects/EffectEndedLogger";
+import EffectReactivateLogger from "@/CombatLogger/List/Effects/EffectReactivateLogger";
 import VaporizeReactionLogger from "@/CombatLogger/List/Reactions/VaporizeReactionLogger";
 import ReverseVaporizeReactionLogger from "@/CombatLogger/List/Reactions/ReverseVaporizeReactionLogger";
 import MeltReactionLogger from "@/CombatLogger/List/Reactions/MeltReactionLogger";
@@ -30,6 +30,9 @@ import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
+import * as fs from "fs";
+import {isNode} from "@/Helpers/Envirement";
+import EffectRefillLogger from "@/CombatLogger/List/Effects/EffectRefillLogger";
 
 interface ICombatLogItem {
   type: LoggerItemType,
@@ -81,6 +84,7 @@ export default class CombatLogger {
     new SkillEndedLogger(this),
 
     new EffectStartedLogger(this),
+    new EffectRefillLogger(this),
     new EffectReactivateLogger(this),
     new EffectEndedLogger(this),
 
@@ -111,10 +115,12 @@ export default class CombatLogger {
   private subscribeEffectEvents() {
     const startedLogger = this.getLoggerByType<EffectStartedLogger>(LoggerItemType.EffectStarted);
     const reactivateLogger = this.getLoggerByType<EffectReactivateLogger>(LoggerItemType.EffectReactivate);
+    const refillLogger = this.getLoggerByType<EffectReactivateLogger>(LoggerItemType.EffectRefill);
     const endedLogger = this.getLoggerByType<EffectEndedLogger>(LoggerItemType.EffectEnded);
 
     this.globalListeners.onEffectStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
     this.globalListeners.onEffectReactivate.subscribeWithProxy(reactivateLogger.log.bind(reactivateLogger));
+    this.globalListeners.onEffectRefill.subscribeWithProxy(refillLogger.log.bind(refillLogger));
     this.globalListeners.onEffectEnded.subscribeWithProxy(endedLogger.log.bind(endedLogger));
   }
 
@@ -160,5 +166,23 @@ export default class CombatLogger {
       .subscribeWithProxy(crystallizeLogger.log.bind(crystallizeLogger));
     this.reactionManager.getReaction(SwirlReaction)?.onExecuteListener
       .subscribeWithProxy(swirlLogger.log.bind(swirlLogger));
+  }
+
+  public save(): void {
+    if (isNode) {
+      const content = JSON.stringify(this._logs, null, 2);
+
+      if (!fs.existsSync("./logs")) {
+        fs.mkdirSync("./logs");
+      }
+
+      const date = new Date();
+      const dateFull = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
+      const dateTime = `${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}.${date.getMilliseconds()}`;
+
+      const fileName = `log [${dateFull} ${dateTime}]`;
+
+      fs.writeFileSync(`./logs/${fileName}.json`, content);
+    }
   }
 }

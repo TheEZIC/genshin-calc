@@ -1,6 +1,8 @@
 import Effect from "@/Effects/Effect";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import ElementalReaction from "@/ElementalReactions/ElementalReaction";
+import GlobalListeners from "@/Roster/GlobalListeners";
+import Entity from "@/Entities/Entity";
 
 export default abstract class ElementalStatus extends Effect<IWithOngoingEffects> {
   protected _units: number;
@@ -44,8 +46,9 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
     this.currentFrame += Math.round(additionalFrames);
   }
 
-  public refill(element: ElementalStatus) {
+  public refill(element: ElementalStatus, entity: Entity) {
     this.changeFramesDuration(element.units * this.unitCapacity);
+    GlobalListeners.instance.onEffectRefill.notifyAll({effect: this, entity});
   }
 
   public get unitCapacity(): number {

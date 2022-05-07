@@ -22,14 +22,11 @@ export default class StatController {
   ) {
   }
 
-  @RefreshableProperty([])
+  @RefreshableProperty()
   protected values: IStatControllerItem[] = [];
 
   public add(statValue: StatValue, tense: StatTense = StatTense.Present): this {
-    if (statValue.value !== 0) {
-      console.log(statValue.value, "stat value");
-    }
-
+    if (statValue.value === 0) return this;
     this.values.push({stat: statValue, tense});
     this.stat.onChange.notifyAll(this.stat.calc());
     return this;

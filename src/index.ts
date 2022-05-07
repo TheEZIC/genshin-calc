@@ -27,7 +27,11 @@ import AyakaHoldAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaHoldAtt
 import Enemy from "@/Entities/Enemies/Enemy";
 import XianglingElemental from "@/Lists/Charaters/Xiangling/Skills/XianglingElemental";
 import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
-import {CombatLoggerEffectsCollection, CombatLoggerReactionsCollection} from "@/CombatLogger/LoggerItemTypeCollections";
+import {
+  CombatLoggerActionsCollection,
+  CombatLoggerEffectsCollection,
+  CombatLoggerReactionsCollection, CombatLoggerSkillsCollection
+} from "@/CombatLogger/LoggerItemTypeCollections";
 import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
 import EnergyManager from "@/Roster/EnergyManager";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
@@ -113,16 +117,24 @@ class GenshinCalculator {
         new AyakaDash(),
       ]);
 
+      const logs = this.combatLogger.getFilteredLogs([
+        ...CombatLoggerEffectsCollection,
+        ...CombatLoggerSkillsCollection,
+        ...CombatLoggerActionsCollection,
+        ...CombatLoggerReactionsCollection,
+      ]);
+
+      this.combatLogger.save();
       this.combatLogger.clear();
       console.log(dmg);
     }
 
     rotation();
     rotation();
-    rotation();
-    rotation();
-    rotation();
-    rotation();
+    // rotation();
+    // rotation();
+    // rotation();
+    // rotation();
 
     this.roster.clearCharacters();
   }

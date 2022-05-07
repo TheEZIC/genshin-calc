@@ -176,10 +176,11 @@ export default class DamageCalculator {
       });
     }
 
-    const framesRemaining = Math.max(...this.ongoingSkills.map(s => s.skill.frames - s.skill.behavior.currentFrame));
+    let framesRemaining = this.getRemainingFrames();
 
-    if (framesRemaining > 0) {
-      this.skip(framesRemaining);
+    while (framesRemaining > 0) {
+        this.skip(framesRemaining);
+        framesRemaining = this.getRemainingFrames();
     }
 
     const result = {
@@ -191,12 +192,34 @@ export default class DamageCalculator {
     console.table(logger);
     console.log(this.rotationDamage, this.currentFrames);
 
-    SingletonsManager.resetAll();
     RefreshManager.refreshAll();
-
-    this.afterCalc();
+    SingletonsManager.resetAll();
 
     return result;
+  }
+
+  private getRemainingFrames(): number {
+    const skillsFramesRemaining = Math.max(
+      ...this.ongoingSkills.map(
+        s => s.skill.frames - s.skill.behavior.currentFrame
+      )
+    );
+    const characterOngoingEffectsRemaining = Math.max(
+      ...this.roster.characters.map(
+        c => c.ongoingEffects.map(e => e.framesDuration - e.currentFrame)
+      ).flat(2)
+    );
+    const entitiesOngoingEffectsRemaining = Math.max(
+      ...this.roster.entities.map(
+        c => c.ongoingEffects.map(e => e.framesDuration - e.currentFrame)
+      ).flat(2)
+    );
+
+    return Math.max(
+      skillsFramesRemaining,
+      characterOngoingEffectsRemaining,
+      entitiesOngoingEffectsRemaining
+    );
   }
 
   public skip(frames: number) {
@@ -221,26 +244,12 @@ export default class DamageCalculator {
         }
       }
 
-      for (let character of this.roster!!.characters) {
+      for (let character of this.roster.characters) {
         character.ongoingEffects.forEach(e => e.update(character));
       }
 
-      for (let entity of this.roster!!.enemies) {
+      for (let entity of this.roster.entities) {
         entity.ongoingEffects.forEach(e => e.update(entity));
-      }
-    }
-  }
-
-  public afterCalc() {
-    for (let entity of this.roster.entities) {
-      for (let effect of entity.ongoingEffects) {
-        effect.deactivate(entity);
-      }
-    }
-
-    for (let character of this.roster.characters) {
-      for (let effect of character.ongoingEffects) {
-        effect.deactivate(character);
       }
     }
   }
@@ -248,6 +257,7 @@ export default class DamageCalculator {
   public reset() {
     this.rotationDamage = 0;
     this.currentFrames = 0;
+    this._delayedActions = [];
     this.rotationSkills = [];
     this.ongoingSkills = [];
     this.currentSkillIndex = 0;

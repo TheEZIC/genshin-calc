@@ -9,7 +9,10 @@ import SkillValue from "@/Skills/SkillValue";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
+@RefreshableClass
 export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   public skillName: string = "Pyronado";
 
@@ -25,8 +28,8 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
   public energyConsumed: number = 80;
   public energyCost: number = 80;
-
   private currentHit = 0;
+
   private hitsFrames = [34, 50, 75];
 
   private pyronadoTickValue: SkillValue = new SkillValue(112, 120.4 - 112);
@@ -54,6 +57,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
   override onStart(args: ISkillBehaviorArgs) {
     this.ICD = new ICD(3, 2.5);
+    this.currentHit = 0;
   }
 
   onAction(args: ISkillActionArgs): void {

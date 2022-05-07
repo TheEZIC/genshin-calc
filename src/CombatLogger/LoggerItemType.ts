@@ -4,6 +4,7 @@ export enum LoggerItemType {
 
   EffectStarted,
   EffectReactivate,
+  EffectRefill,
   EffectEnded,
 
   DoDamage,

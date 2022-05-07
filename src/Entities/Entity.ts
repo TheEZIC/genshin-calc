@@ -8,7 +8,6 @@ import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
-//@RefreshableClass
 export default abstract class Entity<T extends IWithOngoingEffects = IWithOngoingEffects> implements IWithOngoingEffects {
   public abstract title: string;
 

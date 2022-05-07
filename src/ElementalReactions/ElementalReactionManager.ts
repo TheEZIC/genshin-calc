@@ -222,7 +222,7 @@ export default class ElementalReactionManager {
       enemyStatus.name === skillStatus.name
       && skillStatus.units > enemyStatus.units
     ) {
-      enemyStatus.refill(skillStatus);
+      enemyStatus.refill(skillStatus, entity);
       return true;
     }
 
@@ -255,6 +255,5 @@ export default class ElementalReactionManager {
   }
 
   public reset() {
-    this.elementalCombinations = this.initCombinations();
   }
 }

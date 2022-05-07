@@ -1,9 +1,14 @@
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+
 export interface ISnapshotItem<T> {
   hash: string;
   value: T;
 }
 
+@RefreshableClass
 export default class Snapshot<T> {
+  @RefreshableProperty()
   private _items: ISnapshotItem<T>[] = [];
 
   public add(item: ISnapshotItem<T>): void {

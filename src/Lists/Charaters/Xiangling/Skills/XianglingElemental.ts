@@ -39,6 +39,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
   private gouba = new GoubaEntity();
 
   override onStart(args: ISkillBehaviorArgs) {
+    this.gouba = new GoubaEntity();
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
     this.countdown.startCountdown();
 

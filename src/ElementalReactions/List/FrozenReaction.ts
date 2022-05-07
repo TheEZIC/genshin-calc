@@ -6,12 +6,15 @@ import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import Entity from "@/Entities/Entity";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import GlobalListeners from "@/Roster/GlobalListeners";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
 interface IFrozenHistoryItem {
   entity: Entity;
   frame: number;
 }
 
+@RefreshableClass
 export default class FrozenReaction extends ElementalReaction {
   private damageCalculator: DamageCalculator = DamageCalculator.instance;
   private globalListeners: GlobalListeners = GlobalListeners.instance;
@@ -24,6 +27,7 @@ export default class FrozenReaction extends ElementalReaction {
   public triggerMultiplier: number = 1.25;
 
   //TODO: move history to reaction manager
+  @RefreshableProperty()
   private _history: IFrozenHistoryItem[] = [];
 
   private addHistoryFrame(entity: Entity) {
