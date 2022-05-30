@@ -17,7 +17,7 @@ export default abstract class TransformativeElementalReaction extends ElementalR
   // }
 
   public calcLvlMultiplier(character: Character): number {
-    const {lvl} = character.baseStats;
+    const {lvl} = character;
     return this.multipliers[lvl - 1];
   }
 

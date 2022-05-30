@@ -6,6 +6,8 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import MeltReaction from "@/ElementalReactions/List/MeltReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Melt";
 
@@ -16,6 +18,11 @@ describe(`${reactionName}Reaction`, () => {
   beforeEach(() => {
     character = new Ayaka();
     entity = new Enemy();
+  });
+
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   let manager: ElementalReactionManager = ElementalReactionManager.instance;

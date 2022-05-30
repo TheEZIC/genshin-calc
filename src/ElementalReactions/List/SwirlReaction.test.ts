@@ -10,6 +10,8 @@ import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Swirl";
 
@@ -36,12 +38,17 @@ describe(`${reactionName}Reaction`, () => {
     roster.addEnemy(entity2);
   });
 
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
+  });
+
   roster.addCharacter(character);
 
   test(`Expect ${reactionName} dmg`, () => {
     let elementalStatus = new AnemoStatus(4);
     let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
-    character.baseStats.applyLvl(40);
+    character.applyLvl(40);
     let expectedDmg = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
 
     expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(expectedDmg);
@@ -51,7 +58,7 @@ describe(`${reactionName}Reaction`, () => {
     let elementalStatus = new AnemoStatus(1);
     let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
 
-    character.baseStats.applyLvl(40);
+    character.applyLvl(40);
     const dmgWithoutMS = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
 

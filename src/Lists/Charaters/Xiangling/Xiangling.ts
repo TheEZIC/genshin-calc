@@ -10,8 +10,8 @@ import XianglingBurst from "@/Lists/Charaters/Xiangling/Skills/XianglingBurst";
 export default class Xiangling extends Character {
   public title: string = "Xiangling";
 
-  vision: VisionType = VisionType.Pyro;
-  baseStats: CharacterBaseStats = new XianglingBaseStats(this);
+  public vision: VisionType = VisionType.Pyro;
+  public baseStats: CharacterBaseStats = new XianglingBaseStats(this);
 
   skillManager: SkillsManager = new SkillsManager(this, [
     new XianglingElemental(),

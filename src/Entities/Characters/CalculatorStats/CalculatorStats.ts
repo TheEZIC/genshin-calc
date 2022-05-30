@@ -26,6 +26,7 @@ import PyroResistanceStat from "./List/PyroResistanceStat";
 import MainStat from "./Types/MainStat";
 import {VisionType} from "@/VisionType";
 import ReactionDmgBonusStat from "@/Entities/Characters/CalculatorStats/ReactionDmgBonusStat";
+import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
 
 export default class CalculatorStats {
   constructor(public character: Character) {}
@@ -66,6 +67,17 @@ export default class CalculatorStats {
   public readonly superConductChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
   public readonly swirlChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
   public readonly crystallizeChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+
+  public notifyAll() {
+    Object.entries(this).map(([key, value]) => {
+      const isStat = value instanceof Stat;
+
+      if (isStat) {
+        const stat = value as Stat;
+        stat.onChange.notifyAll(stat.calc());
+      }
+    });
+  }
 
   public getElementalDmgBonus(visionType: VisionType): number {
     switch (visionType) {

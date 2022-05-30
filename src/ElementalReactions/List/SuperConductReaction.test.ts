@@ -5,6 +5,8 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "SuperConduct";
 
@@ -15,6 +17,11 @@ describe(`${reactionName}Reaction`, () => {
   beforeEach(() => {
     character = new Ayaka();
     entity = new Enemy();
+  });
+
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   let manager: ElementalReactionManager = ElementalReactionManager.instance;

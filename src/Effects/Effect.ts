@@ -48,7 +48,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   public activate(entity: T, ignoreEvent: boolean = false): this {
     this.isStarted = true;
     this.endStrategy.onStart();
-    entity.ongoingEffects.push(this);
+    entity.ongoingEffects.push(this.clone);
 
     if (!ignoreEvent) {
       entity.onAnyEffectStarted.notifyAll({effect: this, entity});

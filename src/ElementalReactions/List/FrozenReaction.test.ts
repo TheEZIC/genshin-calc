@@ -9,13 +9,15 @@ import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import Roster from "@/Roster/Roster";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Frozen";
 
 describe(`${reactionName}Reaction`, () => {
-  afterAll(() => {
-    // container.rebind(ContainerBindings.Roster);
-    // container.rebind(ContainerBindings.DamageCalculator);
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   let character = new Ayaka();

@@ -5,10 +5,17 @@ import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Crystallize";
 
 describe(`${reactionName}Reaction`, () => {
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
+  });
+
   let manager: ElementalReactionManager = ElementalReactionManager.instance;
 
   let character = new Ayaka();

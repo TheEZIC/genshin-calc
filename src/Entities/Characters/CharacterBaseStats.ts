@@ -2,6 +2,7 @@ import BaseStat from "@/BaseStats/BaseStat";
 
 import Character from "./Character";
 import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
+import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
 
 export default abstract class CharacterBaseStats {
   constructor(private character: Character) {}
@@ -87,6 +88,13 @@ export default abstract class CharacterBaseStats {
       this.character.talent2?.deactivate();
     }
 
+    this.applyLvlToAllBaseStats(lvl);
+    this.character.calculatorStats.notifyAll();
+
+    return this;
+  }
+
+  private applyLvlToAllBaseStats(lvl: number) {
     Object.entries(this).map(([key, value]) => {
       const isStat = value instanceof BaseStat;
 
@@ -95,8 +103,6 @@ export default abstract class CharacterBaseStats {
         stat.applyLvl(lvl);
       }
     });
-
-    return this;
   }
 
   /**

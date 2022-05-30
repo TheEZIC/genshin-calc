@@ -19,14 +19,18 @@ export default class CharacterAscendableBaseStat extends BaseStat {
   public override applyLvl(lvl: number) {
     if (lvl < 1 || !this.ascendGain) return;
 
+    let tempValue = this.firstLvlValue;
+
     for (let i = 1; i <= this.maxLvl; i++) {
       const shouldAdd = this.shouldAdd(i);
 
       if (shouldAdd) {
-        this.currentValue += this.ascendGain;
+        tempValue += this.ascendGain;
       }
 
       if (i === lvl) break;
     }
+
+    this.currentValue = tempValue;
   }
 }

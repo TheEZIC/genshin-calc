@@ -89,7 +89,7 @@ class GenshinCalculator {
     //   .add(circlet)
     //   .add(flower);
 
-    ayaka.baseStats.applyLvl(90);
+    ayaka.applyLvl(90);
     //ayaka.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
     ayaka.weaponManager.changeRefinement(1);
 
@@ -99,21 +99,22 @@ class GenshinCalculator {
     ayaka.skillManager.changeLvl(10, SkillType.HoldAttack);
     ayaka.skillManager.changeLvl(10, SkillType.Burst);
 
-    xiangling.baseStats.applyLvl(90);
+    xiangling.applyLvl(90);
     //xiangling.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
     xiangling.skillManager.changeLvl(10, SkillType.Burst);
 
     this.roster.addEnemy(new Enemy());
+    this.roster.addEnemy(new Enemy());
 
     const rotation = () => {
       const dmg = this.damageCalculator.calcRotation([
-        new AyakaBurst(),
-        new AyakaElemental(),
-        new XianglingBurst(),
-        new XianglingElemental(),
-        new AyakaA1(),
-        new AyakaA2(),
-        new AyakaHoldAttack(),
+        // new AyakaBurst(),
+        // new AyakaElemental(),
+        // new XianglingBurst(),
+        // new XianglingElemental(),
+        // new AyakaA1(),
+        // new AyakaA2(),
+        // new AyakaHoldAttack(),
         new AyakaDash(),
       ]);
 

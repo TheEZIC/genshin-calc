@@ -44,6 +44,14 @@ export default abstract class Character extends Entity implements IWithOngoingEf
     this._currentEnergy = energy;
   }
 
+  public get lvl() {
+    return this.baseStats.lvl;
+  }
+
+  public applyLvl(lvl: number)  {
+    this.baseStats.applyLvl(lvl);
+  }
+
   public addEnergy(energy: number): void {
     this.energy += energy;
     const burst = this.skillManager.getSkillByType(SkillType.Burst) as unknown as IBurstSkill;

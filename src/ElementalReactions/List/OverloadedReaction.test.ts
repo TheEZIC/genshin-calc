@@ -6,6 +6,8 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 import OverloadedReaction from "@/ElementalReactions/List/OverloadedReaction";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Overloaded";
 
@@ -16,6 +18,11 @@ describe(`${reactionName}Reaction`, () => {
   beforeEach(() => {
     character = new Ayaka();
     entity = new Enemy();
+  });
+
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   let manager: ElementalReactionManager = ElementalReactionManager.instance;
@@ -30,14 +37,14 @@ describe(`${reactionName}Reaction`, () => {
   test(`Expect ${reactionName} dmg with character lvl`, () => {
     let elementalStatus = new ElectroStatus(1);
     let reactionArgs = {character, entity, elementalStatus, damage: 1000};
-    character.baseStats.applyLvl(5);
+    character.applyLvl(5);
     expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(90.5815963745116);
   });
 
   test(`Expect ${reactionName} dmg with MS`, () => {
     let elementalStatus = new ElectroStatus(2);
     let reactionArgs = {character, entity, elementalStatus, damage: 1000};
-    character.baseStats.applyLvl(5);
+    character.applyLvl(5);
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
     expect(reaction.applyBonusDamage(reactionArgs)).toBeGreaterThan(90.5815963745116);
   });

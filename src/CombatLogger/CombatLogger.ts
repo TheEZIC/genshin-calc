@@ -30,7 +30,6 @@ import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
-import * as fs from "fs";
 import {isNode} from "@/Helpers/Envirement";
 import EffectRefillLogger from "@/CombatLogger/List/Effects/EffectRefillLogger";
 
@@ -168,21 +167,22 @@ export default class CombatLogger {
       .subscribeWithProxy(swirlLogger.log.bind(swirlLogger));
   }
 
-  public save(): void {
-    if (isNode) {
-      const content = JSON.stringify(this._logs, null, 2);
-
-      if (!fs.existsSync("./logs")) {
-        fs.mkdirSync("./logs");
-      }
-
-      const date = new Date();
-      const dateFull = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
-      const dateTime = `${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}.${date.getMilliseconds()}`;
-
-      const fileName = `log [${dateFull} ${dateTime}]`;
-
-      fs.writeFileSync(`./logs/${fileName}.json`, content);
-    }
+  public async save(): Promise<void> {
+    // if (isNode) {
+    //   const fs = await import(isNode ? "fs" : "");
+    //   const content = JSON.stringify(this._logs, null, 2);
+    //
+    //   if (!fs.existsSync("./logs")) {
+    //     fs.mkdirSync("./logs");
+    //   }
+    //
+    //   const date = new Date();
+    //   const dateFull = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
+    //   const dateTime = `${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}.${date.getMilliseconds()}`;
+    //
+    //   const fileName = `log [${dateFull} ${dateTime}]`;
+    //
+    //   fs.writeFileSync(`./logs/${fileName}.json`, content);
+    // }
   }
 }

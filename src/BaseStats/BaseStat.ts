@@ -47,19 +47,24 @@ export default class BaseStat {
   public applyLvl(lvl: number) {
     if (lvl < 1) return;
 
+    let tempValue = this.ascensions.at(0)?.min ?? 0;
+
     for (let i = 1; i <= this.maxLvl; i++) {
       const index = this.getCurrentAscensionIndex(i);
       const ascension = this.ascensions.at(index);
 
       if (!ascension) continue;
 
-      this.currentValue += ascension.gain;
+      //TODO: fix lvl applying
+      tempValue += ascension.gain;
 
       if (ascension.atLvl === i - 1) {
-        this.currentValue += ascension.ascendBonus;
+        tempValue += ascension.ascendBonus;
       }
 
       if (i === lvl) break;
     }
+
+    this.currentValue = tempValue;
   }
 }

@@ -8,13 +8,15 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "ElectroCharged";
 
 describe(`${reactionName}Reaction`, () => {
-  afterAll(() => {
-    // container.rebind(ContainerBindings.Roster);
-    // container.rebind(ContainerBindings.DamageCalculator);
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   let roster: Roster = Roster.instance;
@@ -31,14 +33,14 @@ describe(`${reactionName}Reaction`, () => {
   roster.addEnemy(entity);
 
   test(`Expect ${reactionName} dmg`, () => {
-    character.baseStats.applyLvl(40);
+    character.applyLvl(40);
     let expectedDmg = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
 
     expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(expectedDmg);
   });
 
   test(`Expect ${reactionName} dmg with MS`, () => {
-    character.baseStats.applyLvl(40);
+    character.applyLvl(40);
     const dmgWithoutMS = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
     expect(reaction.applyBonusDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
