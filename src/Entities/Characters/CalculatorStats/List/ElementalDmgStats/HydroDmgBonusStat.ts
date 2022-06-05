@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class HydroDmgBonusStat extends PureStat {
+  public title: string = "HydroDmgBonus";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { hydroDmgBonus } = this.character.baseStats;
     const artifactsHydroPercent = this.getArtifactsValue(

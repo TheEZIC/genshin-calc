@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class GeoDmgBonusStat extends PureStat {
+  public title: string = "GeoDmgBonus";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { geoDmgBonus } = this.character.baseStats;
     const artifactsGeoPercent = this.getArtifactsValue(StatType.GeoDmgBonus);

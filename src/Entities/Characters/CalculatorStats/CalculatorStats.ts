@@ -1,32 +1,47 @@
 import Character from "@/Entities/Characters/Character";
 
-import AnemoDmgBonusStat from "./List/AnemoDmgBonusStat";
-import AnemoResistanceStat from "./List/AnemoResistanceStat";
-import AtkStat from "./List/AtkStat";
-import CritChanceStat from "./List/CritChanceStat";
-import CritDamageStat from "./List/CritDamageStat";
-import CryoDmgBonusStat from "./List/CryoDmgBonusStat";
-import CryoResistanceStat from "./List/CryoResistanceStat";
-import DefStat from "./List/DefStat";
-import DendroDmgBonusStat from "./List/DendroDmgBonusStat";
-import DendroResistanceStat from "./List/DendroResistanceStat";
-import ElectroDmgBonusStat from "./List/ElectroDmgBonusStat";
-import ElectroResistanceStat from "./List/ElectroResistanceStat";
+import AnemoDmgBonusStat from "./List/ElementalDmgStats/AnemoDmgBonusStat";
+import AnemoResistanceStat from "./List/ResistanceStats/AnemoResistanceStat";
+import AtkStat from "./List/MainStats/AtkStat";
+import CritChanceStat from "./List/CritStats/CritChanceStat";
+import CritDamageStat from "./List/CritStats/CritDamageStat";
+import CryoDmgBonusStat from "./List/ElementalDmgStats/CryoDmgBonusStat";
+import CryoResistanceStat from "./List/ResistanceStats/CryoResistanceStat";
+import DefStat from "./List/MainStats/DefStat";
+import DendroDmgBonusStat from "./List/ElementalDmgStats/DendroDmgBonusStat";
+import DendroResistanceStat from "./List/ResistanceStats/DendroResistanceStat";
+import ElectroDmgBonusStat from "./List/ElementalDmgStats/ElectroDmgBonusStat";
+import ElectroResistanceStat from "./List/ResistanceStats/ElectroResistanceStat";
 import ElementaryMasteryStat from "./List/ElementaryMasteryStat";
 import EnergyRechargeStat from "./List/EnergyRechargeStat";
-import GeoDmgBonusStat from "./List/GeoDmgBonusStat";
-import GeoResistanceStat from "./List/GeoResistanceStat";
-import HpStat from "./List/HpStat";
-import HydroDmgBonusStat from "./List/HydroDmgBonusStat";
-import HydroResistanceStat from "./List/HydroResistanceStat";
-import PhysicalDmgBonusStat from "./List/PhysicalDmgBonusStat";
-import PhysicalResistanceStat from "./List/PhysicalResistanceStat";
-import PyroDmgBonusStat from "./List/PyroDmgBonusStat";
-import PyroResistanceStat from "./List/PyroResistanceStat";
+import GeoDmgBonusStat from "./List/ElementalDmgStats/GeoDmgBonusStat";
+import GeoResistanceStat from "./List/ResistanceStats/GeoResistanceStat";
+import HpStat from "./List/MainStats/HpStat";
+import HydroDmgBonusStat from "./List/ElementalDmgStats/HydroDmgBonusStat";
+import HydroResistanceStat from "./List/ResistanceStats/HydroResistanceStat";
+import PhysicalDmgBonusStat from "./List/ElementalDmgStats/PhysicalDmgBonusStat";
+import PhysicalResistanceStat from "./List/ResistanceStats/PhysicalResistanceStat";
+import PyroDmgBonusStat from "./List/ElementalDmgStats/PyroDmgBonusStat";
+import PyroResistanceStat from "./List/ResistanceStats/PyroResistanceStat";
 import MainStat from "./Types/MainStat";
 import {VisionType} from "@/VisionType";
-import ReactionDmgBonusStat from "@/Entities/Characters/CalculatorStats/ReactionDmgBonusStat";
 import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
+import VaporizeReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/VaporizeReactionDmgBonusStat";
+import MeltReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/MeltReactionDmgBonusStat";
+import ElectroChargedReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/ElectroChargedReactionDmgBonusStat";
+import FrozenReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/FrozenReactionDmgBonusStat";
+import OverloadedReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/OverloadedReactionDmgBonusStat";
+import SuperConductReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/SuperConductReactionDmgBonusStat";
+import SwirlReactionDmgBonus
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/SwirlReactionDmgBonus";
+import CrystallizeReactionDmgBonusStat
+  from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/CrystallizeReactionDmgBonusStat";
 
 export default class CalculatorStats {
   constructor(public character: Character) {}
@@ -59,14 +74,61 @@ export default class CalculatorStats {
   public readonly cryoResistance = new CryoResistanceStat(this.character);
   public readonly geoResistance = new GeoResistanceStat(this.character);
 
-  public readonly vaporizeReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly meltReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly electroChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly frozenChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly overloadedChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly superConductChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly swirlChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
-  public readonly crystallizeChargedReactionDmgBonus = new ReactionDmgBonusStat(this.character);
+  public readonly vaporizeReactionDmgBonus = new VaporizeReactionDmgBonusStat(this.character);
+  public readonly meltReactionDmgBonus = new MeltReactionDmgBonusStat(this.character);
+  public readonly electroChargedReactionDmgBonus = new ElectroChargedReactionDmgBonusStat(this.character);
+  public readonly frozenReactionDmgBonus = new FrozenReactionDmgBonusStat(this.character);
+  public readonly overloadedReactionDmgBonus = new OverloadedReactionDmgBonusStat(this.character);
+  public readonly superConductReactionDmgBonus = new SuperConductReactionDmgBonusStat(this.character);
+  public readonly swirlReactionDmgBonus = new SwirlReactionDmgBonus(this.character);
+  public readonly crystallizeReactionDmgBonus = new CrystallizeReactionDmgBonusStat(this.character);
+
+  private _list: Stat[] = [
+    this.ATK,
+    this.HP,
+    this.DEF,
+
+    this.elementalMastery,
+    this.energyRecharge,
+
+    this.critChance,
+    this.critDamage,
+
+    this.physicalDmgBonus,
+    this.pyroDmgBonus,
+    this.hydroDmgBonus,
+    this.anemoDmgBonus,
+    this.electroDmgBonus,
+    this.dendroDmgBonus,
+    this.cryoDmgBonus,
+    this.geoDmgBonus,
+
+    this.physicalResistance,
+    this.pyroResistance,
+    this.hydroResistance,
+    this.anemoResistance,
+    this.electroResistance,
+    this.dendroResistance,
+    this.cryoResistance,
+    this.geoResistance,
+
+    this.vaporizeReactionDmgBonus,
+    this.meltReactionDmgBonus,
+    this.electroChargedReactionDmgBonus,
+    this.frozenReactionDmgBonus,
+    this.overloadedReactionDmgBonus,
+    this.superConductReactionDmgBonus,
+    this.swirlReactionDmgBonus,
+    this.crystallizeReactionDmgBonus,
+  ];
+
+  public get list() {
+    return this._list;
+  }
+
+  public findByName(name: string) {
+    this._list.find(stat => stat.title === name);
+  }
 
   public notifyAll() {
     Object.entries(this).map(([key, value]) => {

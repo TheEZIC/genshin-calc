@@ -3,6 +3,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class CryoResistanceStat extends PureStat {
+  public title: string = "CryoResistance";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { cryoResistance } = this.character.baseStats;
 

@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class HpStat extends MainStat {
+  public title: string = "Hp";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { baseHP, percentHP } = this.character.baseStats;
     const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);

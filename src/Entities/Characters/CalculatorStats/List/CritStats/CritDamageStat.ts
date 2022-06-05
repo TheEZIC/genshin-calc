@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class CritDamageStat extends CritStat {
+  public title: string = "CritDamage";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { critDamage } = this.character.baseStats;
     const artifactsCritDamage = this.getArtifactsValue(StatType.CritDamage);

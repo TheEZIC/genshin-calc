@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class AtkStat extends MainStat {
+  public title: string = "AtkStat";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { baseATK, percentATK } = this.character.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);

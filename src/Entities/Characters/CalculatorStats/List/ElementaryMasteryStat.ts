@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class ElementaryMasteryStat extends PureStat {
+  public title: string = "ElementaryMastery";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { elementalMastery } = this.character.baseStats;
     const artifactsElementalMastery = this.getArtifactsValue(

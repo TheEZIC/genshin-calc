@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class DendroDmgBonusStat extends PureStat {
+  public title: string = "DendroDmgBonus";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { dendroDmgBonus } = this.character.baseStats;
     const artifactsDendroPercent = this.getArtifactsValue(

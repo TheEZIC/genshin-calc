@@ -7,7 +7,7 @@ import Listener from "@/Helpers/Listener";
 export default abstract class Stat {
   constructor(protected character: Character) {}
 
-  public onChange: Listener<number> = new Listener<number>();
+  public abstract title: string;
 
   /**
    * Calc this stat value
@@ -15,6 +15,8 @@ export default abstract class Stat {
    * */
   public abstract calc(skillFilter?: SkillType, tenses?: StatTense[]): number;
   public abstract calcPure(): number;
+
+  public onChange: Listener<number> = new Listener<number>();
 
   /**
    * Clear this stat

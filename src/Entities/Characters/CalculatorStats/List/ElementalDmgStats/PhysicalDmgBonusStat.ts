@@ -4,6 +4,8 @@ import { SkillType } from "@/Skills/SkillType";
 import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
 
 export default class PhysicalDmgBonusStat extends PureStat {
+  public title: string = "PhysicalDmgBonus";
+
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
     const { physicalDmgBonus } = this.character.baseStats;
     const artifactsPhysicalPercent = this.getArtifactsValue(
