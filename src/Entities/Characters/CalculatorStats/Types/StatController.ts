@@ -22,7 +22,7 @@ export default class StatController {
   ) {
   }
 
-  @RefreshableProperty()
+  @RefreshableProperty([])
   protected values: IStatControllerItem[] = [];
 
   public add(statValue: StatValue, tense: StatTense = StatTense.Present): this {

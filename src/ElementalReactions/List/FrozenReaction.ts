@@ -27,7 +27,7 @@ export default class FrozenReaction extends ElementalReaction {
   public triggerMultiplier: number = 1.25;
 
   //TODO: move history to reaction manager
-  @RefreshableProperty()
+  @RefreshableProperty([])
   private _history: IFrozenHistoryItem[] = [];
 
   private addHistoryFrame(entity: Entity) {

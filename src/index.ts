@@ -116,6 +116,7 @@ class GenshinCalculator {
         // new AyakaA2(),
         // new AyakaHoldAttack(),
         new AyakaDash(),
+        new AyakaA1(),
       ]);
 
       const logs = this.combatLogger.getFilteredLogs([
@@ -132,10 +133,10 @@ class GenshinCalculator {
 
     rotation();
     rotation();
-    // rotation();
-    // rotation();
-    // rotation();
-    // rotation();
+    rotation();
+    rotation();
+    rotation();
+    rotation();
 
     this.roster.clearCharacters();
   }

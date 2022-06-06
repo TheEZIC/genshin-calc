@@ -8,7 +8,7 @@ export interface ISnapshotItem<T> {
 
 @RefreshableClass
 export default class Snapshot<T> {
-  @RefreshableProperty()
+  @RefreshableProperty([])
   private _items: ISnapshotItem<T>[] = [];
 
   public add(item: ISnapshotItem<T>): void {

@@ -10,9 +10,10 @@ export class DurationEndStrategy<T extends IWithOngoingEffects> implements IEndS
 
   onEnd(): void {}
   onStart(): void {}
-  onUpdate() {}
+  onUpdate(): void {}
 
   shouldEnd(): boolean {
-    return this.effect.currentFrame >= this.effect.framesDuration;
+    const condition = this.effect.currentFrame >= this.effect.framesDuration;
+    return condition;
   }
 }

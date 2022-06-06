@@ -1,4 +1,6 @@
 import DamageCalculator from "@/Roster/DamageCalculator";
+import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+import {RefreshableClass} from "@/Refresher/RefreshableClass";
 
 export interface ISubscriber<SubscriberArgs = void> {
   runOnEvent(args: SubscriberArgs): void;
@@ -19,7 +21,7 @@ export default class Listener<T = void> {
   private subscribersWithProxy: Array<SubscriberProxyArgs<T>> = [];
 
   private addToList<T>(list: T[], subscriber: T) {
-    const isExist = list.includes(subscriber);
+    const isExist = list.indexOf(subscriber) !== -1;
 
     if (!isExist) {
       list.push(subscriber);

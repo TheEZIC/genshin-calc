@@ -255,5 +255,6 @@ export default class ElementalReactionManager {
   }
 
   public reset() {
+    this.elementalCombinations = this.initCombinations();
   }
 }
