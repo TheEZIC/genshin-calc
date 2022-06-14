@@ -1,8 +1,8 @@
-import AyakaNormalAttack from "./AyakaNormalAttack";
+import AyakaNormalAttackStage from "./AyakaNormalAttackStage";
 import SkillValue from "@/Skills/SkillValue";
 import {IMultipleHitSkill} from "@/Skills/SkillInterfaces/IMultipleHitSkill";
 
-export default class AyakaA4 extends AyakaNormalAttack implements IMultipleHitSkill {
+export default class AyakaA4 extends AyakaNormalAttackStage implements IMultipleHitSkill {
   public skillName: string = "Kamisato Art: Kabuki A4";
 
   public frames: number = 98;

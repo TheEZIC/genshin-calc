@@ -17,19 +17,13 @@ export default class CharactersFactory extends AbstractFactory<ICharactersFactor
     return this._instance;
   }
 
-  protected list: ICharactersFactoryItem[] = [
-    {
-      item: new Ayaka(),
-      creator: Ayaka,
-    },
-    {
-      item: new Ayaka(),
-      creator: Xiangling,
-    },
-  ];
+  protected _list: ICharactersFactoryItem[] = this.createList([
+    new Ayaka(),
+    new Xiangling(),
+  ])
 
   public getByName(name: string): ICharactersFactoryItem | undefined {
-    const listItem = this.list.find(listItem => listItem.item.title === name);
+    const listItem = this._list.find(listItem => listItem.item.title === name);
 
     if (!listItem) {
       return;

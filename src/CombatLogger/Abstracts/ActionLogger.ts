@@ -17,6 +17,7 @@ export default abstract class ActionLogger extends LoggerItem<IActionLoggerItem,
 
     return {
       message: `Skill ${skill.title} do ${value} ${this.messageEvent}`,
+      ignoreLog: skill.ignoreLog,
       startFrame,
       comment,
       characterName: character.title,

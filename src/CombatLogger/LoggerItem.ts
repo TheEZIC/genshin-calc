@@ -4,6 +4,7 @@ import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
 export interface ILogItem {
   message: string;
   startFrame: number;
+  ignoreLog?: boolean;
 }
 
 export interface IEndingLogItem extends ILogItem {
@@ -27,6 +28,10 @@ export default abstract class LoggerItem<T extends ILogItem, LogArgs> {
   public abstract onLog(args: LogArgs): T;
 
   public log(args: LogArgs): void {
-    this.combatLogger.addLog(this.onLog(args), this.type);
+    const logResult = this.onLog(args);
+
+    if (!logResult.ignoreLog) {
+      this.combatLogger.addLog(logResult, this.type);
+    }
   }
 }

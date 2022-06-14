@@ -3,6 +3,7 @@ import RefreshManager from "@/Refresher/RefreshManager";
 
 export function RefreshableClass(target: any) {
   const original = target;
+
   return class extends target {
     constructor(...args: any[]) {
       super(...args);

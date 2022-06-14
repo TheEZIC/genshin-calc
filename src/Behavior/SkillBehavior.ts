@@ -5,6 +5,7 @@ import {IBehavior} from "@/Behavior/IBehavior";
 import GlobalListeners from "@/Roster/GlobalListeners";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export interface ISkillBehaviorArgs {
   character: Character;
@@ -12,7 +13,7 @@ export interface ISkillBehaviorArgs {
 }
 
 @RefreshableClass
-export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArgs>{
+export default class SkillBehavior implements IBehavior<Skill, SkillArgs>{
   constructor(
     private skill: Skill,
   ) {
@@ -34,8 +35,10 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     this._isStarted = isStarted;
   }
 
-  public start({character, hash}: ISkillBehaviorArgs): Skill {
+  public start(args: SkillArgs): Skill {
     if (this.isStarted || this.skill.countdown.isOnCountdown) return this.skill;
+
+    const {character, hash, currentSkillIndex} = args;
 
     if (
       isIBurstSKill(this)
@@ -43,8 +46,8 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     ) return this.skill;
 
     this.skill.strategy.runStartListener(character);
-    this.globalListeners?.onSkillStarted.notifyAll({hash, skill: this.skill, character});
-    this.skill.onStart({character, hash});
+    this.globalListeners?.onSkillStarted.notifyAll(args);
+    this.skill.onStart(args);
 
     this.isStarted = true;
 
@@ -55,8 +58,9 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     return this.skill;
   }
 
-  public update({character, hash}: ISkillBehaviorArgs): Skill {
+  public update(args: SkillArgs): Skill {
     const {countdown} = this.skill;
+    const {character, hash, currentSkillIndex} = args;
 
     if (countdown.isOnCountdown) {
       countdown.countdownFrames--;
@@ -68,21 +72,24 @@ export default class SkillBehavior implements IBehavior<Skill, ISkillBehaviorArg
     }
 
     if (this.isStarted) {
-      this.currentFrame++;
-
       if (this.currentFrame === this.skill.frames) {
-        this.end({character, hash});
+        this.end(args);
+      } else {
+        this.currentFrame++;
       }
     }
 
     return this.skill;
   }
 
-  public end({character, hash}: ISkillBehaviorArgs): Skill {
+  public end(args: SkillArgs): Skill {
     if (!this.isStarted) return this.skill;
+
+    const {character, hash, currentSkillIndex} = args;
+
     this.skill.strategy.runEndListener(character);
-    this.globalListeners?.onSkillEnded.notifyAll({hash, skill: this.skill, character});
-    this.skill.onEnd({character, hash});
+    this.globalListeners?.onSkillEnded.notifyAll(args);
+    this.skill.onEnd(args);
 
     this.isStarted = false;
     this.currentFrame = 0;

@@ -1,28 +1,19 @@
-import NormalSkill from "@/Skills/NormalSkill";
-import SkillStrategy from "@/Skills/SkillStrategy";
-import NormalAttackSkillStrategy from "@/Skills/SkillStrategy/NormalAttackSkillStrategy";
-import {ISkillActionArgs} from "@/Skills/Skill";
-import {SkillTargetType} from "@/Skills/SkillTargetType";
-import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
-import SkillValue from "@/Skills/SkillValue";
+import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import Skill from "@/Skills/Skill";
+import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
+import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
+import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
+import AyakaA5 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA5";
 
-export default abstract class AyakaNormalAttack extends NormalSkill {
-  public countdownFrames: number = 0;
-  public strategy: SkillStrategy = new NormalAttackSkillStrategy(this);
-  public targetType: SkillTargetType = SkillTargetType.Single;
-  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
+export default class AyakaNormalAttack extends NormalAttackSkill {
+  public skillName: string = "Kamisato Art: Kabuki";
 
-  protected abstract value: SkillValue;
-
-  override onAction(args: ISkillActionArgs): void {
-    if (this.currentFrame === 1) {
-      const {character} = args;
-      const atk = character.calculatorStats.ATK.calc();
-      const dmg = this.value.getDamage(this.lvl.current) * atk;
-      this.doDamage({
-        ...args,
-        value: dmg,
-      });
-    }
-  }
+  public attackStages: Skill[] = [
+    new AyakaA1(),
+    new AyakaA2(),
+    new AyakaA3(),
+    new AyakaA4(),
+    new AyakaA5(),
+  ];
 }

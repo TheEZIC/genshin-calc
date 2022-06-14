@@ -5,6 +5,7 @@ import Effect from "@/Effects/Effect";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import SingletonsManager from "@/Singletons/SingletonsManager";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export interface IOnSkillAction {
   character: Character;
@@ -15,12 +16,6 @@ export interface IOnSkillAction {
 
 export interface IOnSkillDamage extends IOnSkillAction {
   elementalStatus?: ElementalStatus;
-}
-
-export interface IOnAnySkill {
-  character: Character;
-  skill: Skill;
-  hash: string;
 }
 
 export interface IOnAnyEffect<T extends IWithOngoingEffects = any> {
@@ -43,8 +38,8 @@ export default class GlobalListeners {
   public onHeal: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
   public onCreateShield: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
 
-  public onSkillStarted: Listener<IOnAnySkill> = new Listener<IOnAnySkill>();
-  public onSkillEnded: Listener<IOnAnySkill> = new Listener<IOnAnySkill>();
+  public onSkillStarted: Listener<SkillArgs> = new Listener<SkillArgs>();
+  public onSkillEnded: Listener<SkillArgs> = new Listener<SkillArgs>();
 
   public onEffectStarted: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectReactivate: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();

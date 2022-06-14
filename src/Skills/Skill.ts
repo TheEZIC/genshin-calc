@@ -7,7 +7,6 @@ import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import SkillLvl from "@/Skills/SkillLvl";
 import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
 import SkillBehavior, {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
-import {convertGetDamageToCalcDamageArgs} from "@/Skills/SkillUtils";
 import Roster from "@/Roster/Roster";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import EnergyManager, {IEnergyParticles} from "@/Roster/EnergyManager";
@@ -17,37 +16,28 @@ import GlobalListeners from "@/Roster/GlobalListeners";
 import SkillCountdown from "@/Skills/SkillCountdown";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import SkillInfusion from "@/Skills/SkillInfusion";
+import {Constructor} from "@/Helpers/Constructor";
+import {IWithCreator} from "@/Utils/IWithCreator";
+import {cloneDeep} from "lodash";
+import SkillArgs from "@/Skills/Args/SkillArgs";
+import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import SkillActionArgs from "@/Skills/Args/SkillActionArgs";
 
-export interface ISkillActionArgs {
-  character: Character;
-  prevSkill?: Skill;
-  nextSkill?: Skill;
-  prevSkills?: Skill[];
-  nextSkills?: Skill[];
-  behavior: ISkillBehaviorArgs;
-  value: number;
-}
-
-export interface ISkillDamageArgs extends ISkillActionArgs{
-  elementalStatus?: ElementalStatus;
-  blunt?: boolean;
-  multiplier?: number;
-  hits?: number;
-}
-
-export interface IGetDamageArgs {
-  character: Character;
-  skills: Skill[];
-  currentSkillIndex: number;
-  mvsCalcMode?: boolean;
-  behavior: ISkillBehaviorArgs;
-}
-
-export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkillBehaviorArgs> {
+export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillArgs>, IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
+
+  public get creator(): Constructor<Skill> {
+    return this.constructor as Constructor<Skill>;
+  }
+
+  public get clone() {
+    return cloneDeep(this);
+  }
 
   public abstract frames: number;
   public abstract countdownFrames: number;
+
+  public ignoreLog: boolean = false;
 
   public get timelineDurationFrames(): number {
     return this.frames;
@@ -72,8 +62,6 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
   public unsubscribeEffects(character: Character): void {
   }
 
-  public abstract onAction(args: ISkillActionArgs): void;
-
   protected roster: Roster = Roster.instance;
   protected damageCalculator: DamageCalculator = DamageCalculator.instance;
   protected reactionManager: ElementalReactionManager = ElementalReactionManager.instance;
@@ -85,17 +73,18 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     this.energyManager.addEnergy(particles);
   }
 
-  public doAction(args: IGetDamageArgs): void {
+  public doAction(args: SkillArgs): void {
     if (!this.isStarted) return;
-    const calcArgs = convertGetDamageToCalcDamageArgs(args);
     const infusionBonus = this.infusion.applyBonus(args.character);
-    this.onAction(calcArgs);
+    this.onAction(args);
     this.infusion.removeBonus(args.character, infusionBonus);
   }
 
-  public doDamage(args: ISkillDamageArgs, comment: string = "") {
+  public abstract onAction(args: SkillArgs): void;
+
+  public doDamage(args: SkillDamageArgs, comment: string = "") {
     const frame = DamageCalculator.instance.currentFrame;
-    let dmg: number = this.hit(args);
+    let dmg: number = this.performHit(args);
 
     this.globalListeners.onDamage.notifyAll({
       character: args.character,
@@ -106,7 +95,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     });
   }
 
-  private hit(args: ISkillDamageArgs) {
+  private performHit(args: SkillDamageArgs) {
     const damage = args.value;
     const {elementalStatus} = args;
     const hits = args.hits ?? 1;
@@ -156,7 +145,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     }
   }
 
-  public doHeal(args: ISkillActionArgs, comment: string = "") {
+  public doHeal(args: SkillActionArgs, comment: string = "") {
     this.globalListeners.onHeal.notifyAll({
       character: args.character,
       comment,
@@ -165,7 +154,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     });
   }
 
-  public createShield(args: ISkillActionArgs, comment: string = "") {
+  public createShield(args: SkillActionArgs, comment: string = "") {
     this.globalListeners.onCreateShield.notifyAll({
       character: args.character,
       comment,
@@ -185,27 +174,26 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, ISkill
     return this.behavior.currentFrame;
   }
 
-  public start(args: ISkillBehaviorArgs): Skill {
+  public start(args: SkillArgs): Skill {
     return this.behavior.start(args);
   }
 
-  public update(args: ISkillBehaviorArgs): Skill {
+  public update(args: SkillArgs): Skill {
     return this.behavior.update(args);
   }
 
-  public end(args: ISkillBehaviorArgs): Skill {
+  public end(args: SkillArgs): Skill {
     return this.behavior.end(args);
   }
 
-  public awake(args: IGetDamageArgs): void {
-    const calcArgs = convertGetDamageToCalcDamageArgs(args);
-    this.onAwake(calcArgs);
+  public awake(args: SkillArgs): void {
+    this.onAwake(args);
   }
 
-  public onStart(args: ISkillBehaviorArgs): void {}
-  public onUpdate(args: ISkillBehaviorArgs): void {}
-  public onEnd(args: ISkillBehaviorArgs): void {}
-  protected onAwake(args: ISkillActionArgs): void {}
+  public onStart(args: SkillArgs): void {}
+  public onUpdate(args: SkillArgs): void {}
+  public onEnd(args: SkillArgs): void {}
+  protected onAwake(args: SkillArgs): void {}
 
   protected createRepeatedFrames(everyFrames: number, count: number, offset: number = 0): number[] {
     let temp: number[] = [];

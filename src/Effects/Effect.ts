@@ -5,7 +5,7 @@ import {IEndStrategy} from "@/Effects/IEndStrategy";
 import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
 import GlobalListeners from "@/Roster/GlobalListeners";
 import {IPrototype} from "@/Helpers/IPrototype";
-import {clone} from "lodash";
+import {clone, cloneDeep} from "lodash";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 
@@ -70,12 +70,13 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
 
     if (this.isStarted) {
-      this.currentFrame++;
       this.endStrategy.onUpdate();
 
       if (this.endStrategy.shouldEnd()) {
         this.deactivate(entity);
       }
+
+      this.currentFrame++;
     }
   }
 
@@ -119,6 +120,6 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   }
 
   public get clone(): this {
-    return clone(this);
+    return cloneDeep(this);
   }
 }

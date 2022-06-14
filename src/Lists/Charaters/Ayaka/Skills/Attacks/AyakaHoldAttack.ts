@@ -3,7 +3,6 @@ import {IMultipleHitSkill} from "@/Skills/SkillInterfaces/IMultipleHitSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
 import HoldAttackSkillStrategy from "@/Skills/SkillStrategy/HoldAttackSkillStrategy";
-import {ISkillActionArgs, IGetDamageArgs} from "@/Skills/Skill";
 import {SkillType} from "@/Skills/SkillType";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
@@ -11,6 +10,8 @@ import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
+import SkillArgs from "@/Skills/Args/SkillArgs";
+import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 
 export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
   public skillName: string = "Kamisato Art: Kabuki";
@@ -25,7 +26,7 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  protected override onAwake({character, prevSkill}: ISkillActionArgs) {
+  protected override onAwake({character, prevSkill}: SkillArgs) {
     if (!prevSkill) {
       this.frames = 0;
     }
@@ -45,15 +46,17 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
     }
   }
 
-  onAction(args: ISkillActionArgs): void {
+  onAction(args: SkillArgs): void {
     if (this.currentFrame === 1) {
       const {character} = args;
       const atk = character.calculatorStats.ATK.calc();
       const dmg = this.value.getDamage(this.lvl.current) * atk;
-      this.doDamage({
+      const dmgArgs = new SkillDamageArgs({
         ...args,
         value: dmg,
       });
+
+      this.doDamage(dmgArgs);
     }
   }
 }

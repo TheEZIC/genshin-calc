@@ -2,9 +2,10 @@ import Skill from "@/Skills/Skill";
 import Roster from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
-import GlobalListeners, {IOnAnySkill, IOnSkillAction} from "@/Roster/GlobalListeners";
+import GlobalListeners, {IOnSkillAction} from "@/Roster/GlobalListeners";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import RefreshManager from "@/Refresher/RefreshManager";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export interface ICalcResult {
   damage: number;
@@ -37,13 +38,13 @@ export default class DamageCalculator {
 
   protected globalListeners: GlobalListeners = GlobalListeners.instance;
 
-  private ongoingSkills: IOnAnySkill[] = [];
+  private ongoingSkills: SkillArgs[] = [];
 
-  private onAnySKillStarted(args: IOnAnySkill) {
+  private onAnySKillStarted(args: SkillArgs) {
     this.ongoingSkills.push(args);
   }
 
-  private onAnySkillEnded(args: IOnAnySkill) {
+  private onAnySkillEnded(args: SkillArgs) {
     this.ongoingSkills = this.ongoingSkills.filter(s => s.hash !== args.hash);
   }
 
@@ -123,6 +124,7 @@ export default class DamageCalculator {
   public calcRotation(rotationSkills: Skill[]): ICalcResult {
     this.subscribeGlobals();
 
+    this.rotationSkills = rotationSkills;
     const logger = [];
 
     for (let i = 0; i < rotationSkills.length; i++) {
@@ -130,33 +132,39 @@ export default class DamageCalculator {
       const skillItem = this.roster?.charactersSkills.find((s) => s.skill.title === rotationSkill.title);
 
       if (!skillItem) continue;
-      const {character, skill} = skillItem;
+      const {character} = skillItem;
+      const skill = skillItem.skill;
 
       if (skill.countdown.isOnCountdown) {
         continue;
       }
 
-      const hash = skill.title + i;
-      const behavior = {hash, character};
-      const dmgArgs = {
+      const args = new SkillArgs({
+        skill,
         character,
-        damageCalculator: this,
-        skills: rotationSkills,
         currentSkillIndex: i,
-        behavior,
-      };
-
-      skill.awake(dmgArgs);
-      skill.start(behavior);
-
-      logger.push({
-        stage: "before",
-        name: skill.title,
-        rotationDamage: this.rotationDamage,
-        currentFrames: this.currentFrames,
-        buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
+        skills: this.rotationSkills,
       })
+
+      skill.awake(args);
+      skill.start(args);
+
+      //if instaskill
+      if (skill.frames === 0) {
+        skill.doAction(args);
+        skill.end(args);
+      }
+
+      if (!skill.ignoreLog) {
+        logger.push({
+          stage: "before",
+          name: skill.title,
+          rotationDamage: this.rotationDamage,
+          currentFrames: this.currentFrames,
+          buffs: character.ongoingEffects.map(e => e.name),
+          parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
+        })
+      }
 
       if (skill instanceof NormalSkill) {
         this.skip(skill.frames);
@@ -166,14 +174,16 @@ export default class DamageCalculator {
         }
       }
 
-      logger.push({
-        stage: "after",
-        name: skill.title,
-        rotationDamage: this.rotationDamage,
-        currentFrames: this.currentFrames,
-        buffs: character.ongoingEffects.map(e => e.name),
-        parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
-      });
+      if (!skill.ignoreLog) {
+        logger.push({
+          stage: "after",
+          name: skill.title,
+          rotationDamage: this.rotationDamage,
+          currentFrames: this.currentFrames,
+          buffs: character.ongoingEffects.map(e => e.name),
+          parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
+        });
+      }
     }
 
     let framesRemaining = this.getRemainingFrames();
@@ -229,19 +239,8 @@ export default class DamageCalculator {
       this.runDelayedActions();
 
       for (let s of this.ongoingSkills) {
-        const skillItem = this.roster!!.charactersSkills.find((a) => a.skill.title === s.skill.title);
-        if (skillItem) {
-          const dmgArgs = {
-            character: s.character,
-            damageCalculator: this,
-            skills: this.rotationSkills,
-            currentSkillIndex: this.currentSkillIndex,
-            behavior: {character: s.character, hash: s.hash},
-          };
-
-          s.skill.update({hash: s.hash, character: skillItem.character});
-          s.skill.doAction(dmgArgs);
-        }
+        s.skill.update(s);
+        s.skill.doAction(s);
       }
 
       for (let character of this.roster.characters) {

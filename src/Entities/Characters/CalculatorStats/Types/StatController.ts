@@ -33,8 +33,13 @@ export default class StatController {
   }
 
   public remove(statValue: StatValue): this {
-    this.values = this.values.filter((p) => p.stat.value !== statValue.value);
-    this.stat.onChange.notifyAll(this.stat.calc());
+    const index = this.values.findIndex((value) => value.stat.value === statValue.value);
+
+    if (index !== -1) {
+      this.values.splice(index);
+      this.stat.onChange.notifyAll(this.stat.calc());
+    }
+
     return this;
   }
 

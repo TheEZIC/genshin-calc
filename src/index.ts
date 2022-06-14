@@ -37,11 +37,16 @@ import EnergyManager from "@/Roster/EnergyManager";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import CharactersFactory from "@/Factories/CharactersFactory";
+import SkillsFactory from "@/Factories/SkillsFactory";
+import AyakaNormalAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaNormalAttack";
+import SkillStartedLogger from "@/CombatLogger/List/SkillStartedLogger";
+import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
 
 const singletonManager = SingletonsManager.instance;
 
 class GenshinCalculator {
   public characters: CharactersFactory = CharactersFactory.instance;
+  public skills: SkillsFactory = SkillsFactory.instance;
 
   public roster: Roster = Roster.instance;
   public damageCalculator: DamageCalculator = DamageCalculator.instance;
@@ -108,23 +113,26 @@ class GenshinCalculator {
 
     const rotation = () => {
       const dmg = this.damageCalculator.calcRotation([
-        // new AyakaBurst(),
-        // new AyakaElemental(),
-        // new XianglingBurst(),
-        // new XianglingElemental(),
-        // new AyakaA1(),
-        // new AyakaA2(),
-        // new AyakaHoldAttack(),
+        new AyakaBurst(),
+        new AyakaElemental(),
+        new AyakaNormalAttack(),
+        new AyakaNormalAttack(),
+        new XianglingBurst(),
+        new XianglingElemental(),
+        new AyakaHoldAttack(),
         new AyakaDash(),
-        new AyakaA1(),
+        new AyakaNormalAttack(),
+        new AyakaDash(),
       ]);
 
       const logs = this.combatLogger.getFilteredLogs([
-        ...CombatLoggerEffectsCollection,
-        ...CombatLoggerSkillsCollection,
-        ...CombatLoggerActionsCollection,
-        ...CombatLoggerReactionsCollection,
+        // ...CombatLoggerEffectsCollection,
+        // ...CombatLoggerSkillsCollection,
+        // ...CombatLoggerActionsCollection,
+        // ...CombatLoggerReactionsCollection,
       ]);
+
+      //console.log(logs);
 
       this.combatLogger.save();
       this.combatLogger.clear();

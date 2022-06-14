@@ -14,9 +14,21 @@ import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import Entity from "@/Entities/Entity";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+import {IWithCreator} from "@/Utils/IWithCreator";
+import {Constructor} from "@/Helpers/Constructor";
 
 @RefreshableClass
-export default abstract class Character extends Entity implements IWithOngoingEffects {
+export default abstract class Character extends Entity implements IWithOngoingEffects, IWithCreator<Character> {
+  public get fullTitle(): string {
+    return this.title;
+  }
+
+  public get creator(): Constructor<Character> {
+    return this.constructor as Constructor<Character>;
+  }
+
+  public abstract readonly rarity: number;
+
   public abstract vision: VisionType;
 
   public talent1: CharacterTalent | null = null;

@@ -1,7 +1,7 @@
-import AyakaNormalAttack from "./AyakaNormalAttack";
+import AyakaNormalAttackStage from "./AyakaNormalAttackStage";
 import SkillValue from "@/Skills/SkillValue";
 
-export default class AyakaA5 extends AyakaNormalAttack {
+export default class AyakaA5 extends AyakaNormalAttackStage {
   public skillName: string = "Kamisato Art: Kabuki A5";
 
   public frames: number = 136;

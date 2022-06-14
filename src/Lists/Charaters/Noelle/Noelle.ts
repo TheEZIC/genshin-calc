@@ -9,6 +9,8 @@ import {VisionType} from "@/VisionType";
 export default class Noelle extends Character {
   public title: string = "Noelle";
 
+  public readonly rarity: number = 4;
+
   public vision: VisionType = VisionType.Geo;
   public baseStats: CharacterBaseStats = new NoelleBaseStats(this);
   public skillManager: SkillsManager = new SkillsManager(this, []);

@@ -4,12 +4,13 @@ import ElementalSkillStrategy from "@/Skills/SkillStrategy/ElementalSkillStrateg
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
-import {ISkillActionArgs} from "@/Skills/Skill";
 import SkillValue from "@/Skills/SkillValue";
 import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 import {GoubaEntity} from "@/Lists/Charaters/Xiangling/Skills/GoubaEntity";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
+import SkillArgs from "@/Skills/Args/SkillArgs";
+import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 
 export default class XianglingElemental extends SummonSkill implements IDOTSkill {
   public skillName: string = "Gouba Attack";
@@ -51,10 +52,10 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
     });
   }
 
-  onAction(args: ISkillActionArgs): void {
+  onAction(args: SkillArgs): void {
     if (this.damageFrames.includes(this.currentFrame)) {
-      const {character, behavior} = args;
-      const atk = this.skillAtkSnapshot.calcStat(behavior.hash + "Atk", character.calculatorStats.ATK);
+      const {character} = args;
+      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
       const dmg = this.goubaValue.getDamage(this.lvl.current) * atk;
 
       const pyroA1 = new PyroStatus(1);
@@ -67,11 +68,13 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
         this.reactionManager.tryToOverrideStatus(pyroA1, pyroA1, gouba);
       }
 
-      this.doDamage({
+      const damageArgs = new SkillDamageArgs({
         ...args,
         value: dmg,
         elementalStatus: pyroA1,
-      }, "Gouba hit");
+      });
+
+      this.doDamage(damageArgs, "Gouba hit");
     }
   }
 
