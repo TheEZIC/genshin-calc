@@ -61,23 +61,21 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   }
 
   override onEnd(args: SkillArgs): void {
-    if (this.currentFrame === this.frames) {
-      const {character} = args;
-      const atk = character.calculatorStats.ATK.calc();
-      let dmg = this.value.getDamage(this.lvl.current) * atk;
+    const {character} = args;
+    const atk = character.calculatorStats.ATK.calc();
+    let dmg = this.value.getDamage(this.lvl.current) * atk;
 
-      const hasC6Buff = character.hasEffectByInstance(AyakaC6Buff);
+    const hasC6Buff = character.hasEffectByInstance(AyakaC6Buff);
 
-      if (hasC6Buff) {
-        dmg = this.C6Value.getDamage(this.lvl.current) * atk;
-      }
-
-      const dmgArgs = new SkillDamageArgs({
-        ...args,
-        value: dmg,
-      });
-
-      this.doDamage(dmgArgs);
+    if (hasC6Buff) {
+      dmg = this.C6Value.getDamage(this.lvl.current) * atk;
     }
+
+    const dmgArgs = new SkillDamageArgs({
+      ...args,
+      value: dmg,
+    });
+
+    this.doDamage(dmgArgs);
   }
 }

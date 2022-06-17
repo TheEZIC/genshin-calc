@@ -68,6 +68,8 @@ export default class SkillBehavior implements IBehavior<Skill, SkillArgs>{
 
       if (this.currentFrame === this.skill.frames) {
         this.end(args);
+        //do last action
+        this.skill.doAction(args);
       }
     }
 
