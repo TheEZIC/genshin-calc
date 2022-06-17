@@ -1,36 +1,46 @@
 import "reflect-metadata";
-import Roster from "@/Roster/Roster";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import ElectroChargedReaction from "@/ElementalReactions/List/ElectroChargedReaction";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
-import RefreshManager from "@/Refresher/RefreshManager";
-import SingletonsManager from "@/Singletons/SingletonsManager";
+import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 const reactionName = "ElectroCharged";
 
 describe(`${reactionName}Reaction`, () => {
-  afterEach(() => {
-    RefreshManager.refreshAll();
-    SingletonsManager.resetAll();
+  let damageCalculator: DamageCalculator;
+
+  let reaction: ElectroChargedReaction;
+  let elementalStatus: ElectroStatus;
+
+  let character: Ayaka;
+  let entity: Enemy;
+
+  let reactionArgs: IElementalReactionArgs;
+
+  beforeEach(() => {
+    damageCalculator = new DamageCalculator();
+
+    reaction = new ElectroChargedReaction(damageCalculator.reactionsManager);
+    elementalStatus = new ElectroStatus(4);
+
+    character = new Ayaka();
+    entity = new Enemy();
+
+    damageCalculator.roster.addCharacter(character);
+    damageCalculator.roster.addEnemy(entity);
+
+    reactionArgs = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus,
+      damage: 0
+    };
   });
-
-  let roster: Roster = Roster.instance;
-  let damageCalculator: DamageCalculator = DamageCalculator.instance;
-  let manager: ElementalReactionManager = ElementalReactionManager.instance;
-
-  let character = new Ayaka();
-  let entity = new Enemy();
-  let reaction = new ElectroChargedReaction(manager);
-  let elementalStatus = new ElectroStatus(4);
-  let reactionArgs = {character, entity, elementalStatus, damage: 0};
-
-  roster.addCharacter(character);
-  roster.addEnemy(entity);
 
   test(`Expect ${reactionName} dmg`, () => {
     character.applyLvl(40);
@@ -47,8 +57,8 @@ describe(`${reactionName}Reaction`, () => {
   });
 
   test(`Expect ${reactionName} gauge`, () => {
-    manager.addStatus(entity, new HydroStatus(4));
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.addStatus(entity, new HydroStatus(4));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     const electroStatus = entity.getElementalStatus(ElectroStatus);
     const hydroStatus = entity.getElementalStatus(HydroStatus)

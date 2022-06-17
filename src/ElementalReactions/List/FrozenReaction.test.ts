@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
@@ -7,39 +6,35 @@ import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import Roster from "@/Roster/Roster";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
-import RefreshManager from "@/Refresher/RefreshManager";
-import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Frozen";
 
 describe(`${reactionName}Reaction`, () => {
-  afterEach(() => {
-    RefreshManager.refreshAll();
-    SingletonsManager.resetAll();
-  });
-
-  let character = new Ayaka();
-  let entity = new Enemy();
-
-  let roster: Roster = Roster.instance;
-  let damageCalculator: DamageCalculator = DamageCalculator.instance;
-  let manager: ElementalReactionManager = ElementalReactionManager.instance;
+  let damageCalculator: DamageCalculator;
+  let character: Ayaka;
+  let entity: Enemy;
 
   beforeEach(() => {
+    damageCalculator = new DamageCalculator();
     character = new Ayaka();
     entity = new Enemy();
-    roster.addCharacter(character);
-    roster.addEnemy(entity);
+    damageCalculator.roster.addCharacter(character);
+    damageCalculator.roster.addEnemy(entity);
   });
 
   test(`Expect ${reactionName} shatter 1`, () => {
     let elementalStatus = new HydroStatus(1);
-    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+    let reactionArgs = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus,
+      damage: 1000
+    };
 
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     let status1 = entity.getElementalStatus(CryoStatus);
     let status2 = entity.getElementalStatus(FreezeStatus);
@@ -49,11 +44,17 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} shatter 2`, () => {
     let elementalStatus = new HydroStatus(1);
-    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+    let reactionArgs = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus,
+      damage: 1000
+    };
 
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs);
-    manager.checkShatter(reactionArgs, true);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.checkShatter(reactionArgs, true);
 
     let status1 = entity.getElementalStatus(CryoStatus);
     let status2 = entity.getElementalStatus(FreezeStatus);
@@ -63,19 +64,31 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} shatter 3`, () => {
     let elementalStatus1 = new HydroStatus(1);
-    let reactionArgs1 = {character, entity, elementalStatus: elementalStatus1, damage: 1000};
+    let reactionArgs1 = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus: elementalStatus1,
+      damage: 1000
+    };
 
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs1);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs1);
 
     let status1 = entity.getElementalStatus(CryoStatus);
     let status2 = entity.getElementalStatus(FreezeStatus);
 
     let elementalStatus2 = new AnemoStatus(1);
-    let reactionArgs2 = {character, entity, elementalStatus: elementalStatus2, damage: 1000};
+    let reactionArgs2 = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus: elementalStatus2,
+      damage: 1000
+    };
 
-    manager.checkShatter(reactionArgs2, false);
-    manager.applyReaction(reactionArgs2);
+    damageCalculator.reactionsManager.checkShatter(reactionArgs2, false);
+    damageCalculator.reactionsManager.applyReaction(reactionArgs2);
 
     status1 = entity.getElementalStatus(CryoStatus);
     status2 = entity.getElementalStatus(FreezeStatus);
@@ -90,19 +103,31 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} shatter 4`, () => {
     let elementalStatus1 = new HydroStatus(1);
-    let reactionArgs1 = {character, entity, elementalStatus: elementalStatus1, damage: 1000};
+    let reactionArgs1 = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus: elementalStatus1,
+      damage: 1000
+    };
 
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs1);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs1);
 
     let status1 = entity.getElementalStatus(CryoStatus);
     let status2 = entity.getElementalStatus(FreezeStatus);
 
     let elementalStatus2 = new PyroStatus(1);
-    let reactionArgs2 = {character, entity, elementalStatus: elementalStatus2, damage: 1000};
+    let reactionArgs2 = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus: elementalStatus2,
+      damage: 1000
+    };
 
-    manager.checkShatter(reactionArgs2, false);
-    manager.applyReaction(reactionArgs2);
+    damageCalculator.reactionsManager.checkShatter(reactionArgs2, false);
+    damageCalculator.reactionsManager.applyReaction(reactionArgs2);
 
     status1 = entity.getElementalStatus(CryoStatus);
     status2 = entity.getElementalStatus(FreezeStatus);
@@ -115,25 +140,31 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 1`, () => {
     let elementalStatus = new HydroStatus(1);
-    let reactionArgs = {character, entity, elementalStatus, damage: 1000};
+    let reactionArgs = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus,
+      damage: 1000
+    };
 
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     let status1 = entity.getElementalStatus(CryoStatus);
     let status2 = entity.getElementalStatus(FreezeStatus);
 
     //skip until end and apply new one
     damageCalculator.skip(210);
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     status1 = entity.getElementalStatus(CryoStatus);
     status2 = entity.getElementalStatus(FreezeStatus);
 
     //skip until end and apply new one
     damageCalculator.skip(500);
-    manager.addStatus(entity, new CryoStatus(2));
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.addStatus(entity, new CryoStatus(2));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     status1 = entity.getElementalStatus(CryoStatus);
     status2 = entity.getElementalStatus(FreezeStatus);

@@ -3,6 +3,7 @@ import Character from "@/Entities/Characters/Character";
 import Listener from "@/Helpers/Listener";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import Entity from "@/Entities/Entity";
+import DamageCalculator from "@/Roster/DamageCalculator";
 
 export interface IOnReactionArgs {
   reaction: ElementalReaction;
@@ -12,6 +13,7 @@ export interface IOnReactionArgs {
 
 export interface IElementalReactionArgs {
   character: Character;
+  damageCalculator: DamageCalculator;
   elementalStatus?: ElementalStatus;
   entity: Entity;
   damage: number;

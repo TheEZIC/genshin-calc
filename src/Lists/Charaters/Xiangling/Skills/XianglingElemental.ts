@@ -5,7 +5,6 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import SkillValue from "@/Skills/SkillValue";
-import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 import {GoubaEntity} from "@/Lists/Charaters/Xiangling/Skills/GoubaEntity";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
@@ -39,33 +38,35 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
 
   private gouba = new GoubaEntity();
 
-  override onStart(args: ISkillBehaviorArgs) {
+  override onStart(args: SkillArgs) {
+    const {roster} = args.damageCalculator;
     this.gouba = new GoubaEntity();
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
-    this.countdown.startCountdown();
+    this.countdown.startCountdown(args);
 
-    this.damageCalculator.addAction({
+    args.damageCalculator.addDelayedAction({
       delay: this.summonUsageFrames,
       run: () => {
-        this.roster.addEntity(this.gouba);
+        roster.addEntity(this.gouba);
       }
     });
   }
 
-  onAction(args: SkillArgs): void {
+  public override onAction(args: SkillArgs): void {
     if (this.damageFrames.includes(this.currentFrame)) {
+      const {roster, reactionsManager} = args.damageCalculator;
       const {character} = args;
       const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
       const dmg = this.goubaValue.getDamage(this.lvl.current) * atk;
 
       const pyroA1 = new PyroStatus(1);
-      const gouba = this.roster.getEntity(this.gouba)!!;
+      const gouba = roster.getEntity(this.gouba)!!;
       const goubaStatus = gouba.ongoingEffects.find(e => e.name === pyroA1.name);
 
       if (!goubaStatus) {
         gouba.ongoingEffects.push(pyroA1);
       } else {
-        this.reactionManager.tryToOverrideStatus(pyroA1, pyroA1, gouba);
+        reactionsManager.tryToOverrideStatus(pyroA1, pyroA1, gouba);
       }
 
       const damageArgs = new SkillDamageArgs({
@@ -78,7 +79,8 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
     }
   }
 
-  override onEnd(args: ISkillBehaviorArgs) {
-    this.roster.removeEntity(this.gouba);
+  override onEnd(args: SkillArgs) {
+    const {roster} = args.damageCalculator;
+    roster.removeEntity(this.gouba);
   }
 }

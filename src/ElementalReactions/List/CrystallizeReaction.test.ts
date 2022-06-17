@@ -5,38 +5,48 @@ import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
-import RefreshManager from "@/Refresher/RefreshManager";
-import SingletonsManager from "@/Singletons/SingletonsManager";
+import DamageCalculator from "@/Roster/DamageCalculator";
+import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 const reactionName = "Crystallize";
 
 describe(`${reactionName}Reaction`, () => {
-  afterEach(() => {
-    RefreshManager.refreshAll();
-    SingletonsManager.resetAll();
-  });
+  let damageCalculator: DamageCalculator;
 
-  let manager: ElementalReactionManager = ElementalReactionManager.instance;
+  let character: Ayaka;
+  let entity: Enemy;
+  let reaction: CrystallizeReaction;
+  let elementalStatus: GeoStatus;
 
-  let character = new Ayaka();
-  let entity = new Enemy();
-  let reaction = new CrystallizeReaction(manager);
-  let elementalStatus = new GeoStatus(1);
+  let reactionArgs: IElementalReactionArgs;
 
-  let reactionArgs = {
-    character,
-    entity,
-    elementalStatus,
-    damage: 0,
-  }
+  beforeEach(() => {
+    damageCalculator = new DamageCalculator();
+
+    character = new Ayaka();
+    entity = new Enemy();
+    reaction = new CrystallizeReaction(damageCalculator.reactionsManager);
+    elementalStatus = new GeoStatus(1);
+
+    damageCalculator.roster.addCharacter(character);
+    damageCalculator.roster.addEnemy(entity);
+
+    reactionArgs = {
+      damageCalculator,
+      character,
+      entity,
+      elementalStatus,
+      damage: 0,
+    }
+  })
 
   test(`Expect ${reactionName} dmg`, () => {
     expect(reaction.applyBonusDamage(reactionArgs)).toBe(0);
   });
 
   test(`Expect ${reactionName} gauge`, () => {
-    manager.addStatus(entity, new PyroStatus(1));
-    manager.applyReaction(reactionArgs);
+    damageCalculator.reactionsManager.addStatus(entity, new PyroStatus(1));
+    damageCalculator.reactionsManager.applyReaction(reactionArgs);
 
     const status = entity.getElementalStatus(PyroStatus);
 

@@ -1,16 +1,17 @@
 import SkillStrategy from "@/Skills/SkillStrategy";
 import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export default class NormalAttackSkillStrategy extends SkillStrategy {
   type: SkillType = SkillType.NormalAttack;
   skillTypeName: string = "Normal attack";
 
-  runStartListener(character: Character): void {
-    character.listeners.NormalAttackStarted.notifyAll({entity: character});
+  runStartListener(args: SkillArgs): void {
+    args.character.listeners.NormalAttackStarted.notifyAll(args);
   }
 
-  runEndListener(character: Character): void {
-    character.listeners.NormalAttackEnded.notifyAll({entity: character});
+  runEndListener(args: SkillArgs): void {
+    args.character.listeners.NormalAttackEnded.notifyAll(args);
   }
 }

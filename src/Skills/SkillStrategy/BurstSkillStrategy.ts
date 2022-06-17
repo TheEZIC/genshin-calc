@@ -1,16 +1,17 @@
 import SkillStrategy from "@/Skills/SkillStrategy";
 import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export default class BurstSkillStrategy extends SkillStrategy  {
   type: SkillType = SkillType.Burst;
   skillTypeName: string = "Burst";
 
-  runStartListener(character: Character): void {
-    character.listeners.BurstSkillStarted.notifyAll({entity: character});
+  runStartListener(args: SkillArgs): void {
+    args.character.listeners.BurstSkillStarted.notifyAll(args);
   }
 
-  runEndListener(character: Character) {
-    character.listeners.BurstSkillEnded.notifyAll({entity: character});
+  runEndListener(args: SkillArgs) {
+    args.character.listeners.BurstSkillEnded.notifyAll(args);
   }
 }

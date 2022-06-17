@@ -6,12 +6,16 @@ import HoldAttackSkillStrategy from "@/Skills/SkillStrategy/HoldAttackSkillStrat
 import {SkillType} from "@/Skills/SkillType";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
+import SkillArgs from "@/Skills/Args/SkillArgs";
+import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Buffs/AyakaC6Buff";
+import NormalAttackSkill from "@/Skills/NormalAttackSkill";
 import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
+import Skill from "@/Skills/Skill";
+import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
-import SkillArgs from "@/Skills/Args/SkillArgs";
-import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 
 export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
   public skillName: string = "Kamisato Art: Kabuki";
@@ -23,34 +27,51 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
 
   private value: SkillValue = new SkillValue(55.13 * this.hits, (59.61 - 55.13) * this.hits);
 
+  private C6Bonus: number = 298;
+  private C6Value: SkillValue = new SkillValue((55.13 + this.C6Bonus) * this.hits, (59.61 - 55.13 + this.C6Bonus) * this.hits);
+
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  protected override onAwake({character, prevSkill}: SkillArgs) {
-    if (!prevSkill) {
-      this.frames = 0;
+  protected override onAwake(args: SkillArgs) {
+    const {character} = args;
+    let attackSkill = character
+      .skillManager
+      .getSkillByType(SkillType.NormalAttack)!
+      .clone as NormalAttackSkill;
+
+    const history = args.damageCalculator.skillHistory
+    let prevSkill: Skill | undefined = history[history.length - 1]?.skill;
+
+    //run A1 if nothing before
+    if (!prevSkill || !(prevSkill instanceof NormalAttackSkillStage)) {
+      args.damageCalculator.runAnotherSkill(attackSkill, args);
+      prevSkill = history[history.length - 1].skill;
     }
 
-    const attackSkills = character.skillManager.getAllSkillsByType(SkillType.NormalAttack);
-
     if (prevSkill instanceof AyakaA1) {
-      this.frames = 96 - (attackSkills.find((s) => s instanceof AyakaA1)?.frames ?? 0);
+      this.frames = 96 - attackSkill.attackStages[0].frames;
     } else if (prevSkill instanceof AyakaA2) {
-      this.frames = 115 - (attackSkills.find((s) => s instanceof AyakaA2)?.frames ?? 0);
+      this.frames = 115 - attackSkill.attackStages[1].frames;
     } else if (prevSkill instanceof AyakaA3) {
-      this.frames = 140 - (attackSkills.find((s) => s instanceof AyakaA3)?.frames ?? 0);
+      this.frames = 140 - attackSkill.attackStages[2].frames;
     } else if (prevSkill instanceof AyakaA4) {
-      this.frames = 171 - (attackSkills.find((s) => s instanceof AyakaA4)?.frames ?? 0);
-    } else {
-      this.frames = 0;
+      this.frames = 171 - attackSkill.attackStages[3].frames;
     }
   }
 
-  onAction(args: SkillArgs): void {
-    if (this.currentFrame === 1) {
+  override onEnd(args: SkillArgs): void {
+    if (this.currentFrame === this.frames) {
       const {character} = args;
       const atk = character.calculatorStats.ATK.calc();
-      const dmg = this.value.getDamage(this.lvl.current) * atk;
+      let dmg = this.value.getDamage(this.lvl.current) * atk;
+
+      const hasC6Buff = character.hasEffectByInstance(AyakaC6Buff);
+
+      if (hasC6Buff) {
+        dmg = this.C6Value.getDamage(this.lvl.current) * atk;
+      }
+
       const dmgArgs = new SkillDamageArgs({
         ...args,
         value: dmg,

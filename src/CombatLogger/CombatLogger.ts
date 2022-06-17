@@ -30,8 +30,8 @@ import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import SuperConductReaction from "@/ElementalReactions/List/SuperConductReaction";
 import CrystallizeReaction from "@/ElementalReactions/List/CrystallizeReaction";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
-import {isNode} from "@/Helpers/Envirement";
 import EffectRefillLogger from "@/CombatLogger/List/Effects/EffectRefillLogger";
+import DamageCalculator from "@/Roster/DamageCalculator";
 
 interface ICombatLogItem {
   type: LoggerItemType,
@@ -39,15 +39,15 @@ interface ICombatLogItem {
 }
 
 export default class CombatLogger {
-  constructor() {
+  constructor(
+    public damageCalculator: DamageCalculator,
+  ) {
     this.subscribeSkillEvents();
     this.subscribeEffectEvents();
     this.subscribeActionEvents();
     this.subscribeReactionEvents();
   }
 
-  private globalListeners: GlobalListeners = GlobalListeners.instance;
-  private reactionManager: ElementalReactionManager = ElementalReactionManager.instance;
   private _logs: ICombatLogItem[] = [];
 
   public addLog(logItem: ILogItem, type: LoggerItemType) {
@@ -107,8 +107,8 @@ export default class CombatLogger {
     const startedLogger = this.getLoggerByType<SkillStartedLogger>(LoggerItemType.SkillStarted);
     const endedLogger = this.getLoggerByType<SkillEndedLogger>(LoggerItemType.SkillEnded);
 
-    this.globalListeners.onSkillStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
-    this.globalListeners.onSkillEnded.subscribeWithProxy(endedLogger.log.bind(endedLogger));
+    this.damageCalculator.globalListeners.onSkillStarted.subscribe(startedLogger.log.bind(startedLogger));
+    this.damageCalculator.globalListeners.onSkillEnded.subscribe(endedLogger.log.bind(endedLogger));
   }
 
   private subscribeEffectEvents() {
@@ -117,10 +117,10 @@ export default class CombatLogger {
     const refillLogger = this.getLoggerByType<EffectReactivateLogger>(LoggerItemType.EffectRefill);
     const endedLogger = this.getLoggerByType<EffectEndedLogger>(LoggerItemType.EffectEnded);
 
-    this.globalListeners.onEffectStarted.subscribeWithProxy(startedLogger.log.bind(startedLogger));
-    this.globalListeners.onEffectReactivate.subscribeWithProxy(reactivateLogger.log.bind(reactivateLogger));
-    this.globalListeners.onEffectRefill.subscribeWithProxy(refillLogger.log.bind(refillLogger));
-    this.globalListeners.onEffectEnded.subscribeWithProxy(endedLogger.log.bind(endedLogger));
+    this.damageCalculator.globalListeners.onEffectStarted.subscribe(startedLogger.log.bind(startedLogger));
+    this.damageCalculator.globalListeners.onEffectReactivate.subscribe(reactivateLogger.log.bind(reactivateLogger));
+    this.damageCalculator.globalListeners.onEffectRefill.subscribe(refillLogger.log.bind(refillLogger));
+    this.damageCalculator.globalListeners.onEffectEnded.subscribe(endedLogger.log.bind(endedLogger));
   }
 
   private subscribeActionEvents() {
@@ -128,9 +128,9 @@ export default class CombatLogger {
     const healLogger = this.getLoggerByType<HealLogger>(LoggerItemType.DoHeal);
     const createShieldLogger = this.getLoggerByType<CreateShieldLogger>(LoggerItemType.CreateShield);
 
-    this.globalListeners.onDamage.subscribeWithProxy(damageLogger.log.bind(damageLogger));
-    this.globalListeners.onHeal.subscribeWithProxy(healLogger.log.bind(healLogger));
-    this.globalListeners.onCreateShield.subscribeWithProxy(createShieldLogger.log.bind(createShieldLogger));
+    this.damageCalculator.globalListeners.onDamage.subscribe(damageLogger.log.bind(damageLogger));
+    this.damageCalculator.globalListeners.onHeal.subscribe(healLogger.log.bind(healLogger));
+    this.damageCalculator.globalListeners.onCreateShield.subscribe(createShieldLogger.log.bind(createShieldLogger));
   }
 
   private subscribeReactionEvents() {
@@ -145,26 +145,45 @@ export default class CombatLogger {
     const crystallizeLogger = this.getLoggerByType<CrystallizeReactionLogger>(LoggerItemType.CrystallizeReaction);
     const swirlLogger = this.getLoggerByType<SwirlReactionLogger>(LoggerItemType.SwirlReaction);
 
-    this.reactionManager.getReaction(VaporizeReaction)?.onExecuteListener
-      .subscribeWithProxy(vaporizeLogger.log.bind(vaporizeLogger));
-    this.reactionManager.getReaction(ReverseVaporizeReaction)?.onExecuteListener
-      .subscribeWithProxy(reverseVaporizeLogger.log.bind(reverseVaporizeLogger));
-    this.reactionManager.getReaction(MeltReaction)?.onExecuteListener
-      .subscribeWithProxy(meltLogger.log.bind(meltLogger));
-    this.reactionManager.getReaction(ReverseMeltReaction)?.onExecuteListener
-      .subscribeWithProxy(reverseMeltLogger.log.bind(reverseMeltLogger));
-    this.reactionManager.getReaction(OverloadedReaction)?.onExecuteListener
-      .subscribeWithProxy(overloadLogger.log.bind(overloadLogger));
-    this.reactionManager.getReaction(ElectroChargedReaction)?.onExecuteListener
-      .subscribeWithProxy(electroChargedLogger.log.bind(electroChargedLogger));
-    this.reactionManager.getReaction(FrozenReaction)?.onExecuteListener
-      .subscribeWithProxy(frozenLogger.log.bind(frozenLogger));
-    this.reactionManager.getReaction(SuperConductReaction)?.onExecuteListener
-      .subscribeWithProxy(superConductLogger.log.bind(superConductLogger));
-    this.reactionManager.getReaction(CrystallizeReaction)?.onExecuteListener
-      .subscribeWithProxy(crystallizeLogger.log.bind(crystallizeLogger));
-    this.reactionManager.getReaction(SwirlReaction)?.onExecuteListener
-      .subscribeWithProxy(swirlLogger.log.bind(swirlLogger));
+    this.damageCalculator.reactionsManager
+      .getReaction(VaporizeReaction)?.onExecuteListener
+      .subscribe(vaporizeLogger.log.bind(vaporizeLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(ReverseVaporizeReaction)?.onExecuteListener
+      .subscribe(reverseVaporizeLogger.log.bind(reverseVaporizeLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(MeltReaction)?.onExecuteListener
+      .subscribe(meltLogger.log.bind(meltLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(ReverseMeltReaction)?.onExecuteListener
+      .subscribe(reverseMeltLogger.log.bind(reverseMeltLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(OverloadedReaction)?.onExecuteListener
+      .subscribe(overloadLogger.log.bind(overloadLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(ElectroChargedReaction)?.onExecuteListener
+      .subscribe(electroChargedLogger.log.bind(electroChargedLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(FrozenReaction)?.onExecuteListener
+      .subscribe(frozenLogger.log.bind(frozenLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(SuperConductReaction)?.onExecuteListener
+      .subscribe(superConductLogger.log.bind(superConductLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(CrystallizeReaction)?.onExecuteListener
+      .subscribe(crystallizeLogger.log.bind(crystallizeLogger));
+
+    this.damageCalculator.reactionsManager
+      .getReaction(SwirlReaction)?.onExecuteListener
+      .subscribe(swirlLogger.log.bind(swirlLogger));
   }
 
   public async save(): Promise<void> {

@@ -15,7 +15,7 @@ export interface IEndingLogItem extends ILogItem {
 
 export default abstract class LoggerItem<T extends ILogItem, LogArgs> {
   constructor(
-    private combatLogger: CombatLogger,
+    protected combatLogger: CombatLogger,
   ) {
   }
 

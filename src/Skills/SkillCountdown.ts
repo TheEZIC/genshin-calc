@@ -2,6 +2,7 @@ import Skill from "@/Skills/Skill";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+import SkillArgs from "@/Skills/Args/SkillArgs";
 
 @RefreshableClass
 export default class SkillCountdown {
@@ -10,8 +11,6 @@ export default class SkillCountdown {
   ) {
   }
 
-  private damageCalculator: DamageCalculator = DamageCalculator.instance;
-
   @RefreshableProperty()
   private _isOnCountdown: boolean = false;
 
@@ -19,22 +18,30 @@ export default class SkillCountdown {
   public countdownFrames: number = 0;
 
   public reduceCountdown(frames: number) {
-    this.countdownFrames -= frames;
+    if (this.skill.isStarted && this.isOnCountdown) {
+      this.countdownFrames -= frames;
+    }
+
+    if (this.countdownFrames < 0) {
+      this.countdownFrames = 0;
+    }
   }
 
   public increaseCountdown(frames: number) {
-    this.countdownFrames += frames;
+    if (this.skill.isStarted && this.isOnCountdown) {
+      this.countdownFrames += frames;
+    }
   }
 
-  public startCountdown(frames?: number) {
+  public startCountdown(args: SkillArgs, frames?: number) {
     this._isOnCountdown = true;
     this.countdownFrames = frames ?? this.skill.countdownFrames;
   }
 
-  public startDelayedCountdown(delay: number, frames?: number) {
-    this.damageCalculator.addAction({
+  public startDelayedCountdown(args: SkillArgs, delay: number, frames?: number) {
+    args.damageCalculator.addDelayedAction({
       delay,
-      run: () => this.startCountdown(frames),
+      run: () => this.startCountdown(args, frames),
     });
   }
 

@@ -4,6 +4,7 @@ import NormalAttackSkillStrategy from "@/Skills/SkillStrategy/NormalAttackSkillS
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import SkillArgs from "@/Skills/Args/SkillArgs";
+import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
 
 export default abstract class NormalAttackSkill extends Skill {
   public strategy: ISkillStrategy = new NormalAttackSkillStrategy(this);
@@ -26,20 +27,23 @@ export default abstract class NormalAttackSkill extends Skill {
   override onAction(args: SkillArgs) {
   }
 
-  public getCurrentAttackSkillIndex(prevSkills: Skill[]): number {
-    if (!prevSkills || !prevSkills.length) {
+  public getCurrentAttackSkillIndex(args: SkillArgs): number {
+    const {prevSkill, damageCalculator} = args;
+    const prevSkills = damageCalculator.skillHistory;
+
+    if (!prevSkill || !prevSkills.length) {
       return 0;
     }
 
     let index = prevSkills.length - 1;
     let attackSkillsCount = 0;
 
-    let skill = prevSkills[index];
+    let skill = prevSkills[index].skill;
 
-    while (index >= 0 && skill instanceof NormalAttackSkill) {
+    while (index >= 0 && skill instanceof NormalAttackSkillStage) {
       attackSkillsCount++;
       index--;
-      skill = prevSkills[index];
+      skill = prevSkills[index]?.skill;
     }
 
     const fullRotations = Math.trunc(attackSkillsCount / this.attackStages.length);
@@ -48,7 +52,7 @@ export default abstract class NormalAttackSkill extends Skill {
   }
 
   private getAttackSkill(args: SkillArgs): Skill {
-    const currentAttackIndex = this.getCurrentAttackSkillIndex(args.prevSkills);
+    const currentAttackIndex = this.getCurrentAttackSkillIndex(args);
     const attackSkill = this.attackStages[currentAttackIndex].clone;
 
     return attackSkill;
@@ -56,13 +60,7 @@ export default abstract class NormalAttackSkill extends Skill {
 
   public override onStart(args: SkillArgs) {
     const skill = this.getAttackSkill(args);
-
-    const newArgs = args.clone;
-    newArgs.changeHash(skill);
-
     skill.lvl.current = this.lvl.current;
-    skill.start(newArgs);
-
-    this.damageCalculator.skip(skill.frames);
+    args.damageCalculator.runAnotherSkill(skill, args);
   }
 }

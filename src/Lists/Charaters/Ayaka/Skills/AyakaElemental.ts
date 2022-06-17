@@ -6,9 +6,9 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
-import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import Character from "@/Entities/Characters/Character";
 
 export default class AyakaElemental extends NormalSkill {
   public skillName: string = "Kamisato Art: Hyouka";
@@ -24,23 +24,21 @@ export default class AyakaElemental extends NormalSkill {
 
   public override ICD = new ICD(0, 0);
 
-  override onStart(args: ISkillBehaviorArgs) {
-    this.countdown.startCountdown();
+  override onStart(args: SkillArgs) {
+    this.countdown.startCountdown(args);
   }
 
-  onAction(args: SkillArgs): void {
-    if (this.currentFrame === this.frames) {
-      const {character} = args;
-      const atk = character.calculatorStats.ATK.calc();
-      const dmg = this.skillValue.getDamage(this.lvl.current) * atk;
-      const status = new CryoStatus(2);
-      const dmgArgs = new SkillDamageArgs({
-        ...args,
-        value: dmg,
-        elementalStatus: status,
-      });
+  override onEnd(args: SkillArgs) {
+    const {character} = args;
+    const atk = character.calculatorStats.ATK.calc();
+    const dmg = this.skillValue.getDamage(this.lvl.current) * atk;
+    const status = new CryoStatus(2);
+    const dmgArgs = new SkillDamageArgs({
+      ...args,
+      value: dmg,
+      elementalStatus: status,
+    });
 
-      this.doDamage(dmgArgs, "Ayaka elemental hit");
-    }
+    this.doDamage(dmgArgs, "Ayaka elemental hit");
   }
 }

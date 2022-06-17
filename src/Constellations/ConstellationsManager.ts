@@ -23,10 +23,14 @@ export default class ConstellationsManager {
   public activateConstellation(order: number) {
     this.deactivateAll();
 
+    if (order === 0) {
+      return;
+    }
+
     const index = order - 1;
 
     for (let i = 0; i < this.constellations.length; i++) {
-      if (i <= index) {
+      if (i <= index && !this.constellations[i].isActive) {
         const constellation = this.constellations[i];
         constellation.activate(this.character);
       }
@@ -35,30 +39,19 @@ export default class ConstellationsManager {
     this._current = index;
   }
 
-  public deactivateConstellation(order: number) {
-    this.activateAll();
-
-    const index = order - 1;
-
-    for (let i = 0; i < this.constellations.length; i++) {
-      if (i >= index) {
-        const constellation = this.constellations[i];
-        constellation.deactivate(this.character);
-      }
-    }
-
-    this._current = index;
-  }
-
   public activateAll() {
     for (let constellation of this.constellations) {
-      constellation.activate(this.character);
+      if (!constellation.isActive) {
+        constellation.activate(this.character);
+      }
     }
   }
 
   public deactivateAll() {
     for (let constellation of this.constellations) {
-      constellation.deactivate(this.character);
+      if (constellation.isActive) {
+        constellation.deactivate(this.character);
+      }
     }
   }
 }

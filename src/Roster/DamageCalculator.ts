@@ -1,11 +1,16 @@
 import Skill from "@/Skills/Skill";
-import Roster from "@/Roster/Roster";
+import Roster, {ISkillsItem} from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
 import GlobalListeners, {IOnSkillAction} from "@/Roster/GlobalListeners";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import RefreshManager from "@/Refresher/RefreshManager";
 import SkillArgs from "@/Skills/Args/SkillArgs";
+import Character from "@/Entities/Characters/Character";
+import Effect from "@/Effects/Effect";
+import EnergyManager from "@/Roster/EnergyManager";
+import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
+import CombatLogger from "@/CombatLogger/CombatLogger";
 
 export interface ICalcResult {
   damage: number;
@@ -23,22 +28,19 @@ interface IDelayedAction {
 }
 
 export default class DamageCalculator {
-  private static _instance: DamageCalculator | null = null;
-
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new this();
-      SingletonsManager.addSingleton(this._instance);
-    }
-
-    return this._instance;
-  }
-
-  protected roster: Roster = Roster.instance;
-
-  protected globalListeners: GlobalListeners = GlobalListeners.instance;
+  public roster: Roster = new Roster(this);
+  public globalListeners: GlobalListeners = new GlobalListeners(this);
+  public energyManager: EnergyManager = new EnergyManager(this);
+  public reactionsManager: ElementalReactionManager = new ElementalReactionManager(this);
+  public combatLogger = new CombatLogger(this);
 
   private ongoingSkills: SkillArgs[] = [];
+
+  private _skillHistory: SkillArgs[] = [];
+
+  public get skillHistory() {
+    return this._skillHistory;
+  }
 
   private onAnySKillStarted(args: SkillArgs) {
     this.ongoingSkills.push(args);
@@ -46,6 +48,10 @@ export default class DamageCalculator {
 
   private onAnySkillEnded(args: SkillArgs) {
     this.ongoingSkills = this.ongoingSkills.filter(s => s.hash !== args.hash);
+
+    if (!args.skill.ignoreLog) {
+      this.skillHistory.push(args);
+    }
   }
 
   private onAnySKillStartedDelegate = this.onAnySKillStarted.bind(this);
@@ -66,21 +72,21 @@ export default class DamageCalculator {
   private onCreateShieldDelegate = this.onCreateShield.bind(this)
 
   private subscribeGlobals() {
-    this.globalListeners?.onDamage.subscribe(this.onDamageDelegate);
-    this.globalListeners?.onHeal.subscribe(this.onHealDelegate);
-    this.globalListeners?.onCreateShield.subscribe(this.onCreateShieldDelegate);
+    this.globalListeners.onDamage.subscribe(this.onDamageDelegate);
+    this.globalListeners.onHeal.subscribe(this.onHealDelegate);
+    this.globalListeners.onCreateShield.subscribe(this.onCreateShieldDelegate);
 
-    this.globalListeners?.onSkillStarted.subscribe(this.onAnySKillStartedDelegate);
-    this.globalListeners?.onSkillEnded.subscribe(this.onAnySKillEndedDelegate);
+    this.globalListeners.onSkillStarted.subscribe(this.onAnySKillStartedDelegate);
+    this.globalListeners.onSkillEnded.subscribe(this.onAnySKillEndedDelegate);
   }
 
   private unsubscribeGlobals() {
-    this.globalListeners?.onDamage.unsubscribe(this.onDamageDelegate);
-    this.globalListeners?.onHeal.unsubscribe(this.onHealDelegate);
-    this.globalListeners?.onCreateShield.unsubscribe(this.onCreateShieldDelegate);
+    this.globalListeners.onDamage.unsubscribe(this.onDamageDelegate);
+    this.globalListeners.onHeal.unsubscribe(this.onHealDelegate);
+    this.globalListeners.onCreateShield.unsubscribe(this.onCreateShieldDelegate);
 
-    this.globalListeners?.onSkillStarted.unsubscribe(this.onAnySKillStartedDelegate);
-    this.globalListeners?.onSkillEnded.unsubscribe(this.onAnySKillEndedDelegate);
+    this.globalListeners.onSkillStarted.unsubscribe(this.onAnySKillStartedDelegate);
+    this.globalListeners.onSkillEnded.unsubscribe(this.onAnySKillEndedDelegate);
   }
 
   private _delayedActions: IDelayedAction[] = [];
@@ -89,11 +95,11 @@ export default class DamageCalculator {
     return this._delayedActions;
   }
 
-  public addAction(newAction: IAction) {
-    const {run, delay} = newAction;
+  public addDelayedAction(action: IAction) {
+    const {run, delay} = action;
 
-    if (newAction.delay === 0) {
-      newAction.run(this);
+    if (action.delay === 0) {
+      action.run(this);
       return;
     }
 
@@ -128,23 +134,27 @@ export default class DamageCalculator {
     const logger = [];
 
     for (let i = 0; i < rotationSkills.length; i++) {
-      const rotationSkill = rotationSkills[i];
-      const skillItem = this.roster?.charactersSkills.find((s) => s.skill.title === rotationSkill.title);
+      const rotationSkill: Skill = rotationSkills[i];
+      const skillItem = this.roster.checkSkillExistence(rotationSkill);
 
-      if (!skillItem) continue;
-      const {character} = skillItem;
-      const skill = skillItem.skill;
+      if (!skillItem) {
+        continue;
+      }
+
+      const {character, skill} = skillItem;
+      const args = new SkillArgs({
+        skill,
+        character: character,
+        currentSkillIndex: i,
+        skills: this.rotationSkills,
+        damageCalculator: this,
+      });
+
+      this.checkCharacterSwap(args, skillItem);
 
       if (skill.countdown.isOnCountdown) {
         continue;
       }
-
-      const args = new SkillArgs({
-        skill,
-        character,
-        currentSkillIndex: i,
-        skills: this.rotationSkills,
-      })
 
       skill.awake(args);
       skill.start(args);
@@ -163,7 +173,7 @@ export default class DamageCalculator {
           currentFrames: this.currentFrames,
           buffs: character.ongoingEffects.map(e => e.name),
           parallelSkills: this.ongoingSkills.map(s => s.skill.strategy.skillTypeName),
-        })
+        });
       }
 
       if (skill instanceof NormalSkill) {
@@ -189,8 +199,8 @@ export default class DamageCalculator {
     let framesRemaining = this.getRemainingFrames();
 
     while (framesRemaining > 0) {
-        this.skip(framesRemaining);
-        framesRemaining = this.getRemainingFrames();
+      this.skip(framesRemaining);
+      framesRemaining = this.getRemainingFrames();
     }
 
     const result = {
@@ -202,10 +212,50 @@ export default class DamageCalculator {
     console.table(logger);
     console.log(this.rotationDamage, this.currentFrames);
 
-    RefreshManager.refreshAll();
-    SingletonsManager.resetAll();
+    return result;
+  }
+
+  public calcRotationAndFinish(rotationSkills: Skill[]) {
+    const result = this.calcRotation(rotationSkills);
+    this.finish();
 
     return result;
+  }
+
+  private finish() {
+    RefreshManager.refreshAll();
+    this.reset();
+  }
+
+  private checkCharacterSwap(args: SkillArgs, skillItem: ISkillsItem) {
+    if (args.prevSkill) {
+      const prevSkillItem = this.roster.checkSkillExistence(args.skill);
+
+      if (prevSkillItem && prevSkillItem.character.title !== skillItem.character.title) {
+        this.roster.changeActiveCharacter(skillItem.character);
+        this.updateOnlyActiveCharacterEffects(this.roster.activeCharacter);
+        this.skip(12);
+      }
+    }
+  }
+
+  private updateOnlyActiveCharacterEffects(currentActiveCharacter: Character) {
+    const effectToReactivate: Effect<any>[] = [];
+
+    for (let character of this.roster.characters) {
+      const activeOnlyEffects = character.ongoingEffects.filter(e => e.activeEntityOnly);
+
+      for (let effect of activeOnlyEffects) {
+        if (character.hasEffect(effect)) {
+          effect.deactivate(character);
+          effectToReactivate.push(effect);
+        }
+      }
+    }
+
+    for (let effect of effectToReactivate) {
+      effect.activate(this.roster.activeCharacter);
+    }
   }
 
   private getRemainingFrames(): number {
@@ -216,12 +266,12 @@ export default class DamageCalculator {
     );
     const characterOngoingEffectsRemaining = Math.max(
       ...this.roster.characters.map(
-        c => c.ongoingEffects.map(e => e.framesDuration - e.currentFrame)
+        c => c.ongoingEffects.map(e => e.isStarted ? e.framesDuration - e.currentFrame : 0)
       ).flat(2)
     );
     const entitiesOngoingEffectsRemaining = Math.max(
       ...this.roster.entities.map(
-        c => c.ongoingEffects.map(e => e.framesDuration - e.currentFrame)
+        c => c.ongoingEffects.map(e => e.isStarted ? e.framesDuration - e.currentFrame : 0)
       ).flat(2)
     );
 
@@ -253,12 +303,22 @@ export default class DamageCalculator {
     }
   }
 
+  public runAnotherSkill(skill: Skill, args: SkillArgs) {
+    const newArgs = args.clone;
+    newArgs.changeHash(skill);
+    skill.start(newArgs);
+    this.skip(skill.frames);
+  }
+
   public reset() {
     this.rotationDamage = 0;
     this.currentFrames = 0;
     this._delayedActions = [];
     this.rotationSkills = [];
     this.ongoingSkills = [];
+    this._skillHistory = [];
     this.currentSkillIndex = 0;
+
+    this.reactionsManager.reset();
   }
 }

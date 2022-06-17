@@ -18,7 +18,6 @@ type SubscriberProxyArgs<T> = Subscriber<ProxyEvent<T>> | ISubscriber<ProxyEvent
 
 export default class Listener<T = void> {
   private subscribers: Array<SubscriberArgs<T>> = [];
-  private subscribersWithProxy: Array<SubscriberProxyArgs<T>> = [];
 
   private addToList<T>(list: T[], subscriber: T) {
     const isExist = list.indexOf(subscriber) !== -1;
@@ -43,28 +42,9 @@ export default class Listener<T = void> {
     this.removeFromList<SubscriberArgs<T>>(this.subscribers, subscriber);
   }
 
-  public subscribeWithProxy(subscriber: Subscriber<ProxyEvent<T>> | ISubscriber<ProxyEvent<T>>) {
-    this.addToList<SubscriberProxyArgs<T>>(this.subscribersWithProxy, subscriber);
-  }
-
-  public unsubscribeWithProxy(subscriber: Subscriber<ProxyEvent<T>> | ISubscriber<ProxyEvent<T>>) {
-    this.removeFromList<SubscriberProxyArgs<T>>(this.subscribersWithProxy, subscriber);
-  }
-
   public notifyAll(args: T): void {
-    const damageCalculator: DamageCalculator = DamageCalculator.instance;
-
     this.subscribers.forEach((s) =>
       typeof s === "object" ? s.runOnEvent(args) : s(args)
     );
-
-    this.subscribersWithProxy.forEach(s => {
-      const arg: ProxyEvent<T> = {
-        startFrame: damageCalculator.currentFrame,
-        args,
-      }
-
-      typeof s === "object" ? s.runOnEvent(arg) : s(arg);
-    });
   }
 }

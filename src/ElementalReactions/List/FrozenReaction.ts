@@ -16,9 +16,6 @@ interface IFrozenHistoryItem {
 
 @RefreshableClass
 export default class FrozenReaction extends ElementalReaction {
-  private damageCalculator: DamageCalculator = DamageCalculator.instance;
-  private globalListeners: GlobalListeners = GlobalListeners.instance;
-
   constructor(elementalReactionManager: ElementalReactionManager) {
     super(elementalReactionManager);
     this.subscribeFreeze();
@@ -31,9 +28,11 @@ export default class FrozenReaction extends ElementalReaction {
   private _history: IFrozenHistoryItem[] = [];
 
   private addHistoryFrame(entity: Entity) {
+    const {damageCalculator} = this.elementalReactionManager;
+
     this._history.push({
       entity,
-      frame: this.damageCalculator.currentFrame,
+      frame: damageCalculator.currentFrame,
     });
   }
 
@@ -61,7 +60,7 @@ export default class FrozenReaction extends ElementalReaction {
     } else return 0;
 
     const freezeUnits = 2 * Math.min(cryoStatus.remainingUnits, hydroStatus.units);
-    const status = new FreezeStatus(freezeUnits, args.entity);
+    const status = new FreezeStatus(freezeUnits, args);
 
     status.activate(args.entity);
 
@@ -69,7 +68,9 @@ export default class FrozenReaction extends ElementalReaction {
   }
 
   private subscribeFreeze() {
-    this.globalListeners.onEffectEnded.subscribe(e => {
+    const {globalListeners} = this.elementalReactionManager.damageCalculator;
+
+    globalListeners.onEffectEnded.subscribe(e => {
       if (e.effect instanceof FreezeStatus) {
         this.addHistoryFrame(e.entity);
       }

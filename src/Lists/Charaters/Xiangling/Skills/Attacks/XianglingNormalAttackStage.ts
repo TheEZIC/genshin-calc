@@ -1,10 +1,10 @@
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
-import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import SkillArgs from "@/Skills/Args/SkillArgs";
+import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
 
-export default abstract class AyakaNormalAttackStage extends NormalAttackSkillStage {
+export default abstract class XianglingNormalAttackStage extends NormalAttackSkillStage {
   public targetType: SkillTargetType = SkillTargetType.Single;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 

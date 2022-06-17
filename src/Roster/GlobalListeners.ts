@@ -6,6 +6,8 @@ import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import SkillArgs from "@/Skills/Args/SkillArgs";
+import DamageCalculator from "@/Roster/DamageCalculator";
+import Entity from "@/Entities/Entity";
 
 export interface IOnSkillAction {
   character: Character;
@@ -23,15 +25,9 @@ export interface IOnAnyEffect<T extends IWithOngoingEffects = any> {
   effect: Effect<T>;
 }
 export default class GlobalListeners {
-  private static _instance: GlobalListeners | null = null;
-
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new this();
-      SingletonsManager.addSingleton(this._instance);
-    }
-
-    return this._instance;
+  constructor(
+    public damageCalculator: DamageCalculator,
+  ) {
   }
 
   public onDamage: Listener<IOnSkillDamage> = new Listener<IOnSkillDamage>();
@@ -45,8 +41,4 @@ export default class GlobalListeners {
   public onEffectReactivate: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectRefill: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectEnded: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
-
-  public reset() {
-
-  }
 }

@@ -7,12 +7,12 @@ export interface ISkillBehaviorLoggerItem extends ILogItem {
   characterName: string;
 }
 
-export default abstract class SkillBehaviorLogger extends LoggerItem<ISkillBehaviorLoggerItem, ProxyEvent<SkillArgs>> {
+export default abstract class SkillBehaviorLogger extends LoggerItem<ISkillBehaviorLoggerItem, SkillArgs> {
   protected abstract messageEvent: string;
 
-  public onLog(args: ProxyEvent<SkillArgs>): ISkillBehaviorLoggerItem {
-    const {startFrame} = args;
-    const {skill, character} = args.args;
+  public onLog(args: SkillArgs): ISkillBehaviorLoggerItem {
+    const startFrame = args.damageCalculator.currentFrame;
+    const {skill, character} = args;
 
     return {
       message: `Skill ${skill.title} ${this.messageEvent}`,

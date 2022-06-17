@@ -3,6 +3,7 @@ import Character from "@/Entities/Characters/Character";
 import BurstSkillStrategy from "@/Skills/SkillStrategy/BurstSkillStrategy";
 import {VisionType} from "@/VisionType";
 import SingletonsManager from "@/Singletons/SingletonsManager";
+import DamageCalculator from "@/Roster/DamageCalculator";
 
 export interface IEnergyParticles {
   type: VisionType | null;
@@ -11,23 +12,15 @@ export interface IEnergyParticles {
 }
 
 export default class EnergyManager {
-  private static _instance: EnergyManager | null = null;
-
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new this();
-      SingletonsManager.addSingleton(this._instance);
-    }
-
-    return this._instance;
+  constructor(
+    public damageCalculator: DamageCalculator,
+  ) {
   }
 
-  private roster: Roster = Roster.instance;
-
   public addEnergy(particles: IEnergyParticles) {
+    const {roster} = this.damageCalculator;
     const {isOrb} = particles;
-    const burstSkillItems = this.roster
-      .charactersSkills
+    const burstSkillItems = roster.charactersSkills
       .filter(item => item.skill.strategy instanceof BurstSkillStrategy);
 
     for (let burstSkillItem of burstSkillItems) {
@@ -46,13 +39,13 @@ export default class EnergyManager {
       }
 
       if (particles.type) {
-        if (this.roster.isActive(character)) {
+        if (roster.isActive(character)) {
           if (particles.type === character.vision) {
             character.addEnergy(value(3));
           } else {
             character.addEnergy(value(1));
           }
-        } else if (this.roster.isInactive(character)) {
+        } else if (roster.isInactive(character)) {
           if (particles.type === character.vision) {
             character.addEnergy(penaltyValue(2.4, 0.3));
           } else {
@@ -60,9 +53,9 @@ export default class EnergyManager {
           }
         }
       } else {
-        if (this.roster.isActive(character)) {
+        if (roster.isActive(character)) {
           character.addEnergy(value(2));
-        } else if (this.roster.isInactive(character)) {
+        } else if (roster.isInactive(character)) {
           character.addEnergy(penaltyValue(1.6, 0.2));
         }
       }
@@ -70,7 +63,7 @@ export default class EnergyManager {
   }
 
   private calcRosterPenalty(value: number, penaltyStep: number) {
-    const rosterSize = this.roster.characters.length;
+    const rosterSize = this.damageCalculator.roster.characters.length;
 
     if (rosterSize === 1) {
       return value;

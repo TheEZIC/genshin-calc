@@ -32,23 +32,11 @@ type ElementalCombination = [
 
 
 export default class ElementalReactionManager {
-  private static _instance: ElementalReactionManager | null = null;
-
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new this();
-      SingletonsManager.addSingleton(this._instance);
-    }
-
-    return this._instance;
-  }
-
   constructor(
+    public damageCalculator: DamageCalculator,
   ) {
     this.subscribeAllReactions();
   }
-
-  private damageCalculator: DamageCalculator = DamageCalculator.instance;
 
   public onAnyReaction: Listener<IOnReactionArgs> = new Listener<IOnReactionArgs>();
 
@@ -175,7 +163,7 @@ export default class ElementalReactionManager {
           }
 
           for (let i = 0; i < ticksCount; i++) {
-            this.damageCalculator.addAction({
+            this.damageCalculator.addDelayedAction({
               delay: 60 * i,
               run: (damageCalculator) => {
                 const electroStatus = entity.ongoingEffects.find(e => e instanceof ElectroStatus) as ElectroStatus;

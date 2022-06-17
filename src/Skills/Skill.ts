@@ -3,22 +3,16 @@ import {ISkillStrategy} from "@/Skills/SkillStrategy";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
-import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import SkillLvl from "@/Skills/SkillLvl";
 import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
-import SkillBehavior, {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
-import Roster from "@/Roster/Roster";
-import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import EnergyManager, {IEnergyParticles} from "@/Roster/EnergyManager";
+import SkillBehavior from "@/Behavior/SkillBehavior";
+import {IEnergyParticles} from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import Entity from "@/Entities/Entity";
-import GlobalListeners from "@/Roster/GlobalListeners";
 import SkillCountdown from "@/Skills/SkillCountdown";
-import DamageCalculator from "@/Roster/DamageCalculator";
 import SkillInfusion from "@/Skills/SkillInfusion";
 import {Constructor} from "@/Helpers/Constructor";
 import {IWithCreator} from "@/Utils/IWithCreator";
-import {cloneDeep} from "lodash";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import SkillActionArgs from "@/Skills/Args/SkillActionArgs";
@@ -30,8 +24,8 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     return this.constructor as Constructor<Skill>;
   }
 
-  public get clone() {
-    return cloneDeep(this);
+  public get clone(): Skill {
+    return new this.creator();
   }
 
   public abstract frames: number;
@@ -62,15 +56,8 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   public unsubscribeEffects(character: Character): void {
   }
 
-  protected roster: Roster = Roster.instance;
-  protected damageCalculator: DamageCalculator = DamageCalculator.instance;
-  protected reactionManager: ElementalReactionManager = ElementalReactionManager.instance;
-  protected globalListeners: GlobalListeners = GlobalListeners.instance;
-
-  private energyManager: EnergyManager = EnergyManager.instance;
-
-  protected addEnergy(particles: IEnergyParticles) {
-    this.energyManager.addEnergy(particles);
+  protected addEnergy(args: SkillArgs, particles: IEnergyParticles) {
+    args.damageCalculator.energyManager.addEnergy(particles);
   }
 
   public doAction(args: SkillArgs): void {
@@ -80,13 +67,12 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     this.infusion.removeBonus(args.character, infusionBonus);
   }
 
-  public abstract onAction(args: SkillArgs): void;
+  public onAction(args: SkillArgs): void {};
 
   public doDamage(args: SkillDamageArgs, comment: string = "") {
-    const frame = DamageCalculator.instance.currentFrame;
     let dmg: number = this.performHit(args);
 
-    this.globalListeners.onDamage.notifyAll({
+    args.damageCalculator.globalListeners.onDamage.notifyAll({
       character: args.character,
       elementalStatus: args.elementalStatus,
       comment,
@@ -103,6 +89,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
 
     const createArgs = (entity: Entity): IElementalReactionArgs => ({
       character: args.character,
+      damageCalculator: args.damageCalculator,
       damage,
       elementalStatus,
       entity,
@@ -117,8 +104,8 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     if (elementalStatus && !this.ICD?.onCountdown) {
       this.ICD?.startCountdown();
       const applyReaction = (entity: Entity) =>
-        totalDmg += this.reactionManager.applyReaction(createArgs(entity));
-      this.doOnSkillType(applyReaction);
+        totalDmg += args.damageCalculator.reactionsManager.applyReaction(createArgs(entity));
+      this.doOnSkillType(args, applyReaction);
     } else {
       totalDmg = damage;
     }
@@ -132,8 +119,8 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     return totalDmg || damage;
   }
 
-  private doOnSkillType(action?: (entity: Entity) => void) {
-    const {enemies} = this.roster;
+  private doOnSkillType(args: SkillDamageArgs, action?: (entity: Entity) => void) {
+    const {enemies} = args.damageCalculator.roster;
 
     if (this.targetType === SkillTargetType.Single) {
       const [enemy] = enemies;
@@ -146,7 +133,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   }
 
   public doHeal(args: SkillActionArgs, comment: string = "") {
-    this.globalListeners.onHeal.notifyAll({
+    args.damageCalculator.globalListeners.onHeal.notifyAll({
       character: args.character,
       comment,
       skill: this,
@@ -155,7 +142,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   }
 
   public createShield(args: SkillActionArgs, comment: string = "") {
-    this.globalListeners.onCreateShield.notifyAll({
+    args.damageCalculator.globalListeners.onCreateShield.notifyAll({
       character: args.character,
       comment,
       skill: this,

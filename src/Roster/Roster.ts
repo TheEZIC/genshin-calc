@@ -5,6 +5,8 @@ import Skill from "@/Skills/Skill";
 import Entity from "@/Entities/Entity";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import CharactersFactory from "@/Factories/CharactersFactory";
+import Listener from "@/Helpers/Listener";
+import DamageCalculator from "@/Roster/DamageCalculator";
 
 export interface ISkillsItem {
   character: Character;
@@ -12,15 +14,9 @@ export interface ISkillsItem {
 }
 
 export default class Roster {
-  private static _instance: Roster | null = null;
-
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new this();
-      SingletonsManager.addSingleton(this._instance);
-    }
-
-    return this._instance;
+  constructor(
+    public damageCalculator: DamageCalculator,
+  ) {
   }
 
   public static readonly MAX_CHARACTERS_COUNT = 4;
@@ -42,6 +38,7 @@ export default class Roster {
   }
 
   public addEntity(entity: Entity) {
+    entity.damageCalculator = this.damageCalculator;
     this._entities.push(entity);
   }
 
@@ -66,6 +63,7 @@ export default class Roster {
   }
 
   public addEnemy(enemy: Enemy) {
+    enemy.damageCalculator = this.damageCalculator;
     this.addEntity(enemy);
   }
 
@@ -81,11 +79,19 @@ export default class Roster {
     return this.characters.map((char) => char.skillManager.allSkills.map((s) => ({ skill: s, character: char }))).flat();
   }
 
+  public checkSkillExistence(skill: Skill) {
+    const charactersSkills = this.charactersSkills;
+    return charactersSkills.find((s) => s.skill.title === skill.title);
+  }
+
+  public onCharacterSwap: Listener<Character> = new Listener<Character>();
+
   public changeActiveCharacter(character: Character) {
     const index = this.characters.findIndex(c => c.title === character.title);
 
     if (index !== -1) {
       this._index = index;
+      this.onCharacterSwap.notifyAll(character);
     }
   }
 
@@ -112,6 +118,7 @@ export default class Roster {
   }
 
   public addCharacter(character: Character) {
+    character.damageCalculator = this.damageCalculator;
     if (this._characters.length > Roster.MAX_CHARACTERS_COUNT) return;
     this._characters.push(character);
   }
@@ -122,14 +129,5 @@ export default class Roster {
 
   public clearCharacters() {
     this._characters = [];
-  }
-
-  public reset() {
-    //this._entities = [];
-
-    // const charactersFactory = CharactersFactory.instance;
-    // const newCharacters = this._characters.map(c => charactersFactory.getByName(c.name)!.character);
-    //
-    // this._characters = newCharacters;
   }
 }

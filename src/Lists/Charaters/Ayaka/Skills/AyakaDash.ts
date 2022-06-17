@@ -21,8 +21,8 @@ export default class AyakaDash extends NormalSkill {
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
-  private activateDashBuff(args: ISkillListenerArgs<Character>) {
-    new AyakaDashBuff().activate(args.entity);
+  private activateDashBuff(args: SkillArgs) {
+    new AyakaDashBuff().activate(args.character);
   }
 
   private activateDashBuffDelegate = this.activateDashBuff.bind(this);
@@ -39,15 +39,13 @@ export default class AyakaDash extends NormalSkill {
     );
   }
 
-  public onAction(args: SkillArgs): void {
-    if (this.currentFrame === 1) {
-      const dmgArgs = new SkillDamageArgs({
-        ...args,
-        value: 0,
-        elementalStatus: new CryoStatus(1),
-      });
+  public override onStart(args: SkillArgs) {
+    const dmgArgs = new SkillDamageArgs({
+      ...args,
+      value: 0,
+      elementalStatus: new CryoStatus(1),
+    });
 
-      this.doDamage(dmgArgs);
-    }
+    this.doDamage(dmgArgs);
   }
 }

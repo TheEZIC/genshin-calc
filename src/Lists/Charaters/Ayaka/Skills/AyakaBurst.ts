@@ -7,7 +7,6 @@ import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import ICD from "@/Skills/ICD";
-import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import SkillArgs from "@/Skills/Args/SkillArgs";
@@ -44,19 +43,28 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
 
-  override onStart(args: ISkillBehaviorArgs) {
+  override onStart(args: SkillArgs) {
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
-    this.countdown.startCountdown();
+    this.countdown.startCountdown(args);
   }
 
-  public onAction(args: SkillArgs): void {
+  public override onAction(args: SkillArgs): void {
     if (this.damageFrames.includes(this.currentFrame)) {
       const {character} = args;
       const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
-      const dmg = this.cuttingValue.getDamage(this.lvl.current) * atk;
+      let dmg = this.cuttingValue.getDamage(this.lvl.current) * atk;
+
+      const constellation = character.constellationsManager.current;
+      const isC2 = constellation === 2;
+
+      if (isC2) {
+        dmg += dmg * 0.2 * 2;
+      }
+
       const dmgArgs = new SkillDamageArgs({
         ...args,
         value: dmg,
+        hits: isC2 ? 3 : 1,
         elementalStatus: new CryoStatus(1),
       });
 
@@ -67,10 +75,19 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   public override onEnd(args: SkillArgs) {
     const {character} = args;
     const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
-    const dmg = this.sakuraBloomValue.getDamage(this.lvl.current) * atk;
+    let dmg = this.sakuraBloomValue.getDamage(this.lvl.current) * atk;
+
+    const constellation = character.constellationsManager.current;
+    const isC2 = constellation === 2;
+
+    if (isC2) {
+      dmg += dmg * 0.2 * 2;
+    }
+
     const dmgArgs = new SkillDamageArgs({
       ...args,
       value: dmg,
+      hits: isC2 ? 3 : 1,
       elementalStatus: new CryoStatus(1),
     });
 

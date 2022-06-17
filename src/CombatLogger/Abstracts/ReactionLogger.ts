@@ -1,5 +1,4 @@
 import LoggerItem, {ILogItem} from "@/CombatLogger/LoggerItem";
-import {ProxyEvent} from "@/Helpers/Listener";
 import {IOnReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 export interface IReactionLoggerItem extends ILogItem {
@@ -7,10 +6,10 @@ export interface IReactionLoggerItem extends ILogItem {
   damage: number;
 }
 
-export default abstract class ReactionLogger extends LoggerItem<IReactionLoggerItem, ProxyEvent<IOnReactionArgs>> {
-  public onLog(args: ProxyEvent<IOnReactionArgs>): IReactionLoggerItem {
-    const {startFrame} = args;
-    const {reaction, damage} = args.args;
+export default abstract class ReactionLogger extends LoggerItem<IReactionLoggerItem, IOnReactionArgs> {
+  public onLog(args: IOnReactionArgs): IReactionLoggerItem {
+    const startFrame = args.character.damageCalculator.currentFrame;
+    const {reaction, damage} = args;
 
     return {
       message: `${reaction.name} reacted`,

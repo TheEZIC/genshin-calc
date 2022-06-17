@@ -5,15 +5,11 @@ import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType"
 import ICD from "@/Skills/ICD";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import SkillValue from "@/Skills/SkillValue";
-import {ISkillBehaviorArgs} from "@/Behavior/SkillBehavior";
 import StatSnapshot from "@/Skills/StatSnapshot";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
-import {RefreshableClass} from "@/Refresher/RefreshableClass";
-import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 
-@RefreshableClass
 export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   public skillName: string = "Pyronado";
 
@@ -56,12 +52,12 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
     );
   }
 
-  override onStart(args: ISkillBehaviorArgs) {
+  override onStart(args: SkillArgs) {
     this.ICD = new ICD(3, 2.5);
     this.currentHit = 0;
   }
 
-  onAction(args: SkillArgs): void {
+  public override onAction(args: SkillArgs): void {
     if (this.hitsFrames.includes(this.currentFrame)) {
       const currentHit = this.pyronadoInitialHitsValues[this.currentHit];
       const atk = args.character.calculatorStats.ATK.calc();
@@ -85,7 +81,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
     }
 
     if (this.currentFrame === this.summonUsageFrames) {
-      this.countdown.startCountdown();
+      this.countdown.startCountdown(args);
     }
 
     if (this.pyronadoFrames.includes(this.currentFrame)) {

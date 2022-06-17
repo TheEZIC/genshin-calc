@@ -1,4 +1,5 @@
 import Skill from "@/Skills/Skill";
+import DamageCalculator from "@/Roster/DamageCalculator";
 import Character from "@/Entities/Characters/Character";
 
 export interface ISkillArgsParams {
@@ -6,21 +7,10 @@ export interface ISkillArgsParams {
   skill: Skill;
   currentSkillIndex: number;
   skills: Skill[];
+  damageCalculator: DamageCalculator;
 }
 
-export interface ISkillArgs {
-  hash: string;
-  character: Character;
-  currentSkillIndex: number;
-  skill: Skill;
-  skills: Skill[];
-  prevSkill: Skill | null;
-  nextSkill: Skill | null;
-  prevSkills: Skill[];
-  nextSkills: Skill[];
-}
-
-export default class SkillArgs implements ISkillArgs {
+export default class SkillArgs {
   private _hash: string;
 
   public get hash() {
@@ -38,6 +28,8 @@ export default class SkillArgs implements ISkillArgs {
   public readonly currentSkillIndex: number;
   public readonly skills: Skill[];
 
+  public readonly damageCalculator: DamageCalculator;
+
   constructor(params: ISkillArgsParams) {
     this._hash = `${params.skill.title}${params.currentSkillIndex}`;
 
@@ -46,6 +38,8 @@ export default class SkillArgs implements ISkillArgs {
     this.skill = params.skill;
     this.skills = params.skills;
     this.currentSkillIndex = params.currentSkillIndex;
+
+    this.damageCalculator = params.damageCalculator
   }
 
   public get prevSkill(): Skill | null {
@@ -70,6 +64,7 @@ export default class SkillArgs implements ISkillArgs {
       skill: this.skill,
       currentSkillIndex: this.currentSkillIndex,
       skills: this.skills,
+      damageCalculator: this.damageCalculator,
     });
   }
 }

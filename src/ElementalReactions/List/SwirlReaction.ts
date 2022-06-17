@@ -1,4 +1,3 @@
-import Roster from "@/Roster/Roster";
 import TransformativeElementalReaction from "@/ElementalReactions/TransformativeElementalReaction";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
 import Entity from "@/Entities/Entity";
@@ -7,8 +6,6 @@ import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 export default class SwirlReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 0.625;
   public readonly baseDamageMultiplier: number = 1.2;
-
-  private roster: Roster = Roster.instance;
 
   private getEntityStatus(entity: Entity): ElementalStatus | undefined {
     return entity.ongoingEffects.find(e => e instanceof ElementalStatus) as ElementalStatus | undefined;
@@ -21,14 +18,13 @@ export default class SwirlReaction extends TransformativeElementalReaction {
       : elementalUnitsRemaining;
 
     const units = (gaugesReaction - 0.04) * 1.25 + 1;
+    const clone = elementalStatus.clone as typeof elementalStatus;
 
-    return elementalStatus
-      .clone
-      .recreate(units);
+    return clone.recreate(units);
   }
 
   applyBonusDamage(args: IElementalReactionArgs): number {
-    const {entities} = this.roster;
+    const {entities} = args.damageCalculator.roster;
     const anemoStatus = args.elementalStatus!!;
 
     for (let i = 0; i < entities.length; i++) {

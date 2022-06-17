@@ -48,7 +48,7 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
 
   public refill(element: ElementalStatus, entity: Entity) {
     this.changeFramesDuration(element.units * this.unitCapacity);
-    GlobalListeners.instance.onEffectRefill.notifyAll({effect: this, entity});
+    entity.damageCalculator.globalListeners.onEffectRefill.notifyAll({effect: this, entity});
   }
 
   public get unitCapacity(): number {
