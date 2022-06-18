@@ -45,6 +45,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   override onStart(args: SkillArgs) {
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+    this.addInfusion(args);
     this.countdown.startCountdown(args);
   }
 

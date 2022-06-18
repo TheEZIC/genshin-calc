@@ -1,6 +1,8 @@
 import {VisionType} from "@/VisionType";
 import Character from "@/Entities/Characters/Character";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import Skill from "@/Skills/Skill";
+import {SkillType} from "@/Skills/SkillType";
 
 export interface ISKillInfusionItem {
   element: VisionType;
@@ -8,6 +10,11 @@ export interface ISKillInfusionItem {
 }
 
 export default class SkillInfusion {
+  constructor(
+    private skill: Skill,
+  ) {
+  }
+
   private infusions: ISKillInfusionItem[] = [];
 
   public get active(): VisionType | undefined {
@@ -16,7 +23,14 @@ export default class SkillInfusion {
   }
 
   public add(infusionItem: ISKillInfusionItem) {
-    this.infusions.push(infusionItem);
+    const exist = this.infusions.find(infusion =>
+      infusion.element === infusionItem.element &&
+      infusion.zIndex === infusionItem.zIndex
+    );
+
+    if (!exist) {
+      this.infusions.push(infusionItem);
+    }
   }
 
   public remove(infusionItem: ISKillInfusionItem) {
@@ -26,18 +40,32 @@ export default class SkillInfusion {
     );
   }
 
-  public applyBonus(character: Character): StatValue {
+  private tempBonus: StatValue | null = null;
+
+  public applyBonus(character: Character): void {
+    if (this.tempBonus) {
+      return;
+    }
+
     const dmgBonus = this.active
       ? character.calculatorStats.getElementalDmgBonus(this.active)
       : character.calculatorStats.getPhysicalDmgBonus();
 
     const statValue = new StatValue(dmgBonus);
     character.calculatorStats.ATK.affixes.add(statValue);
-
-    return statValue;
+    this.tempBonus = statValue;
   }
 
-  public removeBonus(character: Character, statValue: StatValue) {
-    character.calculatorStats.ATK.affixes.remove(statValue);
+  public removeBonus(character: Character): void {
+    if (!this.tempBonus) {
+      return;
+    }
+
+    character.calculatorStats.ATK.affixes.remove(this.tempBonus);
+    this.tempBonus = null;
+  }
+
+  public clearBonus() {
+    this.tempBonus = null;
   }
 }

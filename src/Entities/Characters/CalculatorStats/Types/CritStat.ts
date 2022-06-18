@@ -19,12 +19,20 @@ export default abstract class CritStat extends PureStat {
     const critChance = this.character.calculatorStats.critChance.calc();
     const critDamage = this.character.calculatorStats.critDamage.calc();
 
+    if (critChance < 0 || critDamage < 0) {
+      return 1;
+    }
+
     return 1 + (critChance + critDamage) / 100;
   }
 
   get pureCritEffect(): number {
     const critChance = this.character.calculatorStats.critChance.calcPure();
     const critDamage = this.character.calculatorStats.critDamage.calcPure();
+
+    if (critChance < 0 || critDamage < 0) {
+      return 1;
+    }
 
     return 1 + (critChance + critDamage) / 100;
   }

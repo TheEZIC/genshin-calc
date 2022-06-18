@@ -16,6 +16,7 @@ import {IWithCreator} from "@/Utils/IWithCreator";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import SkillActionArgs from "@/Skills/Args/SkillActionArgs";
+import Enemy from "@/Entities/Enemies/Enemy";
 
 export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillArgs>, IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
@@ -41,7 +42,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   public abstract damageRegistrationType: SkillDamageRegistrationType;
 
   public ICD: ICD | null = null;
-  public infusion: SkillInfusion = new SkillInfusion();
+  public infusion: SkillInfusion = new SkillInfusion(this);
   public lvl: SkillLvl = new SkillLvl(this);
 
   public abstract skillName: string;
@@ -62,9 +63,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
 
   public doAction(args: SkillArgs): void {
     if (!this.isStarted) return;
-    const infusionBonus = this.infusion.applyBonus(args.character);
     this.onAction(args);
-    this.infusion.removeBonus(args.character, infusionBonus);
   }
 
   public doDamage(args: SkillDamageArgs, comment: string = "") {
@@ -100,13 +99,19 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     // }
 
     if (elementalStatus && !this.ICD?.onCountdown) {
-      this.ICD?.startCountdown();
-      const applyReaction = (entity: Entity) =>
+      const applyReaction = (entity: Entity) => {
         totalDmg += args.damageCalculator.reactionsManager.applyReaction(createArgs(entity));
+      }
+
+      this.ICD?.startCountdown();
       this.doOnSkillType(args, applyReaction);
     } else {
       totalDmg = damage;
     }
+
+    this.doOnSkillType(args, (enemy) => {
+      totalDmg = this.applyDamageFactors(args.character, enemy, totalDmg);
+    });
 
     if (this.ICD) {
       for (let i = 0; i < hits; i++) {
@@ -117,17 +122,23 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     return totalDmg || damage;
   }
 
-  private doOnSkillType(args: SkillDamageArgs, action?: (entity: Entity) => void) {
+  private doOnSkillType(args: SkillDamageArgs, action: (entity: Enemy) => void) {
     const {enemies} = args.damageCalculator.roster;
 
     if (this.targetType === SkillTargetType.Single) {
       const [enemy] = enemies;
-      action?.(enemy);
+      action(enemy);
     } else if (this.targetType === SkillTargetType.AOE) {
       for (let enemy of enemies) {
-        action?.(enemy);
+        action(enemy);
       }
     }
+  }
+
+  private applyDamageFactors(character: Character, target: Enemy, damage: number): number {
+    damage *= character.calculatorStats.critDamage.critEffect;
+
+    return damage;
   }
 
   public doHeal(args: SkillActionArgs, comment: string = "") {
@@ -148,6 +159,13 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     });
   }
 
+  protected addInfusion(args: SkillArgs) {
+    this.infusion.add({
+      element: args.character.vision,
+      zIndex: 99,
+    })
+  }
+
   public behavior: SkillBehavior = new SkillBehavior(this);
   public countdown: SkillCountdown = new SkillCountdown(this);
 
@@ -160,15 +178,24 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   }
 
   public start(args: SkillArgs): Skill {
-    return this.behavior.start(args);
+    this.infusion.clearBonus();
+    this.behavior.start(args);
+    this.infusion.applyBonus(args.character);
+
+    return this;
   }
 
   public update(args: SkillArgs): Skill {
-    return this.behavior.update(args);
+    this.behavior.update(args);
+
+    return this;
   }
 
   public end(args: SkillArgs): Skill {
-    return this.behavior.end(args);
+    this.behavior.end(args);
+    this.infusion.removeBonus(args.character);
+
+    return this;
   }
 
   public awake(args: SkillArgs): void {

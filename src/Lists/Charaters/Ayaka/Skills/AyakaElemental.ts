@@ -8,7 +8,6 @@ import ICD from "@/Skills/ICD";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
-import Character from "@/Entities/Characters/Character";
 
 export default class AyakaElemental extends NormalSkill {
   public skillName: string = "Kamisato Art: Hyouka";
@@ -25,6 +24,7 @@ export default class AyakaElemental extends NormalSkill {
   public override ICD = new ICD(0, 0);
 
   override onStart(args: SkillArgs) {
+    this.addInfusion(args);
     this.countdown.startCountdown(args);
   }
 

@@ -50,6 +50,9 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
         roster.addEntity(this.gouba);
       }
     });
+
+    this.addInfusion(args);
+    this.countdown.startCountdown(args);
   }
 
   public override onAction(args: SkillArgs): void {

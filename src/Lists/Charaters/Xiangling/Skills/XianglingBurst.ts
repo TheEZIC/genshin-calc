@@ -55,6 +55,9 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   override onStart(args: SkillArgs) {
     this.ICD = new ICD(3, 2.5);
     this.currentHit = 0;
+
+    this.addInfusion(args);
+    this.countdown.startCountdown(args);
   }
 
   public override onAction(args: SkillArgs): void {
