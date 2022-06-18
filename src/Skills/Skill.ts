@@ -110,7 +110,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     }
 
     this.doOnSkillType(args, (enemy) => {
-      totalDmg = this.applyDamageFactors(args.character, enemy, totalDmg);
+      totalDmg += this.applyDamageFactors(args.character, enemy, totalDmg);
     });
 
     if (this.ICD) {
@@ -136,9 +136,23 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   }
 
   private applyDamageFactors(character: Character, target: Enemy, damage: number): number {
-    damage *= character.calculatorStats.critDamage.critEffect;
+    let totalDamage = damage;
 
-    return damage;
+    totalDamage *= character.calculatorStats.critDamage.critEffect;
+
+    const characterLvl = character.lvl;
+    const enemyLvl = target.lvl;
+
+    let defFactor = (characterLvl + 100) /
+      (
+        (characterLvl + 100) + (enemyLvl + 100) *
+        (1 - 0) *
+        (1 - 0)
+      );
+
+    totalDamage *= defFactor;
+
+    return totalDamage - damage;
   }
 
   public doHeal(args: SkillActionArgs, comment: string = "") {

@@ -5,7 +5,7 @@ import {ISKillInfusionItem} from "@/Skills/SkillInfusion";
 import {VisionType} from "@/VisionType";
 
 export default class AyakaDashBuff extends OverridableEffect<Character> {
-  framesDuration: number = 5 * 60; //5sec
+  frames: number = 5 * 60; //5sec
 
   private dashInfusion: ISKillInfusionItem = {
     element: VisionType.Cryo,

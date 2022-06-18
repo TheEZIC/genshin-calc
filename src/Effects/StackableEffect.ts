@@ -3,7 +3,7 @@ import Effect from "@/Effects/Effect";
 
 export default abstract class StackableEffect<T extends IWithOngoingEffects> extends Effect<T> {
   private _currentStacks: Effect<T>[] = [];
-  public framesDuration = 0;
+  public frames = 0;
 
   protected abstract readonly maxStacks: number;
 

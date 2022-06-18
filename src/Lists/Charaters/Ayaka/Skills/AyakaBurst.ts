@@ -36,8 +36,8 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
     395, //burst bloom frame
   ];
 
-  private cuttingValue: SkillValue = new SkillValue(112.3, 120.72 - 112.3);
-  private sakuraBloomValue: SkillValue = new SkillValue(168.45, 181.08 - 168.45);
+  private cuttingValue: SkillValue = new SkillValue(112.3, 120.72, 140.38);
+  private sakuraBloomValue: SkillValue = new SkillValue(168.45, 181.08, 210.56);
 
   public override ICD = new ICD(3, 2.5 * 60);
 

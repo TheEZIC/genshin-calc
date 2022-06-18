@@ -135,7 +135,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status1).not.toBeUndefined();
     expect(status1?.currentFrame).not.toBeUndefined();
     expect(status1?.currentFrame).toBe(1350);
-    expect(status2?.currentFrame).toBeGreaterThan(status2!!.framesDuration);
+    expect(status2?.currentFrame).toBeGreaterThan(status2!!.frames);
   });
 
   test(`Expect ${reactionName} gauge 1`, () => {

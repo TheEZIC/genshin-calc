@@ -32,7 +32,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
     ),
   ];
 
-  protected goubaValue: SkillValue = new SkillValue(111.28, 119.63 - 111.28);
+  protected goubaValue: SkillValue = new SkillValue(111.28, 119.63, 139.1);
 
   private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
 
@@ -60,7 +60,8 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
       const {roster, reactionsManager} = args.damageCalculator;
       const {character} = args;
       const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
-      const dmg = this.goubaValue.getDamage(this.lvl.current) * atk;
+      const value = this.goubaValue.getDamage(this.lvl.current)
+      const dmg = value * atk;
 
       const pyroA1 = new PyroStatus(1);
       const gouba = roster.getEntity(this.gouba)!!;

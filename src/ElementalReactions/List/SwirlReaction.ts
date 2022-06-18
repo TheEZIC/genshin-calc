@@ -12,7 +12,7 @@ export default class SwirlReaction extends TransformativeElementalReaction {
   }
 
   private calcSwirledElement(elementalStatus: ElementalStatus, anemoStatus: ElementalStatus) {
-    const elementalUnitsRemaining = (elementalStatus.framesDuration - elementalStatus.currentFrame) / elementalStatus.unitCapacity;
+    const elementalUnitsRemaining = (elementalStatus.frames - elementalStatus.currentFrame) / elementalStatus.unitCapacity;
     const gaugesReaction = elementalUnitsRemaining >= 0.5 * anemoStatus.units
       ? anemoStatus.units
       : elementalUnitsRemaining;

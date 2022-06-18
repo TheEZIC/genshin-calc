@@ -47,6 +47,7 @@ export default abstract class Weapon {
   public applyLvl(lvl: number): this {
     this.baseATK.applyLvl(lvl);
     this.mainStat.applyLvl(lvl);
+
     return this;
   }
 }

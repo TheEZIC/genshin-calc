@@ -23,7 +23,7 @@ export default abstract class CritStat extends PureStat {
       return 1;
     }
 
-    return 1 + (critChance + critDamage) / 100;
+    return 1 + (critChance * critDamage) / 10000;
   }
 
   get pureCritEffect(): number {
@@ -34,6 +34,6 @@ export default abstract class CritStat extends PureStat {
       return 1;
     }
 
-    return 1 + (critChance + critDamage) / 100;
+    return 1 + (critChance * critDamage) / 10000;
   }
 }

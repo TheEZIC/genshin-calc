@@ -33,7 +33,7 @@ export default class BaseStat {
    * @return {number} ascend number
    * */
   protected getCurrentAscensionIndex(lvl: number): number {
-    if (lvl > 0 && lvl <=20) return 0;
+    if (lvl > 0 && lvl <= 20) return 0;
     if (lvl <= 40 ) return 1;
     if (lvl === this.maxLvl) return 6;
 
@@ -55,14 +55,13 @@ export default class BaseStat {
 
       if (!ascension) continue;
 
-      //TODO: fix lvl applying
-      tempValue += ascension.gain;
-
       if (ascension.atLvl === i - 1) {
         tempValue += ascension.ascendBonus;
       }
 
       if (i === lvl) break;
+
+      tempValue += ascension.gain;
     }
 
     this.currentValue = tempValue;

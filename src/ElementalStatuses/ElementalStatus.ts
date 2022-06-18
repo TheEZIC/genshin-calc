@@ -36,7 +36,7 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
     return this.remainingDuration / this.unitCapacity;
   }
 
-  public get framesDuration(): number {
+  public get frames(): number {
     return this._framesDuration;
   }
 

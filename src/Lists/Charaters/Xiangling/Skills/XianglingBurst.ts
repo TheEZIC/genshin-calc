@@ -29,11 +29,11 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
   private hitsFrames = [34, 50, 75];
 
-  private pyronadoTickValue: SkillValue = new SkillValue(112, 120.4 - 112);
+  private pyronadoTickValue: SkillValue = new SkillValue(112, 120.4, 140);
   private pyronadoInitialHitsValues: SkillValue[] = [
-    new SkillValue(72, 77.4 - 72),
-    new SkillValue(88, 94.6 - 88),
-    new SkillValue(109.6, 117.82 - 109.6),
+    new SkillValue(72, 77.4, 90),
+    new SkillValue(88, 94.6, 110),
+    new SkillValue(109.6, 117.82, 137),
   ];
 
   private skillAtkSnapshot: StatSnapshot = new StatSnapshot();

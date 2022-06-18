@@ -3,7 +3,6 @@ import Roster, {ISkillsItem} from "@/Roster/Roster";
 import NormalSkill from "@/Skills/NormalSkill";
 import SummonSkill from "@/Skills/SummonSkill";
 import GlobalListeners, {IOnSkillAction} from "@/Roster/GlobalListeners";
-import SingletonsManager from "@/Singletons/SingletonsManager";
 import RefreshManager from "@/Refresher/RefreshManager";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import Character from "@/Entities/Characters/Character";
@@ -11,6 +10,7 @@ import Effect from "@/Effects/Effect";
 import EnergyManager from "@/Roster/EnergyManager";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import CombatLogger from "@/CombatLogger/CombatLogger";
+import BehaviorManager from "@/Behavior/BehaviorManager";
 
 export interface ICalcResult {
   damage: number;
@@ -32,6 +32,7 @@ export default class DamageCalculator {
   public globalListeners: GlobalListeners = new GlobalListeners(this);
   public energyManager: EnergyManager = new EnergyManager(this);
   public reactionsManager: ElementalReactionManager = new ElementalReactionManager(this);
+  public behaviourManager: BehaviorManager = new BehaviorManager(this);
   public combatLogger = new CombatLogger(this);
 
   private ongoingSkills: SkillArgs[] = [];
@@ -266,12 +267,12 @@ export default class DamageCalculator {
     );
     const characterOngoingEffectsRemaining = Math.max(
       ...this.roster.characters.map(
-        c => c.ongoingEffects.map(e => e.isStarted ? e.framesDuration - e.currentFrame : 0)
+        c => c.ongoingEffects.map(e => e.isStarted ? e.frames - e.currentFrame : 0)
       ).flat(2)
     );
     const entitiesOngoingEffectsRemaining = Math.max(
       ...this.roster.entities.map(
-        c => c.ongoingEffects.map(e => e.isStarted ? e.framesDuration - e.currentFrame : 0)
+        c => c.ongoingEffects.map(e => e.isStarted ? e.frames - e.currentFrame : 0)
       ).flat(2)
     );
 

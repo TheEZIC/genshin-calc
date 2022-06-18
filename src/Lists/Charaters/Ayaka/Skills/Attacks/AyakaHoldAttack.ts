@@ -25,10 +25,14 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   public countdownFrames: number = 0;
   public hits: number = 3;
 
-  private value: SkillValue = new SkillValue(55.13 * this.hits, (59.61 - 55.13) * this.hits);
-
   private C6Bonus: number = 298;
-  private C6Value: SkillValue = new SkillValue((55.13 + this.C6Bonus) * this.hits, (59.61 - 55.13 + this.C6Bonus) * this.hits);
+
+  private value: SkillValue = new SkillValue(55.13 * this.hits, 59.61 * this.hits, 70.51 * this.hits);
+  private C6Value: SkillValue = new SkillValue(
+(55.13 + this.C6Bonus) * this.hits,
+(59.61 + this.C6Bonus) * this.hits,
+(70.51 + this.C6Bonus) * this.hits,
+  );
 
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;

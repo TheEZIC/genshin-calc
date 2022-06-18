@@ -19,7 +19,7 @@ export default class AyakaElemental extends NormalSkill {
   public frames: number = 56;
   public countdownFrames: number = 10 * 60; //10 sec
 
-  private skillValue: SkillValue = new SkillValue(239.2, 257.14 - 239.2);
+  private skillValue: SkillValue = new SkillValue(239.2, 257.14, 299);
 
   public override ICD = new ICD(0, 0);
 

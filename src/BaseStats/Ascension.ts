@@ -5,7 +5,7 @@ export default class Ascension {
     public min: number,
     public max: number,
     private index: number,
-    private composite: AscensionsIterator
+    private iterator: AscensionsIterator
   ) {}
 
   /**
@@ -16,7 +16,7 @@ export default class Ascension {
   private get ascensionLvls() {
     switch (this.index) {
       case 0:
-        return 20;
+        return 19;
       case 1:
         return 20;
       default:
@@ -60,7 +60,7 @@ export default class Ascension {
    * @return {number} number
    * */
   public get ascendBonus(): number {
-    const prev = this.composite.getPrev(this.index);
+    const prev = this.iterator.getPrev(this.index);
     if (!prev) return 0;
     return this.min - prev.max;
   }

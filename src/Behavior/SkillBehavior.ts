@@ -1,5 +1,4 @@
 import Skill from "@/Skills/Skill";
-import Character from "@/Entities/Characters/Character";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import {IBehavior} from "@/Behavior/IBehavior";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";

@@ -7,5 +7,5 @@ export default class XianglingA4 extends AyakaNormalAttackStage {
   public override hits: number = 4;
 
   public frames: number = 141;
-  public value: SkillValue = new SkillValue(14.1 * this.hits, 15.25 * this.hits - 14.1 * this.hits);
+  public value: SkillValue = new SkillValue(14.1 * this.hits, 15.25 * this.hits, 18.04 * this.hits);
 }

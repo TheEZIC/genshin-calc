@@ -59,7 +59,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(356);
 
     //aura should exist
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 2`, () => {
@@ -75,7 +75,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(713);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+    expect(status!!.frames).toBeLessThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 3`, () => {
@@ -91,7 +91,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(1425);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+    expect(status!!.frames).toBeLessThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 4`, () => {
@@ -107,7 +107,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(225);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 5`, () => {
@@ -123,7 +123,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(450);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 6`, () => {
@@ -139,7 +139,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(900);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+    expect(status!!.frames).toBeLessThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 7`, () => {
@@ -155,7 +155,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(159);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 8`, () => {
@@ -171,7 +171,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(319);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 9`, () => {
@@ -187,7 +187,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(638);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
   });
 
   test(`Expect ${reactionName} gauge 10`, () => {
@@ -203,7 +203,7 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(356);
 
     //aura should exist
-    expect(status!!.framesDuration).toBeGreaterThan(status!!.currentFrame);
+    expect(status!!.frames).toBeGreaterThan(status!!.currentFrame);
 
     manager.applyReaction(reactionArgs);
 
@@ -211,6 +211,6 @@ describe(`${reactionName}Reaction`, () => {
     expect(status?.currentFrame).toBe(712);
 
     //aura shouldn't exist anymore
-    expect(status!!.framesDuration).toBeLessThan(status!!.currentFrame);
+    expect(status!!.frames).toBeLessThan(status!!.currentFrame);
   });
 });

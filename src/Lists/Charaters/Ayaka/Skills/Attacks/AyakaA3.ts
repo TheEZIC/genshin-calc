@@ -5,5 +5,5 @@ export default class AyakaA3 extends AyakaNormalAttackStage {
   public skillName: string = "Kamisato Art: Kabuki A3";
 
   public frames: number = 56;
-  public value: SkillValue = new SkillValue(62.62, 5.1);
+  public value: SkillValue = new SkillValue(62.62, 67.72, 80.1);
 }

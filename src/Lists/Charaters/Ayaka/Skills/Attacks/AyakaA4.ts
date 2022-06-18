@@ -8,5 +8,5 @@ export default class AyakaA4 extends AyakaNormalAttackStage {
   public override hits: number =  3;
 
   public frames: number = 98;
-  public value: SkillValue = new SkillValue(22.65 * this.hits, 1.84 * this.hits);
+  public value: SkillValue = new SkillValue(22.65 * this.hits, 24.49 * this.hits, 28.97 * this.hits);
 }

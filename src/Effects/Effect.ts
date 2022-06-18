@@ -12,7 +12,7 @@ import {Constructor} from "@/Helpers/Constructor";
 export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
   public name = this.constructor.name;
 
-  public abstract framesDuration: number;
+  public abstract frames: number;
 
   @RefreshableProperty()
   public readonly countdownFrames: number = 0;
@@ -46,7 +46,7 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   public framesAfterCountdown = 0;
 
   public get remainingCountdown(): number {
-    return this.framesDuration - this.framesAfterCountdown;
+    return this.frames - this.framesAfterCountdown;
   }
 
   public activate(entity: T, ignoreEvent: boolean = false): this {

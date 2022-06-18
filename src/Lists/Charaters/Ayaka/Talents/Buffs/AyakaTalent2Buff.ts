@@ -3,7 +3,7 @@ import Character from "@/Entities/Characters/Character";
 import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
 
 export default class AyakaTalent2Buff extends OverridableEffect<Character> {
-  framesDuration: number = 10 * 60; //10sec
+  frames: number = 10 * 60; //10sec
 
   private talentCryDmgValue = new StatValue(18);
 
