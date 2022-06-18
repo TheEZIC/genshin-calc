@@ -7,6 +7,9 @@ export default class VaporizeReaction extends MultipliedElementalReaction {
 
   applyBonusDamage({character, damage}: IElementalReactionArgs): number {
     return damage * this.damageMultiplier
-      * (1 + (character.calculatorStats.elementalMastery.multipliedReactionBonus) / 100);
+      * (1 + (
+        character.calculatorStats.elementalMastery.multipliedReactionBonus +
+        character.calculatorStats.vaporizeReactionDmgBonus.calc()
+      ) / 100);
   }
 }

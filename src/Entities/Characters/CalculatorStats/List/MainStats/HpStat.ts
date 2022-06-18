@@ -24,6 +24,24 @@ export default class HpStat extends MainStat {
     );
   }
 
+  override calcDisplayed(): number {
+    const { baseHP, percentHP } = this.character.baseStats;
+    const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);
+    const artifactsPercentHP = this.getArtifactsValue(StatType.PercentHP);
+
+    return (
+      baseHP.value *
+      (1 +
+        (percentHP.value +
+          artifactsPercentHP +
+          this.prefixes.getSum()) /
+        100 +
+        artifactsFlatHP +
+        this.additionalValues.getSum()) *
+      (1 + this.prefixes.getSum() / 100)
+    );
+  }
+
   calcPure(): number {
     const { baseHP, percentHP } = this.character.baseStats;
     const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);

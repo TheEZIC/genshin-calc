@@ -154,11 +154,11 @@ export default class ElementalReactionManager {
           const {triggerMultiplier} = reaction;
           const unitCapacity = Math.min(enemyStatus.unitCapacity, elementalStatus.unitCapacity);
           const remainingDuration = Math.min(enemyStatus.remainingDuration, elementalStatus.remainingDuration);
-          const remainingDurationAfterFirstTick = remainingDuration - triggerMultiplier *  unitCapacity;
+          const remainingDurationAfterFirstTick = remainingDuration - triggerMultiplier * unitCapacity;
 
-          let ticksCount = Math.floor(remainingDurationAfterFirstTick  / (triggerMultiplier  * unitCapacity + 60)) + 1;
+          let ticksCount = Math.floor(remainingDurationAfterFirstTick  / (triggerMultiplier * unitCapacity + 60)) + 1;
 
-          if (remainingDurationAfterFirstTick % (triggerMultiplier  * unitCapacity + 60) > 30) {
+          if (remainingDurationAfterFirstTick % (triggerMultiplier * unitCapacity + 60) > 30) {
             ticksCount++;
           }
 

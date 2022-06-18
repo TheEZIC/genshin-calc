@@ -67,10 +67,10 @@ export default class StatController {
     const filtered: StatValue[] = [];
 
     for (let statItem of stats) {
-      const hasFilter = skillFilter ? statItem.stat.skillFilters?.includes(skillFilter) : false;
+      const statHasFilter = skillFilter ? statItem.stat.skillFilters?.includes(skillFilter) : false;
 
-      if ((skillFilter && hasFilter) || !skillFilter) {
-        if (tenses && tenses.length && tenses?.includes(statItem.tense)) {
+      if ((skillFilter && statHasFilter) || !skillFilter) {
+        if (tenses && tenses.length && tenses.includes(statItem.tense)) {
           filtered.push(statItem.stat);
         } else if (!(tenses && tenses.length)) {
           filtered.push(statItem.stat);

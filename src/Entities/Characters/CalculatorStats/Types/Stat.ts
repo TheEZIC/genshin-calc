@@ -10,17 +10,24 @@ export default abstract class Stat {
   public abstract title: string;
 
   /**
-   * Calc this stat value
-   * @return {number} - calculated value
+   * Calc stat value
    * */
   public abstract calc(skillFilter?: SkillType, tenses?: StatTense[]): number;
+
+  /**
+   * Calc displayed stat value (like in game)
+   * */
+  public abstract calcDisplayed(): number;
+
+  /**
+   * Calc pure stat value (without prefixes, affixes and additional values)
+   * */
   public abstract calcPure(): number;
 
   public onChange: Listener<number> = new Listener<number>();
 
   /**
    * Clear this stat
-   * @return {Stat} - this
    * */
   public clear(): this {
     return this;
@@ -28,8 +35,6 @@ export default abstract class Stat {
 
   /**
    * Get weapon value bonus by stat
-   * @param {StatType} statType - stat type
-   * @return {number} - value
    * */
   protected getWeaponValue(statType: StatType) {
     const { weaponManager } = this.character;
@@ -41,8 +46,6 @@ export default abstract class Stat {
 
   /**
    * Get artifacts value bonus by stat
-   * @param {StatType} statType - stat type
-   * @return {number} - value
    * */
   protected getArtifactsValue(statType: StatType) {
     const { artifactsManager } = this.character;

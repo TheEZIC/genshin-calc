@@ -1,11 +1,9 @@
 import ElementalReaction, {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
-import DamageCalculator from "@/Roster/DamageCalculator";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import Entity from "@/Entities/Entity";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
-import GlobalListeners from "@/Roster/GlobalListeners";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 

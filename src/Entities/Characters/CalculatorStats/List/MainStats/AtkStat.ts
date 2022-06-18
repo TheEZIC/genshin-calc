@@ -11,7 +11,6 @@ export default class AtkStat extends MainStat {
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
-    const critEffect = this.character.calculatorStats.critChance.critEffect;
 
     return (
       (baseATK.value +
@@ -24,8 +23,27 @@ export default class AtkStat extends MainStat {
           100 +
         artifactsFlatATK +
         this.additionalValues.getSum(skillFilter, tenses)) *
-      (1 + this.affixes.getSum(skillFilter, tenses) / 100) *
-      critEffect
+      (1 + this.affixes.getSum(skillFilter, tenses) / 100)
+    );
+  }
+
+  override calcDisplayed(): number {
+    const { baseATK, percentATK } = this.character.baseStats;
+    const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
+    const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
+    const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
+
+    return (
+      (baseATK.value +
+        (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
+      (1 +
+        (percentATK.value +
+          artifactsPercentATK +
+          weaponPercentATK +
+          this.prefixes.getSum()) /
+        100 +
+        artifactsFlatATK +
+        this.additionalValues.getSum())
     );
   }
 
@@ -34,7 +52,6 @@ export default class AtkStat extends MainStat {
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
-    const critEffect = this.character.calculatorStats.critChance.pureCritEffect;
 
     return (
       (baseATK.value +
@@ -44,8 +61,7 @@ export default class AtkStat extends MainStat {
           artifactsPercentATK +
           weaponPercentATK) /
         100 +
-        artifactsFlatATK) *
-      critEffect
+        artifactsFlatATK)
     );
   }
 }

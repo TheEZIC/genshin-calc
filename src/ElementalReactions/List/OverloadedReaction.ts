@@ -8,6 +8,9 @@ export default class OverloadedReaction extends TransformativeElementalReaction 
   applyBonusDamage({character, damage}: IElementalReactionArgs): number {
     return this.baseDamageMultiplier
       * this.calcLvlMultiplier(character)
-      * (1 + (character.calculatorStats.elementalMastery.transformativeReactionBonus) / 100)
+      * (1 + (
+        character.calculatorStats.elementalMastery.transformativeReactionBonus +
+        character.calculatorStats.overloadedReactionDmgBonus.calc()
+      ) / 100)
   }
 }

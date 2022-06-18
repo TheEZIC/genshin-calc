@@ -67,8 +67,6 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     this.infusion.removeBonus(args.character, infusionBonus);
   }
 
-  public onAction(args: SkillArgs): void {};
-
   public doDamage(args: SkillDamageArgs, comment: string = "") {
     let dmg: number = this.performHit(args);
 
@@ -178,6 +176,7 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
   }
 
   public onStart(args: SkillArgs): void {}
+  public onAction(args: SkillArgs): void {};
   public onUpdate(args: SkillArgs): void {}
   public onEnd(args: SkillArgs): void {}
   protected onAwake(args: SkillArgs): void {}

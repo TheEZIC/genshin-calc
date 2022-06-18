@@ -8,6 +8,9 @@ export default class SuperConductReaction extends TransformativeElementalReactio
   applyBonusDamage({character}: IElementalReactionArgs): number {
     return this.baseDamageMultiplier
       * this.calcLvlMultiplier(character)
-      * (1 + (character.calculatorStats.elementalMastery.transformativeReactionBonus) / 100)
+      * (1 + (
+        character.calculatorStats.elementalMastery.transformativeReactionBonus +
+        character.calculatorStats.superConductReactionDmgBonus.calc()
+      ) / 100)
   }
 }

@@ -24,6 +24,7 @@ export default class SwirlReaction extends TransformativeElementalReaction {
   }
 
   applyBonusDamage(args: IElementalReactionArgs): number {
+    const {character} = args;
     const {entities} = args.damageCalculator.roster;
     const anemoStatus = args.elementalStatus!!;
 
@@ -47,6 +48,9 @@ export default class SwirlReaction extends TransformativeElementalReaction {
 
     return this.baseDamageMultiplier
       * this.calcLvlMultiplier(args.character)
-      * (1 + (args.character.calculatorStats.elementalMastery.transformativeReactionBonus) / 100)
+      * (1 + (
+        args.character.calculatorStats.elementalMastery.transformativeReactionBonus +
+        character.calculatorStats.swirlReactionDmgBonus.calc()
+      ) / 100)
   }
 }
