@@ -6,7 +6,6 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import AyakaDashBuff from "@/Lists/Charaters/Ayaka/Skills/Buffs/AyakaDashBuff";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
-import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 
@@ -21,8 +20,10 @@ export default class AyakaDash extends NormalSkill {
   public targetType: SkillTargetType = SkillTargetType.AOE;
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
+  private dashBuff = new AyakaDashBuff();
+
   private activateDashBuff(args: SkillArgs) {
-    new AyakaDashBuff().activate(args.character);
+    this.dashBuff.activate(args.character);
   }
 
   private activateDashBuffDelegate = this.activateDashBuff.bind(this);
@@ -40,6 +41,8 @@ export default class AyakaDash extends NormalSkill {
   }
 
   public override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     const dmgArgs = new SkillDamageArgs({
       ...args,
       value: 0,

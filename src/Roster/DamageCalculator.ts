@@ -153,7 +153,7 @@ export default class DamageCalculator {
 
       this.checkCharacterSwap(args, skillItem);
 
-      if (skill.countdown.isOnCountdown) {
+      if (skill.cooldown.isOnCooldown) {
         continue;
       }
 
@@ -197,11 +197,11 @@ export default class DamageCalculator {
       }
     }
 
-    let framesRemaining = this.getRemainingFrames();
+    let framesRemaining = this.behaviourManager.remainingFrames;
 
     while (framesRemaining > 0) {
       this.skip(framesRemaining);
-      framesRemaining = this.getRemainingFrames();
+      framesRemaining = this.behaviourManager.remainingFrames;
     }
 
     const result = {
@@ -259,48 +259,12 @@ export default class DamageCalculator {
     }
   }
 
-  private getRemainingFrames(): number {
-    const skillsFramesRemaining = Math.max(
-      ...this.ongoingSkills.map(
-        s => s.skill.frames - s.skill.behavior.currentFrame
-      )
-    );
-    const characterOngoingEffectsRemaining = Math.max(
-      ...this.roster.characters.map(
-        c => c.ongoingEffects.map(e => e.isStarted ? e.frames - e.currentFrame : 0)
-      ).flat(2)
-    );
-    const entitiesOngoingEffectsRemaining = Math.max(
-      ...this.roster.entities.map(
-        c => c.ongoingEffects.map(e => e.isStarted ? e.frames - e.currentFrame : 0)
-      ).flat(2)
-    );
-
-    return Math.max(
-      skillsFramesRemaining,
-      characterOngoingEffectsRemaining,
-      entitiesOngoingEffectsRemaining
-    );
-  }
-
   public skip(frames: number) {
     for (let i = 0; i < frames; i++) {
       this.currentFrames++;
       this.roster?.charactersSkills.forEach(s => s.skill.ICD?.addFrame());
       this.runDelayedActions();
-
-      for (let s of this.ongoingSkills) {
-        s.skill.update(s);
-        s.skill.doAction(s);
-      }
-
-      for (let character of this.roster.characters) {
-        character.ongoingEffects.forEach(e => e.update(character));
-      }
-
-      for (let entity of this.roster.entities) {
-        entity.ongoingEffects.forEach(e => e.update(entity));
-      }
+      this.behaviourManager.updateAll();
     }
   }
 

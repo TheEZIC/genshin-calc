@@ -5,8 +5,10 @@ import Character from "@/Entities/Characters/Character";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export default class AyakaTalent2 extends CharacterTalent {
+  private buff = new AyakaTalent2Buff();
+
   private activateBuff(args: SkillArgs) {
-    new AyakaTalent2Buff().activate(args.character);
+    this.buff.activate(args.character);
   }
 
   private activateBuffDelegate = this.activateBuff.bind(this);

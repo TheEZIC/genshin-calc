@@ -13,9 +13,9 @@ import NormalAttackSkill from "@/Skills/NormalAttackSkill";
 import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
+import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 import Skill from "@/Skills/Skill";
 import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
-import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 
 export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
   public skillName: string = "Kamisato Art: Kabuki";
@@ -38,6 +38,8 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
   protected override onAwake(args: SkillArgs) {
+    super.onAwake(args);
+
     const {character} = args;
     let attackSkill = character
       .skillManager
@@ -65,6 +67,8 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
   }
 
   override onEnd(args: SkillArgs): void {
+    super.onEnd(args);
+
     const {character} = args;
     const atk = character.calculatorStats.ATK.calc();
     let dmg = this.value.getDamage(this.lvl.current) * atk;

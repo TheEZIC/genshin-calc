@@ -39,10 +39,11 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
   private gouba = new GoubaEntity();
 
   override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     const {roster} = args.damageCalculator;
     this.gouba = new GoubaEntity();
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
-    this.countdown.startCountdown(args);
 
     args.damageCalculator.addDelayedAction({
       delay: this.summonUsageFrames,
@@ -52,13 +53,15 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
     });
 
     this.addInfusion(args);
-    this.countdown.startCountdown(args);
+    this.cooldown.startCooldown(args);
   }
 
   public override onAction(args: SkillArgs): void {
+    super.onAction(args);
+
     if (this.damageFrames.includes(this.currentFrame)) {
-      const {roster, reactionsManager} = args.damageCalculator;
-      const {character} = args;
+      const {character, damageCalculator} = args;
+      const {roster, reactionsManager} = damageCalculator;
       const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
       const value = this.goubaValue.getDamage(this.lvl.current)
       const dmg = value * atk;
@@ -84,6 +87,8 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
   }
 
   override onEnd(args: SkillArgs) {
+    super.onEnd(args);
+
     const {roster} = args.damageCalculator;
     roster.removeEntity(this.gouba);
   }

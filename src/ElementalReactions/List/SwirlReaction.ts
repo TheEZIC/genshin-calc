@@ -19,8 +19,9 @@ export default class SwirlReaction extends TransformativeElementalReaction {
 
     const units = (gaugesReaction - 0.04) * 1.25 + 1;
     const clone = elementalStatus.clone as typeof elementalStatus;
+    clone.units = units;
 
-    return clone.recreate(units);
+    return clone;
   }
 
   applyBonusDamage(args: IElementalReactionArgs): number {

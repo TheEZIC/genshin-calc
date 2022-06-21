@@ -7,15 +7,28 @@ import {IPrototype} from "@/Helpers/IPrototype";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
 import {Constructor} from "@/Helpers/Constructor";
+import BehaviorUnit from "@/Behavior/BehaviorUnit";
+import IBaseArgs from "@/IBaseArgs";
+import CooldownItem from "@/Cooldown/CooldownItem";
+import Entity from "@/Entities/Entity";
+
+export interface IEffectArgs extends IBaseArgs {
+  entity: IWithOngoingEffects;
+}
 
 @RefreshableClass
-export default abstract class Effect<T extends IWithOngoingEffects> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
+export default abstract class Effect<T extends IWithOngoingEffects> extends BehaviorUnit<IEffectArgs> implements ISubscriber<ISkillListenerArgs<T>>, IPrototype<Effect<T>> {
   public name = this.constructor.name;
-
-  public abstract frames: number;
 
   @RefreshableProperty()
   public readonly countdownFrames: number = 0;
+
+  private _cooldown: CooldownItem = new CooldownItem();
+
+  public get cooldown() {
+    this._cooldown.changeCooldownFrames(this.countdownFrames);
+    return this._cooldown;
+  }
 
   @RefreshableProperty()
   public readonly activeEntityOnly: boolean = false;
@@ -23,36 +36,31 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
   protected abstract applyEffect(entity: T): void;
   protected abstract removeEffect(entity: T): void;
 
-  protected endStrategy: IEndStrategy = new DurationEndStrategy(this);
-
   protected checkExistence(entity: T): Effect<T> | undefined {
     return entity.ongoingEffects.find(e => e.name === this.name);
   }
 
-  @RefreshableProperty()
-  protected _isStarted = false;
-
-  public get isStarted() {
-    return this._isStarted;
+  protected override shouldStart(args: IBaseArgs): boolean {
+    return true;
   }
 
-  @RefreshableProperty()
-  protected isOnCountdown: boolean = false;
-
-  @RefreshableProperty()
-  public currentFrame: number = 0;
-
-  @RefreshableProperty()
-  public framesAfterCountdown = 0;
-
-  public get remainingCountdown(): number {
-    return this.frames - this.framesAfterCountdown;
+  protected override onStart(args: IEffectArgs) {
+    super.onStart(args);
+    this.cooldown.startCooldown(args);
   }
 
   public activate(entity: T, ignoreEvent: boolean = false): this {
+    // if (this.cooldown.isOnCooldown) {
+    //   return this;
+    // }
+
     const {globalListeners} = entity.damageCalculator;
-    this._isStarted = true;
-    this.endStrategy.onStart();
+
+    this.start({
+      entity,
+      damageCalculator: entity.damageCalculator
+    });
+
     entity.ongoingEffects.push(this);
 
     if (!ignoreEvent) {
@@ -60,40 +68,24 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
       globalListeners.onEffectStarted.notifyAll({effect: this, entity});
     }
 
+    this.cooldown.startCooldown({damageCalculator: entity.damageCalculator});
     this.applyEffect(entity);
     return this;
-  }
-
-  public update(entity: T) {
-    if (this.isOnCountdown) {
-      this.framesAfterCountdown++;
-
-      if (this.framesAfterCountdown >= this.countdownFrames) {
-        this.isOnCountdown = false;
-        this.framesAfterCountdown = 0;
-      }
-    }
-
-    if (this._isStarted) {
-      this.endStrategy.onUpdate();
-      this.currentFrame++;
-
-      if (this.endStrategy.shouldEnd()) {
-        this.deactivate(entity);
-      }
-    }
   }
 
   public deactivate(entity: T, ignoreEvent: boolean = false): this {
     //if nothing to remove
     if (!this.checkExistence(entity)) return this;
+
+    this.end({
+      entity,
+      damageCalculator: entity.damageCalculator,
+    });
+
     const {globalListeners} = entity.damageCalculator;
     const index = entity.ongoingEffects.map(e => e.name).indexOf(this.name);
 
     if (index > -1) {
-      this._isStarted = false;
-      this.currentFrame = 0;
-      this.endStrategy.onEnd();
       entity.ongoingEffects.splice(index, 1);
 
       if (!ignoreEvent) {
@@ -118,6 +110,10 @@ export default abstract class Effect<T extends IWithOngoingEffects> implements I
     }
 
     return this.activate(entity, true);
+  }
+
+  protected override onEnd(args: IEffectArgs) {
+    this.deactivate(args.entity as T);
   }
 
   //startEvent

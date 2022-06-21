@@ -24,11 +24,15 @@ export default class AyakaElemental extends NormalSkill {
   public override ICD = new ICD(0, 0);
 
   override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     this.addInfusion(args);
-    this.countdown.startCountdown(args);
+    this.cooldown.startCooldown(args);
   }
 
   override onEnd(args: SkillArgs) {
+    super.onEnd(args);
+
     const {character} = args;
     const atk = character.calculatorStats.ATK.calc();
     const dmg = this.skillValue.getDamage(this.lvl.current) * atk;

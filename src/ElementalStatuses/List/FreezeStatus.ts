@@ -13,17 +13,6 @@ export default class FreezeStatus extends ElementalStatus {
     this._unitCapacity = this._framesDuration / this._units;
   }
 
-  public override recreate(units: number): this {
-    this._units = units;
-    this._framesDuration = this.calcDuration(units);
-    this._unitCapacity = this._framesDuration / this._units;
-
-    this.currentFrame = 0;
-    this.isOnCountdown = false;
-
-    return this;
-  }
-
   private get frozenReaction(): FrozenReaction {
     const {reactionsManager} = this.args.damageCalculator;
     return reactionsManager.getReaction(FrozenReaction) as FrozenReaction;

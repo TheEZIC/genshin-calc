@@ -6,7 +6,7 @@ import SkillArgs from "@/Skills/Args/SkillArgs";
 export default class AyakaC1 extends Constellation {
   private onAttack(event: SkillArgs) {
     const elementalSkill = event.character.skillManager.getSkillByType(SkillType.Elemental);
-    elementalSkill?.countdown.reduceCountdown(60 * 0.3);
+    elementalSkill?.cooldown.reduceCountdown(60 * 0.3);
   }
 
   private onAttackDelegate = this.onAttack.bind(this);

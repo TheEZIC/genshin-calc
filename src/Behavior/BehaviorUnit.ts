@@ -28,44 +28,59 @@ export default abstract class BehaviorUnit<T extends IBaseArgs = IBaseArgs> {
     this._currentFrame = currentFrame;
   }
 
+  public get remainingFrames(): number {
+    return this.isStarted
+      ? this.frames - this.currentFrame
+      : 0;
+  }
+
   public awake(args: T) {
-    this.awakeLogic(args);
+    if (!this.shouldAwake(args)) {
+      return;
+    }
+
     this.onAwake(args);
   }
 
   public start(args: T): void {
-    if (this.isStarted) {
+    if (!this.shouldStart(args)) {
       return;
     }
 
-    args.damageCalculator.behaviourManager.add(this);
+    args.damageCalculator.behaviourManager.add(this, args);
 
     this.isStarted = true;
 
-    this.startLogic(args);
     this.onStart(args);
   }
 
   public update(args: T): void {
+    if (!this.shouldUpdate(args)) {
+      return;
+    }
+
     if (this.isStarted) {
       this.currentFrame++;
+      this.action(args);
 
       if (this.currentFrame === this.frames) {
         this.end(args);
       }
     }
 
-    this.updateLogic(args);
     this.onUpdate(args);
   }
 
-  public action(args: T) {
-    this.actionLogic(args);
+  public action(args: T): void {
+    if (!this.shouldAction(args)) {
+      return;
+    }
+
     this.onAction(args);
   }
 
   public end(args: T): void {
-    if (!this.isStarted) {
+    if (!this.shouldEnd(args)) {
       return;
     }
 
@@ -74,26 +89,45 @@ export default abstract class BehaviorUnit<T extends IBaseArgs = IBaseArgs> {
     this.currentFrame = 0;
     this.isStarted = false;
 
-    this.onEndLogic(args);
     this.onEnd(args);
   }
 
   public sleep(args: T): void {
-    this.onSleepLogic(args);
+    if (!this.shouldSleep(args)) {
+      return;
+    }
+
     this.onSleep(args);
   }
 
-  public awakeLogic(args: T): void {}
-  public startLogic(args: T): void {}
-  public updateLogic(args: T): void {}
-  public actionLogic(args: T): void {}
-  public onEndLogic(args: T): void {}
-  public onSleepLogic(args: T): void {}
+  protected shouldAwake(args: T): boolean {
+    return true;
+  }
 
-  public onAwake(args: T): void {}
-  public onStart(args: T): void {}
-  public onUpdate(args: T): void {}
-  public onAction(args: T): void {}
-  public onEnd(args: T): void {}
-  public onSleep(args: T): void {}
+  protected shouldStart(args: T): boolean {
+    return !this.isStarted;
+  }
+
+  protected shouldUpdate(args: T): boolean {
+    return true;
+  }
+
+  protected shouldAction(args: T): boolean {
+    return true;
+  }
+
+  protected shouldEnd(args: T): boolean {
+   return this.isStarted;
+  }
+
+  protected shouldSleep(args: T): boolean {
+    return true;
+  }
+
+  protected onAwake(args: T): void {}
+  protected onStart(args: T): void {}
+  protected onUpdate(args: T): void {}
+  protected onAction(args: T): void {}
+  protected onEnd(args: T): void {}
+  protected onSleep(args: T): void {}
 }

@@ -1,5 +1,5 @@
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
-import Effect from "@/Effects/Effect";
+import Effect, {IEffectArgs} from "@/Effects/Effect";
 
 export default abstract class StackableEffect<T extends IWithOngoingEffects> extends Effect<T> {
   private _currentStacks: Effect<T>[] = [];
@@ -12,8 +12,8 @@ export default abstract class StackableEffect<T extends IWithOngoingEffects> ext
     return this;
   }
 
-  public override update(entity: T) {
-    this._currentStacks.forEach(s => s.update(entity));
+  override update(args: IEffectArgs) {
+    this._currentStacks.forEach(s => s.update(args));
   }
 
   protected override removeEffect(entity: T) {
@@ -29,7 +29,7 @@ export default abstract class StackableEffect<T extends IWithOngoingEffects> ext
       this._currentStacks.push(effect);
     } else {
       const sorted = this._currentStacks.sort(
-        (a, b) => a.remainingCountdown - b.remainingCountdown
+        (a, b) => a.cooldown.remainingCooldown - b.cooldown.remainingCooldown
       );
 
       this._currentStacks = sorted.splice(1);

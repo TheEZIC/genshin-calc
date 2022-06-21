@@ -28,6 +28,10 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
     return this._units;
   }
 
+  public set units(units: number) {
+    this._units = units;
+  }
+
   public get remainingDuration() {
     return this._framesDuration - this.currentFrame;
   }
@@ -53,16 +57,6 @@ export default abstract class ElementalStatus extends Effect<IWithOngoingEffects
 
   public get unitCapacity(): number {
     return this._unitCapacity;
-  }
-
-  public recreate(units: number): this {
-    this._units = units;
-    this._framesDuration = 150 * units + 420;
-    this._unitCapacity = this._framesDuration / this._units;
-    this.currentFrame = 0;
-    this.isOnCountdown = false;
-
-    return this;
   }
 
   private changeFramesDuration(framesDuration: number): void {

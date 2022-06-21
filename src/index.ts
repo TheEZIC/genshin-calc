@@ -41,6 +41,7 @@ import SkillsFactory from "@/Factories/SkillsFactory";
 import AyakaNormalAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaNormalAttack";
 import SkillStartedLogger from "@/CombatLogger/List/SkillStartedLogger";
 import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
+import LithicSpear from "@/Lists/Weapons/Polearms/BlackcliffPole";
 
 const singletonManager = SingletonsManager.instance;
 
@@ -64,9 +65,11 @@ class GenshinCalculator {
       //   .addSubStat(new Stat(StatType.PercentATK, 10))
       //   //.addSetBonus(new TroupeSet());
       //
-      // const goblet = new ArtifactGoblet()
-      //   .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
-      //   .addSetBonus(new TroupeSet());
+
+      const goblet = new ArtifactGoblet()
+        .setMainStat(new Stat(StatType.CryoDmgBonus, 44))
+        .addSetBonus(new TroupeSet());
+
       //
       // const sands = new ArtifactSands()
       //   .setMainStat(new Stat(StatType.PercentATK, 40))
@@ -80,16 +83,18 @@ class GenshinCalculator {
       //   .setMainStat(new Stat(StatType.FlatHP, 3000))
       //   .addSetBonus(new GladiatorSet());
       //
-      // ayaka.artifactsManager
-      //   .add(plume)
-      //   .add(goblet)
-      //   .add(sands)
-      //   .add(circlet)
-      //   .add(flower);
+      ayaka.artifactsManager
+        // .add(plume)
+        // .add(goblet)
+        // .add(sands)
+        // .add(circlet)
+        // .add(flower);
 
       ayaka.applyLvl(90);
       //ayaka.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
-      ayaka.weaponManager.changeRefinement(1);
+      //ayaka.weaponManager.changeRefinement(1);
+
+      console.log(ayaka.calculatorStats.ATK.calcDisplayed(), "displayed stat");
 
       ayaka.constellationsManager.activateConstellation(3);
 
@@ -97,31 +102,34 @@ class GenshinCalculator {
       ayaka.skillManager.changeLvl(10, SkillType.HoldAttack);
       ayaka.skillManager.changeLvl(10, SkillType.Burst);
 
-      xiangling.applyLvl(90);
-      //xiangling.weaponManager.setWeapon(new WolfGravestoneWeapon().applyLvl(90));
+      xiangling.applyLvl(81);
+      xiangling.weaponManager.setWeapon(new LithicSpear().applyLvl(1));
+      xiangling.skillManager.changeLvl(8, SkillType.Elemental);
       xiangling.skillManager.changeLvl(10, SkillType.Burst);
 
-      roster.addEnemy(new Enemy());
-      roster.addEnemy(new Enemy());
+      roster.addEnemy(new Enemy().applyLvl(80));
+      //roster.addEnemy(new Enemy());
 
       const dmg = damageCalculator.calcRotationAndFinish([
-        new AyakaBurst(),
-        new AyakaElemental(),
-        new AyakaNormalAttack(),
-        new AyakaNormalAttack(),
-        new XianglingBurst(),
-        new XianglingElemental(),
-        new AyakaHoldAttack(),
+        // new AyakaBurst(),
+        // new AyakaElemental(),
+        // new AyakaNormalAttack(),
+        // new AyakaNormalAttack(),
+        // new XianglingBurst(),
+        // new XianglingElemental(),
+        // new AyakaHoldAttack(),
         new AyakaDash(),
-        new AyakaNormalAttack(),
-        new AyakaDash(),
+        // new AyakaDash(),
+        // new AyakaDash(),
+        // new AyakaNormalAttack(),
+        // new AyakaDash(),
         // new AyakaNormalAttack(),
         // new AyakaNormalAttack(),
         // new AyakaNormalAttack(),
       ]);
 
       const logs = damageCalculator.combatLogger.getFilteredLogs([
-        // ...CombatLoggerEffectsCollection,
+        ...CombatLoggerEffectsCollection,
         ...CombatLoggerSkillsCollection,
         ...CombatLoggerActionsCollection,
         // ...CombatLoggerReactionsCollection,

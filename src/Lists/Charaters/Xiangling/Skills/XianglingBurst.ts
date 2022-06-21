@@ -40,6 +40,8 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   private pyronadoFrames: number[] = [];
 
   protected override onAwake(args: SkillArgs) {
+    super.onAwake(args);
+
     const currentConst = args.character.constellationsManager.current;
     this.summonDurationFrames = currentConst >= 4 ? 14 * 60 : 10 * 60;
 
@@ -53,14 +55,17 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   }
 
   override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     this.ICD = new ICD(3, 2.5);
     this.currentHit = 0;
 
     this.addInfusion(args);
-    this.countdown.startCountdown(args);
   }
 
   public override onAction(args: SkillArgs): void {
+    super.onAction(args);
+
     if (this.hitsFrames.includes(this.currentFrame)) {
       const currentHit = this.pyronadoInitialHitsValues[this.currentHit];
       const atk = args.character.calculatorStats.ATK.calc();
@@ -84,7 +89,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
     }
 
     if (this.currentFrame === this.summonUsageFrames) {
-      this.countdown.startCountdown(args);
+      this.cooldown.startCooldown(args);
     }
 
     if (this.pyronadoFrames.includes(this.currentFrame)) {

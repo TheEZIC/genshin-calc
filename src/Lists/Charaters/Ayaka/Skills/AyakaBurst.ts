@@ -43,13 +43,17 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
   private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
 
-  override onStart(args: SkillArgs) {
+  protected override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
     this.addInfusion(args);
-    this.countdown.startCountdown(args);
+    this.cooldown.startCooldown(args);
   }
 
   public override onAction(args: SkillArgs): void {
+    super.onAction(args);
+
     if (this.damageFrames.includes(this.currentFrame)) {
       const {character} = args;
       const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
@@ -74,6 +78,8 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   }
 
   public override onEnd(args: SkillArgs) {
+    super.onEnd(args);
+
     const {character} = args;
     const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
     let dmg = this.sakuraBloomValue.getDamage(this.lvl.current) * atk;

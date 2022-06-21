@@ -24,9 +24,6 @@ export default abstract class NormalAttackSkill extends Skill {
 
   public abstract attackStages: Skill[];
 
-  override onAction(args: SkillArgs) {
-  }
-
   public getCurrentAttackSkillIndex(args: SkillArgs): number {
     const {prevSkill, damageCalculator} = args;
     const prevSkills = damageCalculator.skillHistory;
@@ -59,6 +56,8 @@ export default abstract class NormalAttackSkill extends Skill {
   }
 
   public override onStart(args: SkillArgs) {
+    super.onStart(args);
+
     const skill = this.getAttackSkill(args);
     skill.lvl.current = this.lvl.current;
     args.damageCalculator.runAnotherSkill(skill, args);

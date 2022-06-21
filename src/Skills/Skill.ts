@@ -4,8 +4,6 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import ICD from "@/Skills/ICD";
 import SkillLvl from "@/Skills/SkillLvl";
-import {IBehaviorWithEvents} from "@/Behavior/IBehaviorWithEvents";
-import SkillBehavior from "@/Behavior/SkillBehavior";
 import {IEnergyParticles} from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import Entity from "@/Entities/Entity";
@@ -17,8 +15,11 @@ import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import SkillActionArgs from "@/Skills/Args/SkillActionArgs";
 import Enemy from "@/Entities/Enemies/Enemy";
+import BehaviorUnit from "@/Behavior/BehaviorUnit";
+import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
+import CooldownItem from "@/Cooldown/CooldownItem";
 
-export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillArgs>, IWithCreator<Skill> {
+export default abstract class Skill extends BehaviorUnit<SkillArgs> implements IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
 
   public get creator(): Constructor<Skill> {
@@ -29,7 +30,6 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     return new this.creator();
   }
 
-  public abstract frames: number;
   public abstract countdownFrames: number;
 
   public ignoreLog: boolean = false;
@@ -146,7 +146,9 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     let defFactor = (characterLvl + 100) /
       (
         (characterLvl + 100) + (enemyLvl + 100) *
+        //armor reduction
         (1 - 0) *
+        //armor penetration
         (1 - 0)
       );
 
@@ -180,47 +182,41 @@ export default abstract class Skill implements IBehaviorWithEvents<Skill, SkillA
     })
   }
 
-  public behavior: SkillBehavior = new SkillBehavior(this);
-  public countdown: SkillCountdown = new SkillCountdown(this);
+  private _cooldown: CooldownItem = new CooldownItem();
 
-  public get isStarted() {
-    return this.behavior.isStarted;
+  public get cooldown() {
+    this._cooldown.changeCooldownFrames(this.countdownFrames);
+    return this._cooldown;
   }
 
-  public get currentFrame() {
-    return this.behavior.currentFrame;
-  }
-
-  public start(args: SkillArgs): Skill {
+  protected override onStart(args: SkillArgs): void {
     this.infusion.clearBonus();
-    this.behavior.start(args);
     this.infusion.applyBonus(args.character);
 
-    return this;
+    this.strategy.runStartListener(args);
+    args.damageCalculator.globalListeners.onSkillStarted.notifyAll(args);
+
+    if (isIBurstSKill(this)) {
+      args.character.consumeEnergy(this.energyConsumed);
+    }
   }
 
-  public update(args: SkillArgs): Skill {
-    this.behavior.update(args);
+  protected override shouldStart(args: SkillArgs): boolean {
+    if (
+      isIBurstSKill(this)
+      && args.character.energy < this.energyCost
+    ) {
+      return false;
+    }
 
-    return this;
+    return super.shouldStart(args);
   }
 
-  public end(args: SkillArgs): Skill {
-    this.behavior.end(args);
+  protected override onEnd(args: SkillArgs): void {
     this.infusion.removeBonus(args.character);
-
-    return this;
+    this.strategy.runEndListener(args);
+    args.damageCalculator.globalListeners.onSkillEnded.notifyAll(args);
   }
-
-  public awake(args: SkillArgs): void {
-    this.onAwake(args);
-  }
-
-  public onStart(args: SkillArgs): void {}
-  public onAction(args: SkillArgs): void {};
-  public onUpdate(args: SkillArgs): void {}
-  public onEnd(args: SkillArgs): void {}
-  protected onAwake(args: SkillArgs): void {}
 
   protected createRepeatedFrames(everyFrames: number, count: number, offset: number = 0): number[] {
     let temp: number[] = [];

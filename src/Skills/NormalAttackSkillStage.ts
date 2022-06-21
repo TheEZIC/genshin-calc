@@ -14,9 +14,6 @@ export default abstract class NormalAttackSkillStage extends Skill implements IM
 
   protected abstract value: SkillValue;
 
-  override onAction(args: SkillArgs): void {
-  }
-
   override onEnd(args: SkillArgs) {
     const {character} = args;
     const atk = character.calculatorStats.ATK.calc();
