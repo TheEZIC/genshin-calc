@@ -8,7 +8,7 @@ import {SkillTargetType} from "@/Skills/SkillTargetType";
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
-import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Buffs/AyakaC6Buff";
+import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Effects/AyakaC6Buff";
 import NormalAttackSkill from "@/Skills/NormalAttackSkill";
 import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";

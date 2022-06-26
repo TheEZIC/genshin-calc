@@ -7,7 +7,6 @@ import SkillLvl from "@/Skills/SkillLvl";
 import {IEnergyParticles} from "@/Roster/EnergyManager";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 import Entity from "@/Entities/Entity";
-import SkillCountdown from "@/Skills/SkillCountdown";
 import SkillInfusion from "@/Skills/SkillInfusion";
 import {Constructor} from "@/Helpers/Constructor";
 import {IWithCreator} from "@/Utils/IWithCreator";
@@ -69,15 +68,17 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
 
   public doDamage(args: SkillDamageArgs, comment: string = "") {
     let dmg: number = this.performHit(args);
-
-    args.damageCalculator.globalListeners.onDamage.notifyAll({
+    const damageArgs = {
       character: args.character,
       targets: this.getTargets(args),
       elementalStatus: args.elementalStatus,
       comment,
       skill: this,
       value: dmg,
-    });
+    };
+
+    args.damageCalculator.globalListeners.onDamage.notifyAll(damageArgs);
+    this.strategy.runDamageListener(damageArgs);
   }
 
   private performHit(args: SkillDamageArgs) {
@@ -161,9 +162,9 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
         (characterLvl + 100) +
         (enemyLvl + 100) *
         //armor reduction
-        (1 - 0) *
+        (1 - (target.calculatorStats.defReduction.calc()) / 100) *
         //armor penetration
-        (1 - 0)
+        (1 - (target.calculatorStats.defShred.calc()) / 100)
       );
 
     totalDamage *= defFactor;
@@ -172,23 +173,29 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   }
 
   public doHeal(args: SkillActionArgs, comment: string = "") {
-    args.damageCalculator.globalListeners.onHeal.notifyAll({
+    const healArgs = {
       character: args.character,
       targets: this.getTargets(args),
       comment,
       skill: this,
       value: args.value,
-    });
+    };
+
+    args.damageCalculator.globalListeners.onHeal.notifyAll(healArgs);
+    this.strategy.runHealListener(healArgs);
   }
 
   public createShield(args: SkillActionArgs, comment: string = "") {
-    args.damageCalculator.globalListeners.onCreateShield.notifyAll({
+    const createShieldArgs = {
       character: args.character,
       targets: this.getTargets(args),
       comment,
       skill: this,
       value: args.value,
-    });
+    };
+
+    args.damageCalculator.globalListeners.onCreateShield.notifyAll(createShieldArgs);
+    this.strategy.runCreateShieldListener(createShieldArgs);
   }
 
   protected addInfusion(args: SkillArgs) {

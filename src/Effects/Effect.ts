@@ -105,8 +105,8 @@ export default abstract class Effect<T extends IWithOngoingEffects> extends Beha
     globalListeners.onEffectReactivate.notifyAll({effect: this, entity});
 
     if (exist) {
-      entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
       this.deactivate(entity, true);
+      entity.ongoingEffects = entity.ongoingEffects.filter(e => e.name !== this.name);
     }
 
     return this.activate(entity, true);

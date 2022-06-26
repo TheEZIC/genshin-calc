@@ -1,6 +1,6 @@
 import Character from "@/Entities/Characters/Character";
 import Constellation from "@/Constellations/Constellation";
-import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Buffs/AyakaC6Buff";
+import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Effects/AyakaC6Buff";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 
 export default class AyakaC6 extends Constellation {

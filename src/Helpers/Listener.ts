@@ -1,7 +1,3 @@
-import DamageCalculator from "@/Roster/DamageCalculator";
-import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
-import {RefreshableClass} from "@/Refresher/RefreshableClass";
-
 export interface ISubscriber<SubscriberArgs = void> {
   runOnEvent(args: SubscriberArgs): void;
 }
@@ -14,7 +10,6 @@ export interface ProxyEvent<SubscriberArgs = void> {
 }
 
 type SubscriberArgs<T> = Subscriber<T> | ISubscriber<T>;
-type SubscriberProxyArgs<T> = Subscriber<ProxyEvent<T>> | ISubscriber<ProxyEvent<T>>;
 
 export default class Listener<T = void> {
   private subscribers: Array<SubscriberArgs<T>> = [];

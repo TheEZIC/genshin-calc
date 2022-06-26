@@ -7,16 +7,27 @@ import SingletonsManager from "@/Singletons/SingletonsManager";
 import CharactersFactory from "@/Factories/CharactersFactory";
 import Listener from "@/Helpers/Listener";
 import DamageCalculator from "@/Roster/DamageCalculator";
+import Effect from "@/Effects/Effect";
 
 export interface ISkillsItem {
   character: Character;
   skill: Skill;
 }
 
-export default class Roster {
+export default class Roster extends Entity {
+  public title: string = "Roster";
+
   constructor(
-    public damageCalculator: DamageCalculator,
+    damageCalculator: DamageCalculator,
   ) {
+    super();
+    this.damageCalculator = damageCalculator;
+  }
+
+  public addRosterEffect(effect: Effect<any>) {
+    for (let character of this.characters) {
+      effect.activate(character);
+    }
   }
 
   public static readonly MAX_CHARACTERS_COUNT = 4;
