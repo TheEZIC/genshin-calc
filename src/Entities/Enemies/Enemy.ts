@@ -1,7 +1,10 @@
 import Entity from "@/Entities/Entity";
+import EnemyCalculatorStats from "@/Entities/Enemies/EnemyCalculatorStats";
 
 export default class Enemy extends Entity {
-  public title: string = "Enemy"
+  public title: string = "Enemy";
+
+  public calculatorStats: EnemyCalculatorStats = new EnemyCalculatorStats(this);
 
   private _lvl: number = 1;
 

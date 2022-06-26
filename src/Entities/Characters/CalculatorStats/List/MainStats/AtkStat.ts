@@ -1,20 +1,20 @@
 import { StatType } from "@/BaseStats/StatType";
-import MainStat from "@/Entities/Characters/CalculatorStats/Types/MainStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterMainStat from "@/Entities/Characters/CalculatorStats/Types/CharacterMainStat";
 
-export default class AtkStat extends MainStat {
+export default class AtkStat extends CharacterMainStat {
   public title: string = "AtkStat";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { baseATK, percentATK } = this.character.baseStats;
+    const { baseATK, percentATK } = this.entity.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
 
     return (
       (baseATK.value +
-        (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
+        (this.entity.weaponManager.weapon?.baseATK.value ?? 0)) *
       (1 +
         (percentATK.value +
           artifactsPercentATK +
@@ -28,14 +28,14 @@ export default class AtkStat extends MainStat {
   }
 
   override calcDisplayed(): number {
-    const { baseATK, percentATK } = this.character.baseStats;
+    const { baseATK, percentATK } = this.entity.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
 
     return (
       (baseATK.value +
-        (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
+        (this.entity.weaponManager.weapon?.baseATK.value ?? 0)) *
       (1 +
         (percentATK.value +
           artifactsPercentATK +
@@ -48,14 +48,14 @@ export default class AtkStat extends MainStat {
   }
 
   calcPure(): number {
-    const { baseATK, percentATK } = this.character.baseStats;
+    const { baseATK, percentATK } = this.entity.baseStats;
     const artifactsFlatATK = this.getArtifactsValue(StatType.FlatATK);
     const artifactsPercentATK = this.getArtifactsValue(StatType.PercentATK);
     const weaponPercentATK = this.getWeaponValue(StatType.PercentATK);
 
     return (
       (baseATK.value +
-        (this.character.weaponManager.weapon?.baseATK.value ?? 0)) *
+        (this.entity.weaponManager.weapon?.baseATK.value ?? 0)) *
       (1 +
         (percentATK.value +
           artifactsPercentATK +

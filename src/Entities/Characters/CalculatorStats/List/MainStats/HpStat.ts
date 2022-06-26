@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
-import MainStat from "@/Entities/Characters/CalculatorStats/Types/MainStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterMainStat from "@/Entities/Characters/CalculatorStats/Types/CharacterMainStat";
 
-export default class HpStat extends MainStat {
+export default class HpStat extends CharacterMainStat {
   public title: string = "Hp";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { baseHP, percentHP } = this.character.baseStats;
+    const { baseHP, percentHP } = this.entity.baseStats;
     const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);
     const artifactsPercentHP = this.getArtifactsValue(StatType.PercentHP);
 
@@ -25,7 +25,7 @@ export default class HpStat extends MainStat {
   }
 
   override calcDisplayed(): number {
-    const { baseHP, percentHP } = this.character.baseStats;
+    const { baseHP, percentHP } = this.entity.baseStats;
     const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);
     const artifactsPercentHP = this.getArtifactsValue(StatType.PercentHP);
 
@@ -43,7 +43,7 @@ export default class HpStat extends MainStat {
   }
 
   calcPure(): number {
-    const { baseHP, percentHP } = this.character.baseStats;
+    const { baseHP, percentHP } = this.entity.baseStats;
     const artifactsFlatHP = this.getArtifactsValue(StatType.FlatHP);
     const artifactsPercentHP = this.getArtifactsValue(StatType.PercentHP);
 

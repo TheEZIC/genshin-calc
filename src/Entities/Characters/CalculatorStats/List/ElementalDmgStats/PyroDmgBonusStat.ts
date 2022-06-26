@@ -1,13 +1,13 @@
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
-export default class PyroDmgBonusStat extends PureStat {
+export default class PyroDmgBonusStat extends CharacterPureStat {
   public title: string = "PyroDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { pyroDmgBonus } = this.character.baseStats;
+    const { pyroDmgBonus } = this.entity.baseStats;
     const artifactsPyroPercent = this.getArtifactsValue(StatType.PyroDmgBonus);
 
     return (
@@ -18,7 +18,7 @@ export default class PyroDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { pyroDmgBonus } = this.character.baseStats;
+    const { pyroDmgBonus } = this.entity.baseStats;
     const artifactsPyroPercent = this.getArtifactsValue(StatType.PyroDmgBonus);
 
     return (

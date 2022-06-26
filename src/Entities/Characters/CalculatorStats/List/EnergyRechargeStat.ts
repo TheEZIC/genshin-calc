@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 
-export default class EnergyRechargeStat extends PureStat {
+export default class EnergyRechargeStat extends CharacterPureStat {
   public title: string = "EnergyRecharge";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { energyRecharge } = this.character.baseStats;
+    const { energyRecharge } = this.entity.baseStats;
     const artifactsEnergyRecharge = this.getArtifactsValue(
       StatType.EnergyRecharge
     );
@@ -20,7 +20,7 @@ export default class EnergyRechargeStat extends PureStat {
   }
 
   calcPure(): number {
-    const { energyRecharge } = this.character.baseStats;
+    const { energyRecharge } = this.entity.baseStats;
     const artifactsEnergyRecharge = this.getArtifactsValue(
       StatType.EnergyRecharge
     );

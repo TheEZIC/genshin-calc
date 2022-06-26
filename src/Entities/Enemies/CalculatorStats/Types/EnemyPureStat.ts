@@ -1,7 +1,7 @@
-import Stat from "./Stat";
-import StatController from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import EnemyStat from "@/Entities/Enemies/CalculatorStats/Types/EnemyStat";
+import StatController from "@/CalculatorStats/StatController";
 
-export default abstract class PureStat extends Stat {
+export default abstract class EnemyPureStat extends EnemyStat {
   public readonly additionalValues: StatController = new StatController(this);
 
   public override calcDisplayed(): number {

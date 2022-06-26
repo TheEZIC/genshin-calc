@@ -30,7 +30,6 @@ type ElementalCombination = [
   result: ElementalReaction,
 ];
 
-
 export default class ElementalReactionManager {
   constructor(
     public damageCalculator: DamageCalculator,

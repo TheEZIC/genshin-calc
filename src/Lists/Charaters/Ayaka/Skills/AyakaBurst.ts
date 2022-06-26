@@ -46,7 +46,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
   protected override onStart(args: SkillArgs) {
     super.onStart(args);
 
-    this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+    this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK, this.strategy.type);
     this.addInfusion(args);
     this.cooldown.startCooldown(args);
   }
@@ -56,7 +56,7 @@ export default class AyakaBurst extends SummonSkill implements IBurstSkill, IDOT
 
     if (this.damageFrames.includes(this.currentFrame)) {
       const {character} = args;
-      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
+      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK, this.strategy.type);
       let dmg = this.cuttingValue.getDamage(this.lvl.current) * atk;
 
       const constellation = character.constellationsManager.current;

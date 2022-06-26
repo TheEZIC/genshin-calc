@@ -18,6 +18,7 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import BehaviorUnit from "@/Behavior/BehaviorUnit";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import CooldownItem from "@/Cooldown/CooldownItem";
+import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
 
 export default abstract class Skill extends BehaviorUnit<SkillArgs> implements IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
@@ -71,6 +72,7 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
 
     args.damageCalculator.globalListeners.onDamage.notifyAll({
       character: args.character,
+      targets: this.getTargets(args),
       elementalStatus: args.elementalStatus,
       comment,
       skill: this,
@@ -92,11 +94,13 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
       entity,
     });
 
-    // if (args.blunt) {
-    //   const applyShatter = (entity: Entity) =>
-    //     this.reactionManager.checkShatter(createArgs(entity), true);
-    //   this.doOnSkillType(applyShatter);
-    // }
+    if (args.blunt) {
+      const applyShatter = (entity: Entity) => {
+        args.damageCalculator.reactionsManager.checkShatter(createArgs(entity), true);
+      }
+
+      this.doForEachTarget(args, applyShatter);
+    }
 
     if (elementalStatus && !this.ICD?.onCountdown) {
       const applyReaction = (entity: Entity) => {
@@ -104,12 +108,12 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
       }
 
       this.ICD?.startCountdown();
-      this.doOnSkillType(args, applyReaction);
+      this.doForEachTarget(args, applyReaction);
     } else {
       totalDmg = damage;
     }
 
-    this.doOnSkillType(args, (enemy) => {
+    this.doForEachTarget(args, (enemy) => {
       totalDmg += this.applyDamageFactors(args.character, enemy, totalDmg);
     });
 
@@ -122,17 +126,26 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
     return totalDmg || damage;
   }
 
-  private doOnSkillType(args: SkillDamageArgs, action: (entity: Enemy) => void) {
+  protected doForEachTarget(args: SkillDamageArgs, action: (entity: Enemy) => void) {
+    const targets = this.getTargets(args);
+
+    for (let target of targets) {
+      action(target);
+    }
+  }
+
+  protected getTargets(args: SkillArgs): Enemy[] {
     const {enemies} = args.damageCalculator.roster;
+    let targets: Enemy[] = [];
 
     if (this.targetType === SkillTargetType.Single) {
       const [enemy] = enemies;
-      action(enemy);
+      targets.push(enemy);
     } else if (this.targetType === SkillTargetType.AOE) {
-      for (let enemy of enemies) {
-        action(enemy);
-      }
+      targets = enemies;
     }
+
+    return targets;
   }
 
   private applyDamageFactors(character: Character, target: Enemy, damage: number): number {
@@ -145,7 +158,8 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
 
     let defFactor = (characterLvl + 100) /
       (
-        (characterLvl + 100) + (enemyLvl + 100) *
+        (characterLvl + 100) +
+        (enemyLvl + 100) *
         //armor reduction
         (1 - 0) *
         //armor penetration
@@ -160,6 +174,7 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   public doHeal(args: SkillActionArgs, comment: string = "") {
     args.damageCalculator.globalListeners.onHeal.notifyAll({
       character: args.character,
+      targets: this.getTargets(args),
       comment,
       skill: this,
       value: args.value,
@@ -169,6 +184,7 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   public createShield(args: SkillActionArgs, comment: string = "") {
     args.damageCalculator.globalListeners.onCreateShield.notifyAll({
       character: args.character,
+      targets: this.getTargets(args),
       comment,
       skill: this,
       value: args.value,
@@ -193,8 +209,13 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
     this.infusion.clearBonus();
     this.infusion.applyBonus(args.character);
 
-    this.strategy.runStartListener(args);
-    args.damageCalculator.globalListeners.onSkillStarted.notifyAll(args);
+    const listenerArgs = new SkillListenerArgs({
+      ...args,
+      targets: this.getTargets(args),
+    });
+
+    this.strategy.runStartListener(listenerArgs);
+    args.damageCalculator.globalListeners.onSkillStarted.notifyAll(listenerArgs);
 
     if (isIBurstSKill(this)) {
       args.character.consumeEnergy(this.energyConsumed);
@@ -213,9 +234,14 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   }
 
   protected override onEnd(args: SkillArgs): void {
+    const listenerArgs = new SkillListenerArgs({
+      ...args,
+      targets: this.getTargets(args),
+    });
+
     this.infusion.removeBonus(args.character);
-    this.strategy.runEndListener(args);
-    args.damageCalculator.globalListeners.onSkillEnded.notifyAll(args);
+    this.strategy.runEndListener(listenerArgs);
+    args.damageCalculator.globalListeners.onSkillEnded.notifyAll(listenerArgs);
   }
 
   protected createRepeatedFrames(everyFrames: number, count: number, offset: number = 0): number[] {

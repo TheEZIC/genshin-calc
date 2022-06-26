@@ -43,7 +43,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
 
     const {roster} = args.damageCalculator;
     this.gouba = new GoubaEntity();
-    this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+    this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK, this.strategy.type);
 
     args.damageCalculator.addDelayedAction({
       delay: this.summonUsageFrames,
@@ -62,7 +62,7 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
     if (this.damageFrames.includes(this.currentFrame)) {
       const {character, damageCalculator} = args;
       const {roster, reactionsManager} = damageCalculator;
-      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK);
+      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", character.calculatorStats.ATK, this.strategy.type);
       const value = this.goubaValue.getDamage(this.lvl.current)
       const dmg = value * atk;
 

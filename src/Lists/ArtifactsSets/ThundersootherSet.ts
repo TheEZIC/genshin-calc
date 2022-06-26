@@ -1,5 +1,5 @@
 import ArtifactSet from "@/Artifacts/ArtifactSet";
-import { StatValue } from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import { StatValue } from "@/CalculatorStats/StatValue";
 import Character from "@/Entities/Characters/Character";
 
 export default class ThundersootherSet extends ArtifactSet {

@@ -1,18 +1,18 @@
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 
-export default class DendroResistanceStat extends PureStat {
+export default class DendroResistanceStat extends CharacterPureStat {
   public title: string = "DendroResistance";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { dendroResistance } = this.character.baseStats;
+    const { dendroResistance } = this.entity.baseStats;
 
     return dendroResistance.value + this.additionalValues.getSum(skillFilter, tenses);
   }
 
   calcPure(): number {
-    const { dendroResistance } = this.character.baseStats;
+    const { dendroResistance } = this.entity.baseStats;
 
     return dendroResistance.value;
   }

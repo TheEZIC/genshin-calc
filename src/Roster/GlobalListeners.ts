@@ -8,9 +8,12 @@ import SingletonsManager from "@/Singletons/SingletonsManager";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import Entity from "@/Entities/Entity";
+import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
+import Enemy from "@/Entities/Enemies/Enemy";
 
 export interface IOnSkillAction {
   character: Character;
+  targets: Enemy[];
   comment: string;
   skill: Skill;
   value: number;
@@ -34,8 +37,8 @@ export default class GlobalListeners {
   public onHeal: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
   public onCreateShield: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
 
-  public onSkillStarted: Listener<SkillArgs> = new Listener<SkillArgs>();
-  public onSkillEnded: Listener<SkillArgs> = new Listener<SkillArgs>();
+  public onSkillStarted: Listener<SkillListenerArgs> = new Listener<SkillListenerArgs>();
+  public onSkillEnded: Listener<SkillListenerArgs> = new Listener<SkillListenerArgs>();
 
   public onEffectStarted: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
   public onEffectReactivate: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();

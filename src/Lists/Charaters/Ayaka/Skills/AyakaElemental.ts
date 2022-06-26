@@ -34,7 +34,7 @@ export default class AyakaElemental extends NormalSkill {
     super.onEnd(args);
 
     const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
+    const atk = character.calculatorStats.ATK.calc(this.strategy.type);
     const dmg = this.skillValue.getDamage(this.lvl.current) * atk;
     const status = new CryoStatus(2);
     const dmgArgs = new SkillDamageArgs({

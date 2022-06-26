@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
 import CritStat from "@/Entities/Characters/CalculatorStats/Types/CritStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
 export default class CritChanceStat extends CritStat {
   public title: string = "CritChance";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { critChance } = this.character.baseStats;
+    const { critChance } = this.entity.baseStats;
     const artifactsCritChance = this.getArtifactsValue(StatType.CritChance);
     const weaponCritChange = this.getWeaponValue(StatType.CritChance);
 
@@ -20,7 +20,7 @@ export default class CritChanceStat extends CritStat {
   }
 
   calcPure(): number {
-    const { critChance } = this.character.baseStats;
+    const { critChance } = this.entity.baseStats;
     const artifactsCritChance = this.getArtifactsValue(StatType.CritChance);
     const weaponCritChange = this.getWeaponValue(StatType.CritChance);
 

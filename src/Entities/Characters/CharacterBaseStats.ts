@@ -2,7 +2,7 @@ import BaseStat from "@/BaseStats/BaseStat";
 
 import Character from "./Character";
 import CharacterAscendableBaseStat from "./CharacterAscendableBaseStat";
-import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
+import Stat from "@/CalculatorStats/Stat";
 
 export default abstract class CharacterBaseStats {
   constructor(private character: Character) {}

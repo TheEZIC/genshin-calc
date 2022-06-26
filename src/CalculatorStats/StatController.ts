@@ -1,8 +1,9 @@
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/CalculatorStats/StatValue";
 import {SkillType} from "@/Skills/SkillType";
-import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
+import Stat from "@/CalculatorStats/Stat";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
+import Entity from "@/Entities/Entity";
 
 export enum StatTense {
   Pre,
@@ -18,7 +19,7 @@ interface IStatControllerItem {
 @RefreshableClass
 export default class StatController {
   constructor(
-    private stat: Stat,
+    private stat: Stat<Entity>,
   ) {
   }
 
@@ -67,7 +68,9 @@ export default class StatController {
     const filtered: StatValue[] = [];
 
     for (let statItem of stats) {
-      const statHasFilter = skillFilter ? statItem.stat.skillFilters?.includes(skillFilter) : false;
+      const statHasFilter = skillFilter
+        ? statItem.stat.skillFilters?.includes(skillFilter) || !statItem.stat.skillFilters?.length
+        : false;
 
       if ((skillFilter && statHasFilter) || !skillFilter) {
         if (tenses && tenses.length && tenses.includes(statItem.tense)) {

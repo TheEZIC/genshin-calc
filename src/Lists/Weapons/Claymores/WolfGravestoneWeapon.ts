@@ -1,7 +1,7 @@
 import AscensionsIterator from "@/BaseStats/AscensionsIterator";
 import BaseStat from "@/BaseStats/BaseStat";
 import { StatType } from "@/BaseStats/StatType";
-import { StatValue } from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import { StatValue } from "@/CalculatorStats/StatValue";
 import Character from "@/Entities/Characters/Character";
 import Claymore from "@/Weapons/WeaponTypes/Claymore";
 import { WeaponBaseMainStat } from "@/Weapons/WeaponBaseMainStat";

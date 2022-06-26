@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 
-export default class AnemoDmgBonusStat extends PureStat {
+export default class AnemoDmgBonusStat extends CharacterPureStat {
   public title: string = "AnemoDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { anemoDmgBonus } = this.character.baseStats;
+    const { anemoDmgBonus } = this.entity.baseStats;
     const artifactsAnemoPercent = this.getArtifactsValue(
       StatType.AnemoDmgBonus
     );
@@ -20,7 +20,7 @@ export default class AnemoDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { anemoDmgBonus } = this.character.baseStats;
+    const { anemoDmgBonus } = this.entity.baseStats;
     const artifactsAnemoPercent = this.getArtifactsValue(
       StatType.AnemoDmgBonus
     );

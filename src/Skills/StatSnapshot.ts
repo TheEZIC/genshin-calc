@@ -1,6 +1,6 @@
 import Snapshot from "@/Snapshots/Snapshot";
-import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import Stat from "@/CalculatorStats/Stat";
+import {StatTense} from "@/CalculatorStats/StatController";
 import {SkillType} from "@/Skills/SkillType";
 
 export interface ISkillSnapshotValues {

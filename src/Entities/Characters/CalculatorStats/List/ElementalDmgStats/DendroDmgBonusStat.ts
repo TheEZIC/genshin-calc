@@ -1,13 +1,13 @@
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
-export default class DendroDmgBonusStat extends PureStat {
+export default class DendroDmgBonusStat extends CharacterPureStat {
   public title: string = "DendroDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { dendroDmgBonus } = this.character.baseStats;
+    const { dendroDmgBonus } = this.entity.baseStats;
     const artifactsDendroPercent = this.getArtifactsValue(
       StatType.DendroDmgBonus
     );
@@ -20,7 +20,7 @@ export default class DendroDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { dendroDmgBonus } = this.character.baseStats;
+    const { dendroDmgBonus } = this.entity.baseStats;
     const artifactsDendroPercent = this.getArtifactsValue(
       StatType.DendroDmgBonus
     );

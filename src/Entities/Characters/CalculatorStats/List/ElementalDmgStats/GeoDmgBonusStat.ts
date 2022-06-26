@@ -1,13 +1,13 @@
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
-export default class GeoDmgBonusStat extends PureStat {
+export default class GeoDmgBonusStat extends CharacterPureStat {
   public title: string = "GeoDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { geoDmgBonus } = this.character.baseStats;
+    const { geoDmgBonus } = this.entity.baseStats;
     const artifactsGeoPercent = this.getArtifactsValue(StatType.GeoDmgBonus);
 
     return (
@@ -18,7 +18,7 @@ export default class GeoDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { geoDmgBonus } = this.character.baseStats;
+    const { geoDmgBonus } = this.entity.baseStats;
     const artifactsGeoPercent = this.getArtifactsValue(StatType.GeoDmgBonus);
 
     return (

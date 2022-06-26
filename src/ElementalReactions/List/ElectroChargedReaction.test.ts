@@ -5,7 +5,7 @@ import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/CalculatorStats/StatValue";
 import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
 
 const reactionName = "ElectroCharged";

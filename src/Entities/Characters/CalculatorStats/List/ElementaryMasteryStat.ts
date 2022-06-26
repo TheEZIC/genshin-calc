@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 
-export default class ElementaryMasteryStat extends PureStat {
+export default class ElementaryMasteryStat extends CharacterPureStat {
   public title: string = "ElementaryMastery";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { elementalMastery } = this.character.baseStats;
+    const { elementalMastery } = this.entity.baseStats;
     const artifactsElementalMastery = this.getArtifactsValue(
       StatType.ElementalMastery
     );
@@ -20,7 +20,7 @@ export default class ElementaryMasteryStat extends PureStat {
   }
 
   calcPure(): number {
-    const { elementalMastery } = this.character.baseStats;
+    const { elementalMastery } = this.entity.baseStats;
     const artifactsElementalMastery = this.getArtifactsValue(
       StatType.ElementalMastery
     );

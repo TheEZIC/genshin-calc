@@ -111,14 +111,14 @@ class GenshinCalculator {
       //roster.addEnemy(new Enemy());
 
       const dmg = damageCalculator.calcRotationAndFinish([
-        // new AyakaBurst(),
-        // new AyakaElemental(),
-        // new AyakaNormalAttack(),
-        // new AyakaNormalAttack(),
-        // new XianglingBurst(),
-        // new XianglingElemental(),
-        // new AyakaHoldAttack(),
-        new AyakaDash(),
+        new AyakaBurst(),
+        new AyakaElemental(),
+        new AyakaNormalAttack(),
+        new AyakaNormalAttack(),
+        new XianglingBurst(),
+        new XianglingElemental(),
+        new AyakaHoldAttack(),
+        // new AyakaDash(),
         // new AyakaDash(),
         // new AyakaDash(),
         // new AyakaNormalAttack(),

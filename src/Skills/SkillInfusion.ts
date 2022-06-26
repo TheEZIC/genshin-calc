@@ -1,6 +1,6 @@
 import {VisionType} from "@/VisionType";
 import Character from "@/Entities/Characters/Character";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/CalculatorStats/StatValue";
 import Skill from "@/Skills/Skill";
 import {SkillType} from "@/Skills/SkillType";
 

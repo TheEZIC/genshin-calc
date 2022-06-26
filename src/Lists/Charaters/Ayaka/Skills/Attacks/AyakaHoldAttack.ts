@@ -70,7 +70,7 @@ export default class AyakaHoldAttack extends NormalSkill implements IMultipleHit
     super.onEnd(args);
 
     const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
+    const atk = character.calculatorStats.ATK.calc(this.strategy.type);
     let dmg = this.value.getDamage(this.lvl.current) * atk;
 
     const hasC6Buff = character.hasEffectByInstance(AyakaC6Buff);

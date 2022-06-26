@@ -6,7 +6,7 @@ import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/CalculatorStats/StatValue";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";

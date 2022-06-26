@@ -1,7 +1,7 @@
-import PureStat from "./PureStat";
-import StatController from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
+import StatController from "@/CalculatorStats/StatController";
 
-export default abstract class MainStat extends PureStat {
+export default abstract class CharacterMainStat extends CharacterPureStat {
   public readonly prefixes: StatController = new StatController(this);
   public readonly affixes: StatController = new StatController(this);
 

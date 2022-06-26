@@ -13,7 +13,7 @@ export default class CooldownBehavior extends BehaviorUnit {
   }
 
   protected override onStart(args: IBaseArgs) {
-    this.item?.();
+    //this.item?.();
   }
 
   protected override onEnd(args: IBaseArgs) {

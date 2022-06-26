@@ -68,11 +68,11 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
     if (this.hitsFrames.includes(this.currentFrame)) {
       const currentHit = this.pyronadoInitialHitsValues[this.currentHit];
-      const atk = args.character.calculatorStats.ATK.calc();
+      const atk = args.character.calculatorStats.ATK.calc(this.strategy.type);
       const dmg = atk * currentHit.getDamage(this.lvl.current);
 
       if (this.currentHit == 2) {
-        this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+        this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK, this.strategy.type);
         this.currentHit = 0;
         this.ICD = null;
       }
@@ -93,7 +93,7 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
     }
 
     if (this.pyronadoFrames.includes(this.currentFrame)) {
-      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", args.character.calculatorStats.ATK);
+      const atk = this.skillAtkSnapshot.calcStat(args.hash + "Atk", args.character.calculatorStats.ATK, this.strategy.type);
       const dmg = atk * this.pyronadoTickValue.getDamage(this.lvl.current);
       const damageArgs = new SkillDamageArgs({
         ...args,

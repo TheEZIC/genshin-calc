@@ -1,13 +1,13 @@
 import { StatType } from "@/BaseStats/StatType";
-import MainStat from "@/Entities/Characters/CalculatorStats/Types/MainStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
+import CharacterMainStat from "@/Entities/Characters/CalculatorStats/Types/CharacterMainStat";
 
-export default class DefStat extends MainStat {
+export default class DefStat extends CharacterMainStat {
   public title: string = "Def";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { baseDEF, percentDEF } = this.character.baseStats;
+    const { baseDEF, percentDEF } = this.entity.baseStats;
     const artifactsFlatDEF = this.getArtifactsValue(StatType.FlatDEF);
     const artifactsPercentDEF = this.getArtifactsValue(StatType.PercentDEF);
     const weaponPercentDef = this.getWeaponValue(StatType.PercentDEF);
@@ -27,7 +27,7 @@ export default class DefStat extends MainStat {
   }
 
   override calcDisplayed(): number {
-    const { baseDEF, percentDEF } = this.character.baseStats;
+    const { baseDEF, percentDEF } = this.entity.baseStats;
     const artifactsFlatDEF = this.getArtifactsValue(StatType.FlatDEF);
     const artifactsPercentDEF = this.getArtifactsValue(StatType.PercentDEF);
     const weaponPercentDef = this.getWeaponValue(StatType.PercentDEF);
@@ -46,7 +46,7 @@ export default class DefStat extends MainStat {
   }
 
   calcPure(): number {
-    const { baseDEF, percentDEF } = this.character.baseStats;
+    const { baseDEF, percentDEF } = this.entity.baseStats;
     const artifactsFlatDEF = this.getArtifactsValue(StatType.FlatDEF);
     const artifactsPercentDEF = this.getArtifactsValue(StatType.PercentDEF);
     const weaponPercentDef = this.getWeaponValue(StatType.PercentDEF);

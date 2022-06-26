@@ -16,7 +16,7 @@ export default abstract class NormalAttackSkillStage extends Skill implements IM
 
   override onEnd(args: SkillArgs) {
     const {character} = args;
-    const atk = character.calculatorStats.ATK.calc();
+    const atk = character.calculatorStats.ATK.calc(this.strategy.type);
     const dmg = this.value.getDamage(this.lvl.current) * atk;
     const dmgArgs = new SkillDamageArgs({
       ...args,

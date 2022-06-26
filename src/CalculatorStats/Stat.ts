@@ -1,11 +1,12 @@
 import { StatType } from "@/BaseStats/StatType";
 import Character from "@/Entities/Characters/Character";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 import Listener from "@/Helpers/Listener";
+import Entity from "@/Entities/Entity";
 
-export default abstract class Stat {
-  constructor(protected character: Character) {}
+export default abstract class Stat<T extends Entity = Entity> {
+  constructor(protected entity: T) {}
 
   public abstract title: string;
 
@@ -31,25 +32,5 @@ export default abstract class Stat {
    * */
   public clear(): this {
     return this;
-  }
-
-  /**
-   * Get weapon value bonus by stat
-   * */
-  protected getWeaponValue(statType: StatType) {
-    const { weaponManager } = this.character;
-
-    return weaponManager.weapon?.mainStat.isType(statType)
-      ? weaponManager.weapon?.mainStat.value
-      : 0;
-  }
-
-  /**
-   * Get artifacts value bonus by stat
-   * */
-  protected getArtifactsValue(statType: StatType) {
-    const { artifactsManager } = this.character;
-
-    return artifactsManager.getStatSumByType(statType);
   }
 }

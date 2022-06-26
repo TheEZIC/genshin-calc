@@ -1,13 +1,13 @@
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
-export default class HydroDmgBonusStat extends PureStat {
+export default class HydroDmgBonusStat extends CharacterPureStat {
   public title: string = "HydroDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { hydroDmgBonus } = this.character.baseStats;
+    const { hydroDmgBonus } = this.entity.baseStats;
     const artifactsHydroPercent = this.getArtifactsValue(
       StatType.HydroDmgBonus
     );
@@ -20,7 +20,7 @@ export default class HydroDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { hydroDmgBonus } = this.character.baseStats;
+    const { hydroDmgBonus } = this.entity.baseStats;
     const artifactsHydroPercent = this.getArtifactsValue(
       StatType.HydroDmgBonus
     );

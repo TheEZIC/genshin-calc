@@ -1,13 +1,13 @@
+import CharacterPureStat from "@/Entities/Characters/CalculatorStats/Types/CharacterPureStat";
 import { StatType } from "@/BaseStats/StatType";
-import PureStat from "@/Entities/Characters/CalculatorStats/Types/PureStat";
 import { SkillType } from "@/Skills/SkillType";
-import {StatTense} from "@/Entities/Characters/CalculatorStats/Types/StatController";
+import {StatTense} from "@/CalculatorStats/StatController";
 
-export default class PhysicalDmgBonusStat extends PureStat {
+export default class PhysicalDmgBonusStat extends CharacterPureStat {
   public title: string = "PhysicalDmgBonus";
 
   calc(skillFilter?: SkillType, tenses?: StatTense[]): number {
-    const { physicalDmgBonus } = this.character.baseStats;
+    const { physicalDmgBonus } = this.entity.baseStats;
     const artifactsPhysicalPercent = this.getArtifactsValue(
       StatType.PhysicalDmgBonus
     );
@@ -20,7 +20,7 @@ export default class PhysicalDmgBonusStat extends PureStat {
   }
 
   calcPure(): number {
-    const { physicalDmgBonus } = this.character.baseStats;
+    const { physicalDmgBonus } = this.entity.baseStats;
     const artifactsPhysicalPercent = this.getArtifactsValue(
       StatType.PhysicalDmgBonus
     );

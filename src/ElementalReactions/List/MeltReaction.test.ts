@@ -3,7 +3,7 @@ import ElementalReactionManager from "@/ElementalReactions/ElementalReactionMana
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Enemy from "@/Entities/Enemies/Enemy";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
-import {StatValue} from "@/Entities/Characters/CalculatorStats/Types/StatValue";
+import {StatValue} from "@/CalculatorStats/StatValue";
 import MeltReaction from "@/ElementalReactions/List/MeltReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import RefreshManager from "@/Refresher/RefreshManager";

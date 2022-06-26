@@ -23,9 +23,8 @@ import PhysicalDmgBonusStat from "./List/ElementalDmgStats/PhysicalDmgBonusStat"
 import PhysicalResistanceStat from "./List/ResistanceStats/PhysicalResistanceStat";
 import PyroDmgBonusStat from "./List/ElementalDmgStats/PyroDmgBonusStat";
 import PyroResistanceStat from "./List/ResistanceStats/PyroResistanceStat";
-import MainStat from "./Types/MainStat";
 import {VisionType} from "@/VisionType";
-import Stat from "@/Entities/Characters/CalculatorStats/Types/Stat";
+import Stat from "@/CalculatorStats/Stat";
 import VaporizeReactionDmgBonusStat
   from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/VaporizeReactionDmgBonusStat";
 import MeltReactionDmgBonusStat
@@ -42,13 +41,15 @@ import SwirlReactionDmgBonus
   from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/SwirlReactionDmgBonus";
 import CrystallizeReactionDmgBonusStat
   from "@/Entities/Characters/CalculatorStats/List/ReactionDmgStats/CrystallizeReactionDmgBonusStat";
+import CharacterStat from "@/Entities/Characters/CalculatorStats/Types/CharacterStat";
+import CharacterMainStat from "@/Entities/Characters/CalculatorStats/Types/CharacterMainStat";
 
 export default class CalculatorStats {
   constructor(public character: Character) {}
 
-  public readonly ATK: MainStat = new AtkStat(this.character);
-  public readonly DEF: MainStat = new DefStat(this.character);
-  public readonly HP: MainStat = new HpStat(this.character);
+  public readonly ATK: CharacterMainStat = new AtkStat(this.character);
+  public readonly DEF: CharacterMainStat = new DefStat(this.character);
+  public readonly HP: CharacterMainStat = new HpStat(this.character);
 
   public readonly elementalMastery = new ElementaryMasteryStat(this.character);
   public readonly energyRecharge = new EnergyRechargeStat(this.character);
@@ -83,7 +84,7 @@ export default class CalculatorStats {
   public readonly swirlReactionDmgBonus = new SwirlReactionDmgBonus(this.character);
   public readonly crystallizeReactionDmgBonus = new CrystallizeReactionDmgBonusStat(this.character);
 
-  private _list: Stat[] = [
+  private _list: CharacterStat[] = [
     this.ATK,
     this.HP,
     this.DEF,
@@ -135,7 +136,7 @@ export default class CalculatorStats {
       const isStat = value instanceof Stat;
 
       if (isStat) {
-        const stat = value as Stat;
+        const stat = value as CharacterStat;
         stat.onChange.notifyAll(stat.calc());
       }
     });
