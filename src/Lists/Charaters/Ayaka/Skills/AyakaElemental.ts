@@ -8,6 +8,7 @@ import ICD from "@/Skills/ICD";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import {VisionType} from "@/VisionType";
 
 export default class AyakaElemental extends NormalSkill {
   public skillName: string = "Kamisato Art: Hyouka";
@@ -43,6 +44,10 @@ export default class AyakaElemental extends NormalSkill {
       elementalStatus: status,
     });
 
+    args.damageCalculator.energyManager.addEnergy({
+      type: VisionType.Cryo,
+      count: (4 + 5) / 2,
+    });
     this.doDamage(dmgArgs, "Ayaka elemental hit");
   }
 }

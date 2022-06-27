@@ -16,12 +16,19 @@ export default class ElementalSkillStrategy extends SkillStrategy implements ISk
     args.character.listeners.ElementalSkillEnded.notifyAll(args);
   }
 
+  runBeforeDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.ElementalSkillBeforeDamage.notifyAll(args);
+  }
+
   runDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.ElementalSkillDamage.notifyAll(args);
   }
 
   runHealListener(args: IOnSkillAction): void {
+    args.character.listeners.ElementalSkillHeal.notifyAll(args);
   }
 
   runCreateShieldListener(args: IOnSkillAction): void {
+    args.character.listeners.ElementalSkillCreateShield.notifyAll(args);
   }
 }

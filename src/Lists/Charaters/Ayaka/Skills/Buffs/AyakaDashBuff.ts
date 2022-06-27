@@ -3,6 +3,7 @@ import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
 import {ISKillInfusionItem} from "@/Skills/SkillInfusion";
 import {VisionType} from "@/VisionType";
+import NormalAttackSkill from "@/Skills/Defaults/NormalAttackSkill";
 
 export default class AyakaDashBuff extends OverridableEffect<Character> {
   frames: number = 5 * 60; //5sec
@@ -13,14 +14,25 @@ export default class AyakaDashBuff extends OverridableEffect<Character> {
   }
 
   protected applyEffect(character: Character): void {
-    character.skillManager
-      .getAllSkillsByType(SkillType.NormalAttack)
-      ?.map((s) => s.infusion.add(this.dashInfusion));
+    const normalAttackSkill = character.skillManager.getSkillByType(SkillType.NormalAttack) as NormalAttackSkill;
+    const holdAttackSkill = character.skillManager.getSkillByType(SkillType.HoldAttack);
+
+    normalAttackSkill.attackStages.forEach(stage => {
+      stage.infusion.add(this.dashInfusion)
+    });
+
+
+    holdAttackSkill?.infusion.add(this.dashInfusion);
   }
 
   protected removeEffect(character: Character): void {
-    character.skillManager
-      .getAllSkillsByType(SkillType.NormalAttack)
-      ?.map((s) => s.infusion.remove(this.dashInfusion));
+    const normalAttackSkill = character.skillManager.getSkillByType(SkillType.NormalAttack) as NormalAttackSkill;
+    const holdAttackSkill = character.skillManager.getSkillByType(SkillType.HoldAttack);
+
+    normalAttackSkill.attackStages.forEach(stage => {
+      stage.infusion.remove(this.dashInfusion)
+    });
+
+    holdAttackSkill?.infusion.remove(this.dashInfusion);
   }
 }

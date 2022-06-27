@@ -1,7 +1,7 @@
-import AyakaNormalAttackStage from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaNormalAttackStage";
 import SkillValue from "@/Skills/SkillValue";
+import XianglingNormalAttackStage from "@/Lists/Charaters/Xiangling/Skills/Attacks/XianglingNormalAttackStage";
 
-export default class XianglingA4 extends AyakaNormalAttackStage {
+export default class XianglingA4 extends XianglingNormalAttackStage {
   public skillName: string = "Dough-Fu A4";
 
   public override hits: number = 4;

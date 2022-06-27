@@ -1,4 +1,4 @@
-import NormalSkill from "@/Skills/NormalSkill";
+import HoldAttackSkill from "@/Skills/Defaults/HoldAttackSkill";
 import {IMultipleHitSkill} from "@/Skills/SkillInterfaces/IMultipleHitSkill";
 import SkillValue from "@/Skills/SkillValue";
 import SkillStrategy from "@/Skills/SkillStrategy";
@@ -9,33 +9,28 @@ import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType"
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
 import AyakaC6Buff from "@/Lists/Charaters/Ayaka/Constellation/Effects/AyakaC6Buff";
-import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import NormalAttackSkill from "@/Skills/Defaults/NormalAttackSkill";
 import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";
 import AyakaA3 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA3";
 import AyakaA4 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA4";
 import Skill from "@/Skills/Skill";
-import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
+import NormalAttackSkillStage from "@/Skills/Defaults/NormalAttackSkillStage";
 
-export default class AyakaHoldAttack extends NormalSkill implements IMultipleHitSkill {
+export default class AyakaHoldAttack extends HoldAttackSkill implements IMultipleHitSkill {
   public skillName: string = "Kamisato Art: Kabuki";
 
-  public strategy: SkillStrategy = new HoldAttackSkillStrategy(this);
   public frames: number = 0;
-  public countdownFrames: number = 0;
-  public hits: number = 3;
+  public override hits: number = 3;
 
   private C6Bonus: number = 298;
 
-  private value: SkillValue = new SkillValue(55.13 * this.hits, 59.61 * this.hits, 70.51 * this.hits);
+  protected value: SkillValue = new SkillValue(55.13 * this.hits, 59.61 * this.hits, 70.51 * this.hits);
   private C6Value: SkillValue = new SkillValue(
 (55.13 + this.C6Bonus) * this.hits,
 (59.61 + this.C6Bonus) * this.hits,
 (70.51 + this.C6Bonus) * this.hits,
   );
-
-  public targetType: SkillTargetType = SkillTargetType.AOE;
-  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 
   protected override onAwake(args: SkillArgs) {
     super.onAwake(args);

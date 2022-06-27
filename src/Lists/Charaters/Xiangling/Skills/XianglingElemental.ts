@@ -10,6 +10,7 @@ import {GoubaEntity} from "@/Lists/Charaters/Xiangling/Skills/GoubaEntity";
 import {IDOTSkill} from "@/Skills/SkillInterfaces/IDOTSkill";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import {VisionType} from "@/VisionType";
 
 export default class XianglingElemental extends SummonSkill implements IDOTSkill {
   public skillName: string = "Gouba Attack";
@@ -82,6 +83,10 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
         elementalStatus: pyroA1,
       });
 
+      args.damageCalculator.energyManager.addEnergy({
+        type: VisionType.Pyro,
+        count: 1,
+      });
       this.doDamage(damageArgs, "Gouba hit");
     }
   }
@@ -91,5 +96,6 @@ export default class XianglingElemental extends SummonSkill implements IDOTSkill
 
     const {roster} = args.damageCalculator;
     roster.removeEntity(this.gouba);
+    this.skillAtkSnapshot.remove(args.hash + "Atk");
   }
 }

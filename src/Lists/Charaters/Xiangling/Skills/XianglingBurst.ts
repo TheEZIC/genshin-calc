@@ -9,6 +9,7 @@ import StatSnapshot from "@/Skills/StatSnapshot";
 import {IBurstSkill} from "@/Skills/SkillTypes/IBurstSkill";
 import SkillArgs from "@/Skills/Args/SkillArgs";
 import SkillDamageArgs from "@/Skills/Args/SkillDamageArgs";
+import {StatValue} from "@/CalculatorStats/StatValue";
 
 export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   public skillName: string = "Pyronado";
@@ -39,6 +40,8 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
   private skillAtkSnapshot: StatSnapshot = new StatSnapshot();
   private pyronadoFrames: number[] = [];
 
+  private C6PyroDmgBonus = new StatValue(15);
+
   protected override onAwake(args: SkillArgs) {
     super.onAwake(args);
 
@@ -56,6 +59,18 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
   override onStart(args: SkillArgs) {
     super.onStart(args);
+
+    const currentConst = args.character.constellationsManager.current;
+
+    if (currentConst >= 6) {
+      const {characters} = args.damageCalculator.roster;
+
+      for (let character of characters) {
+        character.calculatorStats.pyroDmgBonus.additionalValues.add(
+          this.C6PyroDmgBonus
+        );
+      }
+    }
 
     this.ICD = new ICD(3, 2.5);
     this.currentHit = 0;
@@ -103,5 +118,21 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
 
       this.doDamage(damageArgs, "Pyronado hit");
     }
+  }
+
+  protected override onEnd(args: SkillArgs) {
+    const currentConst = args.character.constellationsManager.current;
+
+    if (currentConst >= 6) {
+      const {characters} = args.damageCalculator.roster;
+
+      for (let character of characters) {
+        character.calculatorStats.pyroDmgBonus.additionalValues.remove(
+          this.C6PyroDmgBonus
+        );
+      }
+    }
+
+    this.skillAtkSnapshot.remove(args.hash);
   }
 }

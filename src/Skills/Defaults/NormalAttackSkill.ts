@@ -4,7 +4,7 @@ import NormalAttackSkillStrategy from "@/Skills/SkillStrategy/NormalAttackSkillS
 import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
 import {SkillTargetType} from "@/Skills/SkillTargetType";
 import SkillArgs from "@/Skills/Args/SkillArgs";
-import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
+import NormalAttackSkillStage from "@/Skills/Defaults/NormalAttackSkillStage";
 
 export default abstract class NormalAttackSkill extends Skill {
   public strategy: ISkillStrategy = new NormalAttackSkillStrategy(this);
@@ -23,6 +23,10 @@ export default abstract class NormalAttackSkill extends Skill {
   public targetType: SkillTargetType = SkillTargetType.Single;
 
   public abstract attackStages: Skill[];
+
+  public getAttackStageAt(index: number) {
+    return this.attackStages[0];
+  }
 
   public getCurrentAttackSkillIndex(args: SkillArgs): number {
     const {prevSkill, damageCalculator} = args;

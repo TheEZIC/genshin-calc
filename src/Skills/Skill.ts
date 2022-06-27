@@ -18,6 +18,14 @@ import BehaviorUnit from "@/Behavior/BehaviorUnit";
 import {isIBurstSKill} from "@/Skills/SkillTypes/IBurstSkill";
 import CooldownItem from "@/Cooldown/CooldownItem";
 import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
+import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
+import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
+import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
+import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
+import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
+import DendroStatus from "@/ElementalStatuses/List/DendroStatus";
+import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 
 export default abstract class Skill extends BehaviorUnit<SkillArgs> implements IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
@@ -67,6 +75,17 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   }
 
   public doDamage(args: SkillDamageArgs, comment: string = "") {
+    const beforeDamageArgs = {
+      character: args.character,
+      targets: this.getTargets(args),
+      elementalStatus: args.elementalStatus,
+      comment,
+      skill: this,
+      value: args.value,
+    };
+
+    this.strategy.runBeforeDamageListener(beforeDamageArgs);
+
     let dmg: number = this.performHit(args);
     const damageArgs = {
       character: args.character,
@@ -115,7 +134,7 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
     }
 
     this.doForEachTarget(args, (enemy) => {
-      totalDmg += this.applyDamageFactors(args.character, enemy, totalDmg);
+      totalDmg += this.applyDamageFactors(args, enemy, totalDmg);
     });
 
     if (this.ICD) {
@@ -135,25 +154,38 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
     }
   }
 
-  protected getTargets(args: SkillArgs): Enemy[] {
+  protected getTargets(args: SkillArgs | SkillDamageArgs | SkillActionArgs): Enemy[] {
     const {enemies} = args.damageCalculator.roster;
+    let type: SkillTargetType = this.targetType;
     let targets: Enemy[] = [];
 
-    if (this.targetType === SkillTargetType.Single) {
+    if (args instanceof SkillDamageArgs && args.targetType) {
+      type = args.targetType;
+    }
+
+    if (type === SkillTargetType.Single) {
       const [enemy] = enemies;
       targets.push(enemy);
-    } else if (this.targetType === SkillTargetType.AOE) {
+    } else if (type === SkillTargetType.AOE) {
       targets = enemies;
     }
 
     return targets;
   }
 
-  private applyDamageFactors(character: Character, target: Enemy, damage: number): number {
+  private applyDamageFactors(args: SkillDamageArgs, target: Enemy, damage: number): number {
+    const {character} = args;
+
     let totalDamage = damage;
 
     totalDamage *= character.calculatorStats.critDamage.critEffect;
+    totalDamage *= this.getDefFactor(character, target);
+    totalDamage *= this.getResistanceFactor(args, target);
 
+    return totalDamage - damage;
+  }
+
+  private getDefFactor(character: Character, target: Enemy): number {
     const characterLvl = character.lvl;
     const enemyLvl = target.lvl;
 
@@ -167,9 +199,39 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
         (1 - (target.calculatorStats.defShred.calc()) / 100)
       );
 
-    totalDamage *= defFactor;
+    return defFactor;
+  }
 
-    return totalDamage - damage;
+  private getResistanceFactor(args: SkillDamageArgs, target: Enemy) {
+    if (args.elementalStatus) {
+      return this.getResistanceFromStatus(args.elementalStatus, target);
+    } else {
+      return target.calculatorStats.physicalResistance.calc();
+    }
+  }
+
+  private getResistanceFromStatus(elementalStatus: ElementalStatus, target: Enemy): number {
+    switch (elementalStatus.constructor) {
+      case PyroStatus:
+        return target.calculatorStats.pyroResistance.calc();
+      case CryoStatus:
+      case FreezeStatus:
+        return target.calculatorStats.cryoResistance.calc();
+      case HydroStatus:
+        return target.calculatorStats.hydroResistance.calc();
+      case GeoStatus:
+        return target.calculatorStats.geoResistance.calc();
+      case ElementalStatus:
+        return target.calculatorStats.geoResistance.calc();
+      case DendroStatus:
+        return target.calculatorStats.dendroResistance.calc();
+      case CryoStatus:
+        return target.calculatorStats.cryoResistance.calc();
+      case AnemoStatus:
+        return target.calculatorStats.anemoResistance.calc();
+      default:
+        return 0;
+    }
   }
 
   public doHeal(args: SkillActionArgs, comment: string = "") {

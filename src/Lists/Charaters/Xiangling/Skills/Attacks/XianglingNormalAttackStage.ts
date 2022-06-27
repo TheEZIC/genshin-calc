@@ -1,8 +1,4 @@
-import {SkillTargetType} from "@/Skills/SkillTargetType";
-import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType";
-import NormalAttackSkillStage from "@/Skills/NormalAttackSkillStage";
+import NormalAttackSkillStage from "@/Skills/Defaults/NormalAttackSkillStage";
 
 export default abstract class XianglingNormalAttackStage extends NormalAttackSkillStage {
-  public targetType: SkillTargetType = SkillTargetType.Single;
-  public damageRegistrationType: SkillDamageRegistrationType = SkillDamageRegistrationType.Adaptive;
 }

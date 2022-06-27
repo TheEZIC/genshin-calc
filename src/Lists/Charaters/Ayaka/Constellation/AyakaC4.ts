@@ -17,9 +17,14 @@ export default class AyakaC4 extends Constellation {
   private onBurstHitDelegate = this.onBurstHit.bind(this);
 
   applyEffect(character: Character): void {
-    character.listeners.BurstSkillDamage.subscribe(this.onBurstHitDelegate);
+    character.listeners.BurstSkillBeforeDamage.subscribe(
+      this.onBurstHitDelegate
+    );
   }
+
   removeEffect(character: Character): void {
-    character.listeners.BurstSkillDamage.unsubscribe(this.onBurstHitDelegate);
+    character.listeners.BurstSkillBeforeDamage.unsubscribe(
+      this.onBurstHitDelegate
+    );
   }
 }

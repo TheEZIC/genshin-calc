@@ -1,4 +1,4 @@
-import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import NormalAttackSkill from "@/Skills/Defaults/NormalAttackSkill";
 import Skill from "@/Skills/Skill";
 import AyakaA1 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA1";
 import AyakaA2 from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaA2";

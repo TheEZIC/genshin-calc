@@ -17,6 +17,10 @@ export default class DashSkillStrategy extends SkillStrategy implements ISkillSt
     args.character.listeners.DashSkillEnded.notifyAll(args);
   }
 
+  runBeforeDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.DashSkillBeforeDamage.notifyAll(args);
+  }
+
   runDamageListener(args: IOnSkillDamage): void {
     args.character.listeners.DashSkillDamage.notifyAll(args);
   }

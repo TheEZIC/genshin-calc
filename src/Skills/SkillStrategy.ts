@@ -10,6 +10,7 @@ export interface ISkillStrategy {
   skillTypeName: string;
   runStartListener(args: SkillListenerArgs): void;
   runEndListener(args: SkillListenerArgs): void;
+  runBeforeDamageListener(args: IOnSkillDamage): void;
   runDamageListener(args: IOnSkillDamage): void;
   runHealListener(args: IOnSkillAction): void;
   runCreateShieldListener(args: IOnSkillAction): void;
@@ -28,6 +29,7 @@ export default abstract class SkillStrategy implements ISkillStrategy {
   public abstract runStartListener(args: SkillListenerArgs): void;
   public abstract runEndListener(args: SkillListenerArgs): void;
 
+  public abstract runBeforeDamageListener(args: IOnSkillDamage): void;
   public abstract runDamageListener(args: IOnSkillDamage): void;
   public abstract runHealListener(args: IOnSkillAction): void;
   public abstract runCreateShieldListener(args: IOnSkillAction): void;

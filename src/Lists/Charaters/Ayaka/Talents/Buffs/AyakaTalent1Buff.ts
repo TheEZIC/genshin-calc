@@ -4,7 +4,7 @@ import {SkillType} from "@/Skills/SkillType";
 import {StatValue} from "@/CalculatorStats/StatValue";
 
 export default class AyakaTalent1Buff extends OverridableEffect<Character> {
-  frames: number = 5 * 60; //5sec
+  public frames: number = 5 * 60; //5sec
 
   private talentAffix = new StatValue(30, [
     SkillType.NormalAttack,

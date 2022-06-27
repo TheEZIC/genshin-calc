@@ -15,6 +15,10 @@ export default class NormalAttackSkillStrategy extends SkillStrategy implements 
     args.character.listeners.NormalAttackEnded.notifyAll(args);
   }
 
+  runBeforeDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.NormalAttackBeforeDamage.notifyAll(args);
+  }
+
   runDamageListener(args: IOnSkillDamage): void {
     args.character.listeners.NormalAttackDamage.notifyAll(args);
   }

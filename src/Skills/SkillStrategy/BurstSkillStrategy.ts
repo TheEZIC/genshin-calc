@@ -15,6 +15,10 @@ export default class BurstSkillStrategy extends SkillStrategy implements ISkillS
     args.character.listeners.BurstSkillEnded.notifyAll(args);
   }
 
+  runBeforeDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.BurstSkillBeforeDamage.notifyAll(args);
+  }
+
   runDamageListener(args: IOnSkillDamage): void {
     args.character.listeners.BurstSkillDamage.notifyAll(args);
   }

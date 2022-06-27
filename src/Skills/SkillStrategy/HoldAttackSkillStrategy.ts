@@ -18,6 +18,10 @@ export default class HoldAttackSkillStrategy extends SkillStrategy implements IS
     args.character.listeners.HoldAttackEnded.notifyAll(args);
   }
 
+  runBeforeDamageListener(args: IOnSkillDamage): void {
+    args.character.listeners.HoldAttackBeforeDamage.notifyAll(args);
+  }
+
   runDamageListener(args: IOnSkillDamage): void {
     args.character.listeners.HoldAttackDamage.notifyAll(args);
   }

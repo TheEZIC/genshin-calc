@@ -1,4 +1,4 @@
-import NormalAttackSkill from "@/Skills/NormalAttackSkill";
+import NormalAttackSkill from "@/Skills/Defaults/NormalAttackSkill";
 import Skill from "@/Skills/Skill";
 import XianglingA1 from "@/Lists/Charaters/Xiangling/Skills/Attacks/XianglingA1";
 import XianglingA2 from "@/Lists/Charaters/Xiangling/Skills/Attacks/XianglingA2";

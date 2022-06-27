@@ -42,6 +42,8 @@ import AyakaNormalAttack from "@/Lists/Charaters/Ayaka/Skills/Attacks/AyakaNorma
 import SkillStartedLogger from "@/CombatLogger/List/SkillStartedLogger";
 import {LoggerItemType} from "@/CombatLogger/LoggerItemType";
 import LithicSpear from "@/Lists/Weapons/Polearms/BlackcliffPole";
+import XianglingHoldAttack from "@/Lists/Charaters/Xiangling/Skills/Attacks/XianglingHoldAttack";
+import XianglingNormalAttack from "@/Lists/Charaters/Xiangling/Skills/Attacks/XianglingNormalAttack";
 
 const singletonManager = SingletonsManager.instance;
 
@@ -96,7 +98,7 @@ class GenshinCalculator {
 
       console.log(ayaka.calculatorStats.ATK.calcDisplayed(), "displayed stat");
 
-      ayaka.constellationsManager.activateConstellation(3);
+      ayaka.constellationsManager.activateConstellation(4);
 
       ayaka.skillManager.changeLvl(10, SkillType.NormalAttack);
       ayaka.skillManager.changeLvl(10, SkillType.HoldAttack);
@@ -111,13 +113,18 @@ class GenshinCalculator {
       //roster.addEnemy(new Enemy());
 
       const dmg = damageCalculator.calcRotationAndFinish([
-        new AyakaBurst(),
-        new AyakaElemental(),
-        new AyakaNormalAttack(),
-        new AyakaNormalAttack(),
-        new XianglingBurst(),
-        new XianglingElemental(),
-        new AyakaHoldAttack(),
+        new XianglingNormalAttack(),
+        new XianglingNormalAttack(),
+        new XianglingNormalAttack(),
+        new XianglingNormalAttack(),
+        new XianglingHoldAttack(),
+        // new AyakaBurst(),
+        // new AyakaElemental(),
+        // new AyakaNormalAttack(),
+        // new AyakaNormalAttack(),
+        // new XianglingBurst(),
+        // new XianglingElemental(),
+        // new AyakaHoldAttack(),
         // new AyakaDash(),
         // new AyakaDash(),
         // new AyakaDash(),

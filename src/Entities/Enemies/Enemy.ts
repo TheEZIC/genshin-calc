@@ -1,5 +1,5 @@
 import Entity from "@/Entities/Entity";
-import EnemyCalculatorStats from "@/Entities/Enemies/EnemyCalculatorStats";
+import EnemyCalculatorStats from "@/Entities/Enemies/CalculatorStats/EnemyCalculatorStats";
 
 export default class Enemy extends Entity {
   public title: string = "Enemy";
