@@ -6,6 +6,20 @@ import IBaseArgs from "@/IBaseArgs";
 export default abstract class BehaviorUnit<T extends IBaseArgs = IBaseArgs> {
   public abstract frames: number;
 
+  private get getFrames() {
+    return this.frames;
+  }
+
+  private initialFrames: number = this.getFrames;
+
+  public increaseDuration(frames: number) {
+    this.frames += frames;
+  }
+
+  public decreaseDuration(frames: number) {
+    this.frames -= frames;
+  }
+
   @RefreshableProperty()
   private _isStarted: boolean = false;
 
@@ -87,6 +101,7 @@ export default abstract class BehaviorUnit<T extends IBaseArgs = IBaseArgs> {
     args.damageCalculator.behaviourManager.remove(this);
 
     this.currentFrame = 0;
+    //this.frames = this.initialFrames;
     this.isStarted = false;
 
     this.onEnd(args);

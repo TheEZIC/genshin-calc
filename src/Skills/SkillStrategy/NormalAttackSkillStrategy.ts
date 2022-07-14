@@ -1,7 +1,7 @@
 import SkillStrategy, {ISkillStrategy} from "@/Skills/SkillStrategy";
 import {SkillType} from "@/Skills/SkillType";
-import {IOnSkillAction, IOnSkillDamage} from "@/Roster/GlobalListeners";
 import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
+import {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export default class NormalAttackSkillStrategy extends SkillStrategy implements ISkillStrategy{
   type: SkillType = SkillType.NormalAttack;
@@ -15,19 +15,19 @@ export default class NormalAttackSkillStrategy extends SkillStrategy implements 
     args.character.listeners.NormalAttackEnded.notifyAll(args);
   }
 
-  runBeforeDamageListener(args: IOnSkillDamage): void {
+  runBeforeDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.NormalAttackBeforeDamage.notifyAll(args);
   }
 
-  runDamageListener(args: IOnSkillDamage): void {
+  runDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.NormalAttackDamage.notifyAll(args);
   }
 
-  runHealListener(args: IOnSkillAction): void {
+  runHealListener(args: ICombatHealArgs): void {
     args.character.listeners.NormalAttackHeal.notifyAll(args);
   }
 
-  runCreateShieldListener(args: IOnSkillAction): void {
+  runCreateShieldListener(args: ICombatShieldArgs): void {
     args.character.listeners.NormalAttackCreateShield.notifyAll(args);
   }
 }

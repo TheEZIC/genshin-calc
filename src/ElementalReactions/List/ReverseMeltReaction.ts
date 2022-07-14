@@ -1,7 +1,7 @@
-import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import AmplifyingElementalReaction from "@/ElementalReactions/AmplifyingElementalReaction";
+import {IElementalReactionArgs, IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
 
-export default class ReverseMeltReaction extends MultipliedElementalReaction {
+export default class ReverseMeltReaction extends AmplifyingElementalReaction {
   public triggerMultiplier: number = 1.25 / 2;
   protected damageMultiplier: number = 1.5;
 

@@ -1,9 +1,7 @@
 import SkillStrategy, {ISkillStrategy} from "@/Skills/SkillStrategy";
-import Character from "@/Entities/Characters/Character";
 import {SkillType} from "@/Skills/SkillType";
-import SkillArgs from "@/Skills/Args/SkillArgs";
-import {IOnSkillAction, IOnSkillDamage} from "@/Roster/GlobalListeners";
 import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
+import {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export default class DashSkillStrategy extends SkillStrategy implements ISkillStrategy {
   type: SkillType = SkillType.Dash;
@@ -17,19 +15,19 @@ export default class DashSkillStrategy extends SkillStrategy implements ISkillSt
     args.character.listeners.DashSkillEnded.notifyAll(args);
   }
 
-  runBeforeDamageListener(args: IOnSkillDamage): void {
+  runBeforeDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.DashSkillBeforeDamage.notifyAll(args);
   }
 
-  runDamageListener(args: IOnSkillDamage): void {
+  runDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.DashSkillDamage.notifyAll(args);
   }
 
-  runHealListener(args: IOnSkillAction): void {
+  runHealListener(args: ICombatHealArgs): void {
     args.character.listeners.DashSkillHeal.notifyAll(args);
   }
 
-  runCreateShieldListener(args: IOnSkillAction): void {
+  runCreateShieldListener(args: ICombatShieldArgs): void {
     args.character.listeners.DashSkillCreateShield.notifyAll(args);
   }
 }

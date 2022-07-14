@@ -89,14 +89,14 @@ export default class XianglingBurst extends SummonSkill implements IBurstSkill {
       if (this.currentHit == 2) {
         this.skillAtkSnapshot.addStat(args.hash + "Atk", args.character.calculatorStats.ATK, this.strategy.type);
         this.currentHit = 0;
-        this.ICD = null;
+        this.ICD = undefined;
       }
 
       const damageArgs = new SkillDamageArgs({
         ...args,
         value: dmg,
         elementalStatus: new PyroStatus(1),
-      })
+      });
 
       this.doDamage(damageArgs, `Pyronado initial hit ${this.currentHit + 1}`);
 

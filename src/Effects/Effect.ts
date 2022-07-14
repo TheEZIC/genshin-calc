@@ -1,8 +1,6 @@
 import {ISubscriber} from "@/Helpers/Listener";
 import {ISkillListenerArgs} from "@/Skills/SkillsListeners";
 import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
-import {IEndStrategy} from "@/Effects/IEndStrategy";
-import {DurationEndStrategy} from "@/Effects/EndStrategy/DurationEndStrategy";
 import {IPrototype} from "@/Helpers/IPrototype";
 import {RefreshableClass} from "@/Refresher/RefreshableClass";
 import {RefreshableProperty} from "@/Refresher/RefreshableProperty";
@@ -10,7 +8,6 @@ import {Constructor} from "@/Helpers/Constructor";
 import BehaviorUnit from "@/Behavior/BehaviorUnit";
 import IBaseArgs from "@/IBaseArgs";
 import CooldownItem from "@/Cooldown/CooldownItem";
-import Entity from "@/Entities/Entity";
 
 export interface IEffectArgs extends IBaseArgs {
   entity: IWithOngoingEffects;

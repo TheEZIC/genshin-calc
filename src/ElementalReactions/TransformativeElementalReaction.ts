@@ -1,4 +1,6 @@
-import ElementalReaction from "@/ElementalReactions/ElementalReaction";
+import ElementalReaction, {
+  IElementalReactionArgs,
+} from "@/ElementalReactions/ElementalReaction";
 import Character from "@/Entities/Characters/Character";
 
 export default abstract class TransformativeElementalReaction extends ElementalReaction {
@@ -15,6 +17,8 @@ export default abstract class TransformativeElementalReaction extends ElementalR
   //
   //   return 0;
   // }
+
+  public abstract doDamage(arsg: IElementalReactionArgs): number;
 
   public calcLvlMultiplier(character: Character): number {
     const {lvl} = character;

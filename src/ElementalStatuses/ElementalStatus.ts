@@ -3,8 +3,11 @@ import {IWithOngoingEffects} from "@/Effects/IWithOngoingEffects";
 import ElementalReaction from "@/ElementalReactions/ElementalReaction";
 import GlobalListeners from "@/Roster/GlobalListeners";
 import Entity from "@/Entities/Entity";
+import {VisionType} from "@/VisionType";
 
 export default abstract class ElementalStatus extends Effect<IWithOngoingEffects> {
+  public abstract visionType: VisionType;
+
   protected _units: number;
   protected _framesDuration: number;
   protected _unitCapacity: number;

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import RefreshManager from "@/Refresher/RefreshManager";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
@@ -13,7 +14,7 @@ describe("Character base stat test", () => {
 
     const testLvlApplying = (lvl: number, expected: number) => {
       character.applyLvl(lvl);
-      expect(character.baseStats.baseATK.value).toBeCloseTo(expected);
+      expect(character.baseStats.baseATK.value).toBeCloseTo(expected, 0);
     }
 
     testLvlApplying(20, 79);

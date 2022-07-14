@@ -12,30 +12,35 @@ import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import RefreshManager from "@/Refresher/RefreshManager";
 import SingletonsManager from "@/Singletons/SingletonsManager";
+import ReverseMeltReaction from "@/ElementalReactions/List/ReverseMeltReaction";
+import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 const reactionName = "Swirl";
 
 describe(`${reactionName}Reaction`, () => {
-  afterAll(() => {
-    // container.rebind(ContainerBindings.Roster);
-  });
+  let damageCalculator: DamageCalculator;
+  let manager: ElementalReactionManager;
 
-  let roster: Roster = Roster.instance;
-  let manager: ElementalReactionManager = ElementalReactionManager.instance;
+  let reaction: SwirlReaction;
 
-  let character = new Ayaka();
-  let entity1 = new Enemy();
-  let entity2 = new Enemy();
-  let reaction = new SwirlReaction(manager);
+  let character: Ayaka;
+  let entity1: Enemy;
+  let entity2: Enemy;
 
   beforeEach(() => {
+    damageCalculator = new DamageCalculator();
+    manager = damageCalculator.reactionsManager;
+
+    reaction = new SwirlReaction(manager);
+
     character = new Ayaka();
     entity1 = new Enemy();
     entity2 = new Enemy();
 
-    roster.clearEntities();
-    roster.addEnemy(entity1);
-    roster.addEnemy(entity2);
+    damageCalculator.roster.addCharacter(character);
+    damageCalculator.roster.addEnemy(entity1);
+    damageCalculator.roster.addEnemy(entity2);
   });
 
   afterEach(() => {
@@ -43,31 +48,48 @@ describe(`${reactionName}Reaction`, () => {
     SingletonsManager.resetAll();
   });
 
-  roster.addCharacter(character);
-
   test(`Expect ${reactionName} dmg`, () => {
     let elementalStatus = new AnemoStatus(4);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs: IElementalReactionArgs = {
+      character,
+      source: character,
+      entity: entity1,
+      aura: new CryoStatus(1),
+      trigger: elementalStatus,
+      damage: 1000,
+      damageCalculator,
+      ignoreReaction: false,
+    };
+
     character.applyLvl(40);
     let expectedDmg = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
 
-    expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(expectedDmg);
+    expect(reaction.doDamage(reactionArgs)).toBeCloseTo(expectedDmg);
   });
 
   test(`Expect ${reactionName} dmg with MS`, () => {
     let elementalStatus = new AnemoStatus(1);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs: IElementalReactionArgs = {
+      character,
+      source: character,
+      entity: entity1,
+      aura: new CryoStatus(1),
+      trigger: elementalStatus,
+      damage: 1000,
+      damageCalculator,
+      ignoreReaction: false,
+    };
 
     character.applyLvl(40);
     const dmgWithoutMS = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
 
-    expect(reaction.applyBonusDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
+    expect(reaction.doDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
   });
 
   test(`Expect ${reactionName} gauge 1`, () => {
     let elementalStatus = new AnemoStatus(1);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(1));
     manager.applyReaction(reactionArgs);
@@ -87,7 +109,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 2`, () => {
     let elementalStatus = new AnemoStatus(2);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(1));
     manager.applyReaction(reactionArgs);
@@ -107,7 +129,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 3`, () => {
     let elementalStatus = new AnemoStatus(4);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(1));
     manager.applyReaction(reactionArgs);
@@ -127,7 +149,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 4`, () => {
     let elementalStatus = new AnemoStatus(1);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(2));
     manager.applyReaction(reactionArgs);
@@ -147,7 +169,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 5`, () => {
     let elementalStatus = new AnemoStatus(2);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(2));
     manager.applyReaction(reactionArgs);
@@ -167,7 +189,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 6`, () => {
     let elementalStatus = new AnemoStatus(4);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(2));
     manager.applyReaction(reactionArgs);
@@ -187,7 +209,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 7`, () => {
     let elementalStatus = new AnemoStatus(1);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(4));
     manager.applyReaction(reactionArgs);
@@ -207,7 +229,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 8`, () => {
     let elementalStatus = new AnemoStatus(2);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(4));
     manager.applyReaction(reactionArgs);
@@ -227,7 +249,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} gauge 9`, () => {
     let elementalStatus = new AnemoStatus(4);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(4));
     manager.applyReaction(reactionArgs);
@@ -247,7 +269,7 @@ describe(`${reactionName}Reaction`, () => {
 
   test(`Expect ${reactionName} multitarget gauge 1`, () => {
     let elementalStatus = new AnemoStatus(1);
-    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0};
+    let reactionArgs = {character, entity: entity1, elementalStatus, damage: 0, damageCalculator};
 
     manager.addStatus(entity1, new PyroStatus(1));
     manager.addStatus(entity2, new ElectroStatus(4));

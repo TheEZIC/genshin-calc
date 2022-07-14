@@ -2,13 +2,15 @@ import Constellation from "@/Constellations/Constellation";
 import Character from "@/Entities/Characters/Character";
 import {IOnSkillAction} from "@/Roster/GlobalListeners";
 import XianglingC1Debuff from "@/Lists/Charaters/Xiangling/Conellation/Effects/XianglingC1Debuff";
+import {ICombatDamageArgs} from "@/Skills/CombatActions";
+import Enemy from "@/Entities/Enemies/Enemy";
 
 export default class XianglingC1 extends Constellation {
   private debuff = new XianglingC1Debuff();
 
-  private onElementalHit(args: IOnSkillAction) {
-    for (let target of args.targets) {
-      this.debuff.activate(target);
+  private onElementalHit(args: ICombatDamageArgs) {
+    if (args.target instanceof Enemy) {
+      this.debuff.activate(args.target);
     }
   }
 

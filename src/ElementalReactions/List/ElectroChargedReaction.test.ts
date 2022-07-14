@@ -6,7 +6,10 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import ElectroStatus from "@/ElementalStatuses/List/ElectroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import {StatValue} from "@/CalculatorStats/StatValue";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import {IElementalReactionArgs, IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
+import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 
 const reactionName = "ElectroCharged";
 
@@ -19,7 +22,7 @@ describe(`${reactionName}Reaction`, () => {
   let character: Ayaka;
   let entity: Enemy;
 
-  let reactionArgs: IElementalReactionArgs;
+  let reactionArgs: IElementalReactionManagerArgs;
 
   beforeEach(() => {
     damageCalculator = new DamageCalculator();
@@ -42,18 +45,44 @@ describe(`${reactionName}Reaction`, () => {
     };
   });
 
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
+  });
+
   test(`Expect ${reactionName} dmg`, () => {
     character.applyLvl(40);
     let expectedDmg = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
+    let reactionArgs: IElementalReactionArgs = {
+      character,
+      source: character,
+      entity,
+      aura: new HydroStatus(1),
+      trigger: elementalStatus,
+      damage: 1000,
+      damageCalculator,
+      ignoreReaction: false,
+    };
 
-    expect(reaction.applyBonusDamage(reactionArgs)).toBeCloseTo(expectedDmg);
+    expect(reaction.doDamage(reactionArgs)).toBeCloseTo(expectedDmg);
   });
 
   test(`Expect ${reactionName} dmg with MS`, () => {
     character.applyLvl(40);
     const dmgWithoutMS = reaction.baseDamageMultiplier * reaction.calcLvlMultiplier(character);
+    let reactionArgs: IElementalReactionArgs = {
+      character,
+      source: character,
+      entity,
+      aura: new HydroStatus(1),
+      trigger: elementalStatus,
+      damage: 1000,
+      damageCalculator,
+      ignoreReaction: false,
+    };
+
     character.calculatorStats.elementalMastery.additionalValues.add(new StatValue(100));
-    expect(reaction.applyBonusDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
+    expect(reaction.doDamage(reactionArgs)).toBeGreaterThan(dmgWithoutMS);
   });
 
   test(`Expect ${reactionName} gauge`, () => {

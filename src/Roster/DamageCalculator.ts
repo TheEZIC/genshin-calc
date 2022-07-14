@@ -11,6 +11,7 @@ import EnergyManager from "@/Roster/EnergyManager";
 import ElementalReactionManager from "@/ElementalReactions/ElementalReactionManager";
 import CombatLogger from "@/CombatLogger/CombatLogger";
 import BehaviorManager from "@/Behavior/BehaviorManager";
+import {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export interface ICalcResult {
   damage: number;
@@ -58,14 +59,14 @@ export default class DamageCalculator {
   private onAnySKillStartedDelegate = this.onAnySKillStarted.bind(this);
   private onAnySKillEndedDelegate = this.onAnySkillEnded.bind(this);
 
-  private onDamage(args: IOnSkillAction) {
+  private onDamage(args: ICombatDamageArgs) {
     this.rotationDamage += args.value;
   }
 
-  private onHeal(args: IOnSkillAction) {
+  private onHeal(args: ICombatHealArgs) {
   }
 
-  private onCreateShield(args: IOnSkillAction) {
+  private onCreateShield(args: ICombatShieldArgs) {
   }
 
   private onDamageDelegate = this.onDamage.bind(this);
@@ -210,8 +211,8 @@ export default class DamageCalculator {
     };
 
     this.unsubscribeGlobals();
-    console.table(logger);
-    console.log(this.rotationDamage, this.currentFrames);
+    //console.table(logger);
+    //console.log(this.rotationDamage, this.currentFrames);
 
     return result;
   }

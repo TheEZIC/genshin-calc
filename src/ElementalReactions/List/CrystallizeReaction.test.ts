@@ -6,7 +6,9 @@ import Enemy from "@/Entities/Enemies/Enemy";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import {IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Crystallize";
 
@@ -18,7 +20,7 @@ describe(`${reactionName}Reaction`, () => {
   let reaction: CrystallizeReaction;
   let elementalStatus: GeoStatus;
 
-  let reactionArgs: IElementalReactionArgs;
+  let reactionArgs: IElementalReactionManagerArgs;
 
   beforeEach(() => {
     damageCalculator = new DamageCalculator();
@@ -40,8 +42,9 @@ describe(`${reactionName}Reaction`, () => {
     }
   })
 
-  test(`Expect ${reactionName} dmg`, () => {
-    expect(reaction.applyBonusDamage(reactionArgs)).toBe(0);
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   test(`Expect ${reactionName} gauge`, () => {

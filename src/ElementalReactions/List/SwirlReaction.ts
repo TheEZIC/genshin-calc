@@ -1,15 +1,11 @@
 import TransformativeElementalReaction from "@/ElementalReactions/TransformativeElementalReaction";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import Entity from "@/Entities/Entity";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import {IElementalReactionArgs, IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
+import CombatActions, {ICombatDamageArgs} from "@/Skills/CombatActions";
 
 export default class SwirlReaction extends TransformativeElementalReaction {
   public triggerMultiplier: number = 0.625;
   public readonly baseDamageMultiplier: number = 1.2;
-
-  private getEntityStatus(entity: Entity): ElementalStatus | undefined {
-    return entity.ongoingEffects.find(e => e instanceof ElementalStatus) as ElementalStatus | undefined;
-  }
 
   private calcSwirledElement(elementalStatus: ElementalStatus, anemoStatus: ElementalStatus) {
     const elementalUnitsRemaining = (elementalStatus.frames - elementalStatus.currentFrame) / elementalStatus.unitCapacity;
@@ -24,15 +20,38 @@ export default class SwirlReaction extends TransformativeElementalReaction {
     return clone;
   }
 
-  applyBonusDamage(args: IElementalReactionArgs): number {
-    const {character} = args;
-    const {entities} = args.damageCalculator.roster;
-    const anemoStatus = args.elementalStatus!!;
+  public doDamage({character, damageCalculator, entity, source, trigger}: IElementalReactionArgs): number {
+    const combat = new CombatActions(damageCalculator);
+    const damage = this.baseDamageMultiplier
+      * this.calcLvlMultiplier(character)
+      * (1 + (
+        character.calculatorStats.elementalMastery.transformativeReactionBonus +
+        character.calculatorStats.swirlReactionDmgBonus.calc()
+      ) / 100);
+
+    const damageArgs: ICombatDamageArgs = {
+      character,
+      source,
+      damageVision: trigger.visionType,
+      target: entity,
+      value: damage,
+    }
+
+    combat.doDamage(damageArgs);
+
+    return damage;
+  }
+
+  public applyBonusDamage(args: IElementalReactionArgs): number {
+    let {damageCalculator, trigger} = args;
+
+    const {entities} = damageCalculator.roster;
+    const anemoStatus = trigger;
 
     for (let i = 0; i < entities.length; i++) {
-      const entity1Status = this.getEntityStatus(entities[i]);
+      const entity1Statuses = entities[i].elementalStatuses;
 
-      if (entity1Status) {
+      for (let entity1Status of entity1Statuses) {
         for (let j = 0; j < entities.length; j++) {
           if (i - j - 1 >= 0 || i === j) {
             continue;
@@ -41,17 +60,15 @@ export default class SwirlReaction extends TransformativeElementalReaction {
           this.elementalReactionManager.applyReaction({
             ...args,
             entity: entities[j],
+            fromSwirl: true,
             elementalStatus: this.calcSwirledElement(entity1Status, anemoStatus),
           });
         }
       }
     }
 
-    return this.baseDamageMultiplier
-      * this.calcLvlMultiplier(args.character)
-      * (1 + (
-        args.character.calculatorStats.elementalMastery.transformativeReactionBonus +
-        character.calculatorStats.swirlReactionDmgBonus.calc()
-      ) / 100)
+    this.doDamage(args);
+
+    return 0;
   }
 }

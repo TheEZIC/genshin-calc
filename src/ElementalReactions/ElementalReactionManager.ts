@@ -1,6 +1,10 @@
 import Listener from "@/Helpers/Listener";
 import ElementalStatus from "@/ElementalStatuses/ElementalStatus";
-import ElementalReaction, {IElementalReactionArgs, IOnReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import ElementalReaction, {
+  IElementalReactionArgs,
+  IElementalReactionManagerArgs,
+  IOnReactionArgs
+} from "@/ElementalReactions/ElementalReaction";
 import {Constructor} from "@/Helpers/Constructor";
 import PyroStatus from "@/ElementalStatuses/List/PyroStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
@@ -21,7 +25,7 @@ import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
 import SwirlReaction from "@/ElementalReactions/List/SwirlReaction";
 import Entity from "@/Entities/Entity";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import MultipliedElementalReaction from "@/ElementalReactions/MultipliedElementalReaction";
+import AmplifyingElementalReaction from "@/ElementalReactions/AmplifyingElementalReaction";
 import SingletonsManager from "@/Singletons/SingletonsManager";
 
 type ElementalCombination = [
@@ -89,13 +93,13 @@ export default class ElementalReactionManager {
   }
 
   //remove freeze status if blunt attack
-  public checkShatter(args: IElementalReactionArgs, blunt: boolean) {
+  public checkShatter(args: IElementalReactionManagerArgs, blunt: boolean) {
     if (!blunt) return;
     args.entity.ongoingEffects = args.entity.ongoingEffects.filter((e) => !(e instanceof FreezeStatus));
   }
 
   //TODO: Remove status after reaction
-  public applyReaction(args: IElementalReactionArgs): number {
+  public applyReaction(args: IElementalReactionManagerArgs): number {
     let {elementalStatus, entity, character, damage} = args;
     const enemyStatuses = entity.ongoingEffects.filter((e) => e instanceof ElementalStatus) as ElementalStatus[];
     const hasFreeze = enemyStatuses.find(s => s instanceof FreezeStatus);
@@ -112,7 +116,16 @@ export default class ElementalReactionManager {
     }
 
     for (let enemyStatus of enemyStatuses) {
-      const ignoreReaction = hasFreeze && !(enemyStatus instanceof FreezeStatus);
+      const ignoreReaction = Boolean(hasFreeze && !(enemyStatus instanceof FreezeStatus));
+      const reactionArgs: IElementalReactionArgs = {
+        ...args,
+        source: args.source ?? args.character,
+        aura: enemyStatus,
+        trigger: elementalStatus,
+        ignoreReaction,
+      };
+
+
       //override status if they're same
       if (this.tryToOverrideStatus(elementalStatus, enemyStatus, entity)) {
         continue;
@@ -127,15 +140,13 @@ export default class ElementalReactionManager {
 
       if (elementalStatus instanceof GeoStatus) {
         this.removeStatus(entity, GeoStatus);
-        if (!ignoreReaction) this.crystallizeReaction.execute(args);
-        enemyStatus.react(elementalStatus, this.crystallizeReaction);
+        this.crystallizeReaction.execute(reactionArgs);
         continue;
       }
 
       if (elementalStatus instanceof AnemoStatus) {
         this.removeStatus(entity, AnemoStatus);
-        if (!ignoreReaction) this.swirlReaction.execute(args);
-        enemyStatus.react(elementalStatus, this.swirlReaction);
+        this.swirlReaction.execute(reactionArgs);
         continue;
       }
 
@@ -146,46 +157,7 @@ export default class ElementalReactionManager {
 
       if (combination) {
         const [,,reaction] = combination;
-
-        if (reaction instanceof ElectroChargedReaction) {
-          this.addStatus(entity, elementalStatus);
-
-          const {triggerMultiplier} = reaction;
-          const unitCapacity = Math.min(enemyStatus.unitCapacity, elementalStatus.unitCapacity);
-          const remainingDuration = Math.min(enemyStatus.remainingDuration, elementalStatus.remainingDuration);
-          const remainingDurationAfterFirstTick = remainingDuration - triggerMultiplier * unitCapacity;
-
-          let ticksCount = Math.floor(remainingDurationAfterFirstTick  / (triggerMultiplier * unitCapacity + 60)) + 1;
-
-          if (remainingDurationAfterFirstTick % (triggerMultiplier * unitCapacity + 60) > 30) {
-            ticksCount++;
-          }
-
-          for (let i = 0; i < ticksCount; i++) {
-            this.damageCalculator.addDelayedAction({
-              delay: 60 * i,
-              run: (damageCalculator) => {
-                const electroStatus = entity.ongoingEffects.find(e => e instanceof ElectroStatus) as ElectroStatus;
-                const hydroStatus = entity.ongoingEffects.find(e => e instanceof HydroStatus) as HydroStatus;
-
-                if (electroStatus && hydroStatus) {
-                  electroStatus.react(electroStatus, reaction, true);
-                  hydroStatus.react(hydroStatus, reaction, true);
-
-                  damageCalculator.rotationDamage += reaction.execute(args);
-                }
-              }
-            });
-          }
-
-          return damage;
-        }
-
-        const reactedDamage = !ignoreReaction ? reaction.execute(args) : 0;
-        enemyStatus.react(elementalStatus, reaction);
-        damage += reaction instanceof MultipliedElementalReaction
-          ? reactedDamage - damage
-          : reactedDamage;
+        reaction.execute(reactionArgs);
       }
     }
 

@@ -7,6 +7,8 @@ import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
 import DamageCalculator from "@/Roster/DamageCalculator";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
+import RefreshManager from "@/Refresher/RefreshManager";
+import SingletonsManager from "@/Singletons/SingletonsManager";
 
 const reactionName = "Frozen";
 
@@ -21,6 +23,11 @@ describe(`${reactionName}Reaction`, () => {
     entity = new Enemy();
     damageCalculator.roster.addCharacter(character);
     damageCalculator.roster.addEnemy(entity);
+  });
+
+  afterEach(() => {
+    RefreshManager.refreshAll();
+    SingletonsManager.resetAll();
   });
 
   test(`Expect ${reactionName} shatter 1`, () => {

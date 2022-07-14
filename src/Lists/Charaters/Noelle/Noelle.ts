@@ -5,6 +5,7 @@ import SkillsManager from "@/Skills/SkillsManager";
 import NoelleBaseStats from "./NoelleBaseStats";
 import {VisionType} from "@/VisionType";
 import NoelleNormalAttack from "@/Lists/Charaters/Noelle/Skills/Attacks/NoelleNormalAttack";
+import NoelleElemental from "@/Lists/Charaters/Noelle/NoelleElemental";
 
 export default class Noelle extends Character {
   public title: string = "Noelle";
@@ -16,6 +17,7 @@ export default class Noelle extends Character {
 
   public skillManager: SkillsManager = new SkillsManager(this, [
     new NoelleNormalAttack(),
+    new NoelleElemental(),
   ]);
 
   public constellationsManager: ConstellationsManager =

@@ -1,7 +1,7 @@
 import SkillStrategy, {ISkillStrategy} from "@/Skills/SkillStrategy";
 import {SkillType} from "@/Skills/SkillType";
-import {IOnSkillAction, IOnSkillDamage} from "@/Roster/GlobalListeners";
 import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
+import {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export default class BurstSkillStrategy extends SkillStrategy implements ISkillStrategy {
   type: SkillType = SkillType.Burst;
@@ -15,19 +15,19 @@ export default class BurstSkillStrategy extends SkillStrategy implements ISkillS
     args.character.listeners.BurstSkillEnded.notifyAll(args);
   }
 
-  runBeforeDamageListener(args: IOnSkillDamage): void {
+  runBeforeDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.BurstSkillBeforeDamage.notifyAll(args);
   }
 
-  runDamageListener(args: IOnSkillDamage): void {
+  runDamageListener(args: ICombatDamageArgs): void {
     args.character.listeners.BurstSkillDamage.notifyAll(args);
   }
 
-  runHealListener(args: IOnSkillAction): void {
+  runHealListener(args: ICombatHealArgs): void {
     args.character.listeners.BurstSkillHeal.notifyAll(args);
   }
 
-  runCreateShieldListener(args: IOnSkillAction): void {
+  runCreateShieldListener(args: ICombatShieldArgs): void {
     args.character.listeners.BurstSkillCreateShield.notifyAll(args);
   }
 }

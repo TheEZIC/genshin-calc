@@ -10,6 +10,8 @@ import DamageCalculator from "@/Roster/DamageCalculator";
 import Entity from "@/Entities/Entity";
 import SkillListenerArgs from "@/Skills/Args/SkillListenerArgs";
 import Enemy from "@/Entities/Enemies/Enemy";
+import ShieldEffect from "@/Effects/ShieldEffect";
+import {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export interface IOnSkillAction {
   character: Character;
@@ -23,6 +25,10 @@ export interface IOnSkillDamage extends IOnSkillAction {
   elementalStatus?: ElementalStatus;
 }
 
+export interface IOnSkillShield extends IOnSkillAction {
+  shield: ShieldEffect<Entity>;
+}
+
 export interface IOnAnyEffect<T extends IWithOngoingEffects = any> {
   entity: T;
   effect: Effect<T>;
@@ -33,15 +39,15 @@ export default class GlobalListeners {
   ) {
   }
 
-  public onDamage: Listener<IOnSkillDamage> = new Listener<IOnSkillDamage>();
-  public onHeal: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
-  public onCreateShield: Listener<IOnSkillAction> = new Listener<IOnSkillAction>();
+  public onDamage: Listener<ICombatDamageArgs> = new Listener();
+  public onHeal: Listener<ICombatHealArgs> = new Listener();
+  public onCreateShield: Listener<ICombatShieldArgs> = new Listener();
 
-  public onSkillStarted: Listener<SkillListenerArgs> = new Listener<SkillListenerArgs>();
-  public onSkillEnded: Listener<SkillListenerArgs> = new Listener<SkillListenerArgs>();
+  public onSkillStarted: Listener<SkillListenerArgs> = new Listener();
+  public onSkillEnded: Listener<SkillListenerArgs> = new Listener();
 
-  public onEffectStarted: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
-  public onEffectReactivate: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
-  public onEffectRefill: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
-  public onEffectEnded: Listener<IOnAnyEffect> = new Listener<IOnAnyEffect>();
+  public onEffectStarted: Listener<IOnAnyEffect> = new Listener();
+  public onEffectReactivate: Listener<IOnAnyEffect> = new Listener();
+  public onEffectRefill: Listener<IOnAnyEffect> = new Listener();
+  public onEffectEnded: Listener<IOnAnyEffect> = new Listener();
 }

@@ -5,7 +5,7 @@ import {SkillDamageRegistrationType} from "@/Skills/SkillDamageRegistrationType"
 import ICD from "@/Skills/ICD";
 import SkillLvl from "@/Skills/SkillLvl";
 import {IEnergyParticles} from "@/Roster/EnergyManager";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import {IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
 import Entity from "@/Entities/Entity";
 import SkillInfusion from "@/Skills/SkillInfusion";
 import {Constructor} from "@/Helpers/Constructor";
@@ -26,6 +26,8 @@ import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import GeoStatus from "@/ElementalStatuses/List/GeoStatus";
 import DendroStatus from "@/ElementalStatuses/List/DendroStatus";
 import AnemoStatus from "@/ElementalStatuses/List/AnemoStatus";
+import SkillShieldArgs from "@/Skills/Args/SkillShieldArgs";
+import CombatActions, {ICombatDamageArgs, ICombatHealArgs, ICombatShieldArgs} from "@/Skills/CombatActions";
 
 export default abstract class Skill extends BehaviorUnit<SkillArgs> implements IWithCreator<Skill> {
   public abstract strategy: ISkillStrategy;
@@ -49,7 +51,7 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   public abstract targetType: SkillTargetType;
   public abstract damageRegistrationType: SkillDamageRegistrationType;
 
-  public ICD: ICD | null = null;
+  public ICD?: ICD;
   public infusion: SkillInfusion = new SkillInfusion(this);
   public lvl: SkillLvl = new SkillLvl(this);
 
@@ -75,82 +77,22 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
   }
 
   public doDamage(args: SkillDamageArgs, comment: string = "") {
-    const beforeDamageArgs = {
-      character: args.character,
-      targets: this.getTargets(args),
-      elementalStatus: args.elementalStatus,
-      comment,
-      skill: this,
-      value: args.value,
-    };
+    const combat = new CombatActions(args.damageCalculator);
 
-    this.strategy.runBeforeDamageListener(beforeDamageArgs);
+    for (let target of this.getTargets(args)) {
+      const damageArgs: ICombatDamageArgs = {
+        character: args.character,
+        source: this,
+        target,
+        elementalStatus: args.elementalStatus,
+        ICD: this.ICD,
+        comment,
+        value: args.value,
+      };
 
-    let dmg: number = this.performHit(args);
-    const damageArgs = {
-      character: args.character,
-      targets: this.getTargets(args),
-      elementalStatus: args.elementalStatus,
-      comment,
-      skill: this,
-      value: dmg,
-    };
-
-    args.damageCalculator.globalListeners.onDamage.notifyAll(damageArgs);
-    this.strategy.runDamageListener(damageArgs);
-  }
-
-  private performHit(args: SkillDamageArgs) {
-    const damage = args.value;
-    const {elementalStatus} = args;
-    const hits = args.hits ?? 1;
-    let totalDmg = 0;
-
-    const createArgs = (entity: Entity): IElementalReactionArgs => ({
-      character: args.character,
-      damageCalculator: args.damageCalculator,
-      damage,
-      elementalStatus,
-      entity,
-    });
-
-    if (args.blunt) {
-      const applyShatter = (entity: Entity) => {
-        args.damageCalculator.reactionsManager.checkShatter(createArgs(entity), true);
-      }
-
-      this.doForEachTarget(args, applyShatter);
-    }
-
-    if (elementalStatus && !this.ICD?.onCountdown) {
-      const applyReaction = (entity: Entity) => {
-        totalDmg += args.damageCalculator.reactionsManager.applyReaction(createArgs(entity));
-      }
-
-      this.ICD?.startCountdown();
-      this.doForEachTarget(args, applyReaction);
-    } else {
-      totalDmg = damage;
-    }
-
-    this.doForEachTarget(args, (enemy) => {
-      totalDmg += this.applyDamageFactors(args, enemy, totalDmg);
-    });
-
-    if (this.ICD) {
-      for (let i = 0; i < hits; i++) {
-        this.ICD.addHit();
-      }
-    }
-
-    return totalDmg || damage;
-  }
-
-  protected doForEachTarget(args: SkillDamageArgs, action: (entity: Enemy) => void) {
-    const targets = this.getTargets(args);
-
-    for (let target of targets) {
-      action(target);
+      this.strategy.runBeforeDamageListener(damageArgs);
+      const afterArgs = combat.doDamage(damageArgs);
+      this.strategy.runDamageListener(afterArgs);
     }
   }
 
@@ -173,91 +115,41 @@ export default abstract class Skill extends BehaviorUnit<SkillArgs> implements I
     return targets;
   }
 
-  private applyDamageFactors(args: SkillDamageArgs, target: Enemy, damage: number): number {
-    const {character} = args;
+  public doHeal(args: SkillActionArgs, targets: Entity[], comment: string = "") {
+    const combat = new CombatActions(args.damageCalculator);
 
-    let totalDamage = damage;
+    for (let target of targets) {
+      const healArgs: ICombatHealArgs = {
+        character: args.character,
+        source: this,
+        target,
+        comment,
+        value: args.value,
+      };
 
-    totalDamage *= character.calculatorStats.critDamage.critEffect;
-    totalDamage *= this.getDefFactor(character, target);
-    totalDamage *= this.getResistanceFactor(args, target);
-
-    return totalDamage - damage;
-  }
-
-  private getDefFactor(character: Character, target: Enemy): number {
-    const characterLvl = character.lvl;
-    const enemyLvl = target.lvl;
-
-    let defFactor = (characterLvl + 100) /
-      (
-        (characterLvl + 100) +
-        (enemyLvl + 100) *
-        //armor reduction
-        (1 - (target.calculatorStats.defReduction.calc()) / 100) *
-        //armor penetration
-        (1 - (target.calculatorStats.defShred.calc()) / 100)
-      );
-
-    return defFactor;
-  }
-
-  private getResistanceFactor(args: SkillDamageArgs, target: Enemy) {
-    if (args.elementalStatus) {
-      return this.getResistanceFromStatus(args.elementalStatus, target);
-    } else {
-      return target.calculatorStats.physicalResistance.calc();
+      combat.doHeal(healArgs);
+      this.strategy.runHealListener(healArgs);
     }
   }
 
-  private getResistanceFromStatus(elementalStatus: ElementalStatus, target: Enemy): number {
-    switch (elementalStatus.constructor) {
-      case PyroStatus:
-        return target.calculatorStats.pyroResistance.calc();
-      case CryoStatus:
-      case FreezeStatus:
-        return target.calculatorStats.cryoResistance.calc();
-      case HydroStatus:
-        return target.calculatorStats.hydroResistance.calc();
-      case GeoStatus:
-        return target.calculatorStats.geoResistance.calc();
-      case ElementalStatus:
-        return target.calculatorStats.geoResistance.calc();
-      case DendroStatus:
-        return target.calculatorStats.dendroResistance.calc();
-      case CryoStatus:
-        return target.calculatorStats.cryoResistance.calc();
-      case AnemoStatus:
-        return target.calculatorStats.anemoResistance.calc();
-      default:
-        return 0;
+  public createShield(args: SkillShieldArgs, targets: Entity[], comment: string = "") {
+    const combat = new CombatActions(args.damageCalculator);
+
+    for (let target of targets) {
+      args.shield.activate(target);
+
+      const createShieldArgs: ICombatShieldArgs = {
+        character: args.character,
+        source: this,
+        target,
+        comment,
+        value: args.value,
+        shield: args.shield,
+      };
+
+      combat.createShield(createShieldArgs);
+      this.strategy.runCreateShieldListener(createShieldArgs);
     }
-  }
-
-  public doHeal(args: SkillActionArgs, comment: string = "") {
-    const healArgs = {
-      character: args.character,
-      targets: this.getTargets(args),
-      comment,
-      skill: this,
-      value: args.value,
-    };
-
-    args.damageCalculator.globalListeners.onHeal.notifyAll(healArgs);
-    this.strategy.runHealListener(healArgs);
-  }
-
-  public createShield(args: SkillActionArgs, comment: string = "") {
-    const createShieldArgs = {
-      character: args.character,
-      targets: this.getTargets(args),
-      comment,
-      skill: this,
-      value: args.value,
-    };
-
-    args.damageCalculator.globalListeners.onCreateShield.notifyAll(createShieldArgs);
-    this.strategy.runCreateShieldListener(createShieldArgs);
   }
 
   protected addInfusion(args: SkillArgs) {

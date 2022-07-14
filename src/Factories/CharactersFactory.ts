@@ -2,6 +2,7 @@ import AbstractFactory, {IAbstractFactoryItem} from "@/Factories/AbstractFactory
 import Character from "@/Entities/Characters/Character";
 import Ayaka from "@/Lists/Charaters/Ayaka/Ayaka";
 import Xiangling from "@/Lists/Charaters/Xiangling/Xiangling";
+import Noelle from "@/Lists/Charaters/Noelle/Noelle";
 
 export interface ICharactersFactoryItem extends IAbstractFactoryItem<Character> {
 }
@@ -20,6 +21,7 @@ export default class CharactersFactory extends AbstractFactory<ICharactersFactor
   protected _list: ICharactersFactoryItem[] = this.createList([
     new Ayaka(),
     new Xiangling(),
+    new Noelle(),
   ])
 
   public getByName(name: string): ICharactersFactoryItem | undefined {

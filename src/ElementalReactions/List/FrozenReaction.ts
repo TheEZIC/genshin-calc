@@ -1,4 +1,7 @@
-import ElementalReaction, {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import ElementalReaction, {
+  IElementalReactionArgs,
+  IElementalReactionManagerArgs
+} from "@/ElementalReactions/ElementalReaction";
 import CryoStatus from "@/ElementalStatuses/List/CryoStatus";
 import HydroStatus from "@/ElementalStatuses/List/HydroStatus";
 import FreezeStatus from "@/ElementalStatuses/List/FreezeStatus";
@@ -40,8 +43,6 @@ export default class FrozenReaction extends ElementalReaction {
   }
 
   public applyBonusDamage(args: IElementalReactionArgs): number {
-    if (!args.elementalStatus) return 0;
-
     let cryoStatus;
     let hydroStatus;
 
@@ -51,10 +52,10 @@ export default class FrozenReaction extends ElementalReaction {
 
     if (potentialCryo) {
       cryoStatus = potentialCryo;
-      hydroStatus = args.elementalStatus;
+      hydroStatus = args.trigger;
     } else if (potentialHydro) {
       hydroStatus = potentialHydro;
-      cryoStatus = args.elementalStatus;
+      cryoStatus = args.trigger;
     } else return 0;
 
     const freezeUnits = 2 * Math.min(cryoStatus.remainingUnits, hydroStatus.units);

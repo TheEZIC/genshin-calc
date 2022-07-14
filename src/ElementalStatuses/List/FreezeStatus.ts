@@ -3,10 +3,13 @@ import ElementalReactionManager from "@/ElementalReactions/ElementalReactionMana
 import FrozenReaction from "@/ElementalReactions/List/FrozenReaction";
 import Entity from "@/Entities/Entity";
 import DamageCalculator from "@/Roster/DamageCalculator";
-import {IElementalReactionArgs} from "@/ElementalReactions/ElementalReaction";
+import {IElementalReactionManagerArgs} from "@/ElementalReactions/ElementalReaction";
+import {VisionType} from "@/VisionType";
 
 export default class FreezeStatus extends ElementalStatus {
-  constructor(units: number, private args: IElementalReactionArgs) {
+  public visionType: VisionType = VisionType.Cryo;
+
+  constructor(units: number, private args: IElementalReactionManagerArgs) {
     super(units);
     this._units = units;
     this._framesDuration = this.calcDuration(units);
